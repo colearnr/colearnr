@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>Notes</title>
+    <link href="/font/source-sans-pro/source-sans-pro.css" rel="stylesheet" type="text/css">
+    <link href="<%- locals.page_options.cdn_prefix %>/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="/vendor/fontawesome/css/font-awesome.min.css?<%- locals.page_options.version %>">
+    <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/vendor/code-prettify/themes/colearnr.css">
+    <% include ../includes/scripts-common.html %>
+  </head>
+  <body>
+    <div id="notes" data-edit="summernote" data-autofocus="true" data-height="90%" data-autosaveurl="/userdata/<%- locals.lbit_oid %>/notes/<%- locals.id %>?topic_id=<%- locals.topic_oid %>">
+      <%- locals.data || '' %>
+    </div>
+  </body>
+  <% include ../includes/editor.ejs %>
+  <script>
+
+  </script>
+</html>

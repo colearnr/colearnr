@@ -1,0 +1,53 @@
+@media (max-width: 480px) {
+
+	/* Arrows */
+	
+	.arrow.down {
+		margin-bottom: 18px;
+		display: inherit !important;
+	}
+	
+	.social {
+		text-align: center;
+	}
+	
+	.social .span4 {
+		width: 70px;
+		display: inline;
+		padding-right: 10px;
+	}
+	
+	/* Box Shadows */
+	
+	div.signup, div.social, div.company-info {
+		-webkit-box-shadow: 0px 10px 5px rgba(50, 50, 50, 0.25);
+		-moz-box-shadow: 0px 10px 5px rgba(50, 50, 50, 0.25);
+		box-shadow: 0px 10px 5px rgba(50, 50, 50, 0.25);
+	}
+}
+
+@media (max-width: 767px) {
+	.arrow.down {
+		margin-bottom: 18px;
+		display: inherit !important;
+	}
+	
+	.social {
+		text-align: center;
+	}
+	
+	.social .span4 {
+		width: 70px;
+		display: inline;
+		padding-right: 10px;		
+	}
+	
+	/* Box Shadows */
+	
+	div.signup, div.social, div.company-info {
+		-webkit-box-shadow: 0px 10px 5px rgba(50, 50, 50, 0.25);
+		-moz-box-shadow: 0px 10px 5px rgba(50, 50, 50, 0.25);
+		box-shadow: 0px 10px 5px rgba(50, 50, 50, 0.25);
+	}
+
+}

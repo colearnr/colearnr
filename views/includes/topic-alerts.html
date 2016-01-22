@@ -1,0 +1,48 @@
+<% if (locals.topicObj) { %>
+<% var user_perms = topicObj.user_perms && topicObj.user_perms[user._id] ? topicObj.user_perms[user._id] : null %>
+<% var editAllowed = false %>
+<% if (user_perms && (_.indexOf(user_perms, 'edit') != -1)) { editAllowed = true } %>
+<% if (topicObj.hidden) { %>
+<div class="container" style="padding-left:0px;padding-right:0px;">
+  <div class="alert alert-danger col-md-12 col-sm-12 col-xs-12">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      <h4>This topic is deleted and cannot be viewed by others!</h4>
+      <a href="/topic/undelete/<%- topicObj._id %>" class="btn btn-primary">Restore now</a>
+      <a id="fulldelTopic" data-id="<%- topicObj._id %>" href="#" onclick="showFullDelTopicModal('<%- topicObj._id %>');" title="Delete permanently" class="btn btn-danger"><i class="fa fa-trash-o"></i> &nbsp;Delete permanently</a>
+  </div>
+</div>
+<% } %>
+
+<% if (!util.empty(topicObj.body)) { %>
+<div class="topic_lbits_wrapper">
+  <div class="container posts topic-body">
+      <% if (editAllowed) { %>
+      <div id="bodyEditIcon" class="pull-right" style="display: none;">
+          <button class="btn btn-primary btn-md hidden-xs"><i class="fa fa-pencil-square-o"></i></button>
+      </div>
+      <% } %>
+      <div id="bodyContent" class="post <% if (editAllowed) { %>body_edit<% } %>">
+      <% if (util.empty(topicObj.body) && editAllowed) { %>
+      &nbsp;
+      <% } else { %>
+        <%
+          var bodyStr = topicObj.body || '';
+          if (locals.host_url_http && locals.host_url_https) {
+            bodyStr = bodyStr.replace(new RegExp(locals.host_url_http, 'ig'), locals.host_url_https);
+          }
+        %>
+      <%- bodyStr %>
+      <% } %>
+      </div>
+      <% if (editAllowed) { %>
+      <div class="row" style="margin-top: 1.2em;">
+          <div class="pull-right">
+              <button class="btn btn-lg btn-primary hidden-xs" id="btnSave" style="display: none;">Save changes</button>
+              <button class="btn btn-lg btn-link hidden-xs" id="btnCancel" style="display: none;">Cancel</button>
+          </div>
+      </div>
+      <% } %>
+  </div>
+</div>
+<% } %>
+<% } %>

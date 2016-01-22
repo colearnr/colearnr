@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <!-- Facebook sharing information tags -->
+        <meta property="og:title" content="Welcome to CoLearnr <%= user.displayName || '' %>" />
+
+        <title>Welcome to CoLearnr <%= user.displayName || '' %></title>
+		<% include includes/styles.html %>
+	</head>
+    <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+    	<center>
+        	<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable">
+            	<tr>
+                	<td align="center" valign="top" style="padding-top:20px;">
+                    	<table border="0" cellpadding="0" cellspacing="0" width="600" id="templateContainer">
+                        	<% include includes/header.html %>
+                        	<tr>
+                            	<td align="center" valign="top">
+                                    <!-- // Begin Template Body \\ -->
+                                	<table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody">
+                                    	<tr>
+                                            <td valign="top">
+
+                                                <!-- // Begin Module: Standard Content \\ -->
+                                                <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                                                    <tr>
+                                                        <td valign="top" class="bodyContent">
+                                                            <div mc:edit="std_content00">
+                                                                <h1 class="h1">Welcome to CoLearnr</h1>
+                                                                <br/>
+                                                                At CoLearnr, we believe learning should be more <strong>collaborative yet personal</strong>. This is the start of a great learning experience and it's great to have you onboard.
+                                                                <br />
+                                                                <br />
+                                                                <h4 class="h4">Here are some awesome ways to use CoLearnr</h4>
+                                                                <div class="rule" style="margin: 20px 0;border-top: 1px solid #ddd;"></div>
+                                                                <h3 class="h3">Your personal learning collection</h3>
+                                                                <p>Your own personal collection of learning materials. These could be videos, blog posts, pdfs and more just available for you. With support for annotations, tagging and tons of other features, we make learning a distraction-free and engaging experience.</p>
+
+                                                                <h3 class="h3">Group learning space</h3>
+                                                                <p>Wanted that learning space thats just right for your group? Do you want to invite your friends and collaborate on that important project in realtime? We make collaborative learning a breeze!</p>
+
+                                                                <h3 class="h3">Your teaching resources on the cloud</h3>
+                                                                <p>Struggling to organise those teaching materials. May be those boxes and drives in the cloud are simply not good enough for you. We are here to help.</p>
+                                                            </div>
+														</td>
+                                                    </tr>
+                                                    <tr>
+                                                    	<td align="center" valign="top" style="padding-top:0;">
+                                                        	<table border="0" cellpadding="15" cellspacing="0" class="templateButton">
+                                                            	<tr>
+                                                                	<td valign="middle" class="templateButtonContent">
+                                                                    	<div mc:edit="std_content01">
+                                                                            <% if (!user.email_verified && user.verification_code) { %>
+                                                                        	<a href="<%= base_url %>/user/verify/<%= user.verification_code %>" target="_blank">Verify Email</a>
+                                                                            <% } else { %>
+                                                                            <a href="<%= base_url %>/user/topic" target="_blank">Get started</a>
+                                                                            <% } %>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <!-- // End Module: Standard Content \\ -->
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!-- // End Template Body \\ -->
+                                </td>
+                            </tr>
+                        	<% include includes/footer.html %>
+                        </table>
+                        <br />
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </body>
+</html>

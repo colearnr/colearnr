@@ -1,0 +1,77 @@
+<html>
+    <head>
+    <title><%- lbit.title || '' %></title>
+    <% if (lbit.url && lbit.url === '#') { %>
+    <link href="<%- locals.page_options.cdn_prefix %>/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <% } %>
+    <% if (lbit.type !== 'pdf' && !lbit.optimised) { %>
+        <link rel="stylesheet" href="/stylesheets/readability/readability-home.css?<%- locals.page_options.version %>" type="text/css" media="screen">
+        <link rel="stylesheet" href="<%- locals.page_options.cdn_prefix %>/stylesheets/annotator.min.css?<%- locals.page_options.version %>" type="text/css" media="screen">
+        <script src="<%- locals.page_options.cdn_prefix %>/javascripts/jquery-1.9.1.min.js" ></script>
+    <% } else { %>
+        <% include ../includes/pdf-viewer.html %>
+    <% } %>
+    </head>
+    <body>
+        <% if (lbit.type === 'pdf' || lbit.optimised) { %>
+            <%
+            var width = 100;
+            var height = 100;
+            if (locals.embedSize && embedSize === 'small') {
+                width = 50;
+                height = 75;
+            } else if (locals.embedSize && embedSize === 'medium') {
+                width = 75;
+                height = 75;
+            }
+            %>
+            <div id="documentViewer" style="width: <%- width %>%; height: <%- height %>%" class="flexpaper_viewer <% if (locals.embedSize) { %><%- embedSize %><% } %>"></div>
+        <% } else if (lbit.type === 'office') { %>
+        <%
+        var lurl = lbit.url;
+        if (lbit.url.indexOf(constants.CL_PROTOCOL) === 0) {
+            var tmpA = lbit.url.split('/');
+            var filename = tmpA != null ? tmpA[tmpA.length - 1] : '';
+            lurl = config.base_url + '/lbit/' + lbit._id + '/media/' + filename + '?userId=' + (req.user && req.user._id ? req.user._id : '') + '&contentId=' + lbit._id + '&tokenId=' + (locals.accessToken || '');
+            lurl = encodeURIComponent(lurl);
+        }
+        %>
+        <div class="media-wrapper"><div class="media-container"><div class="media-shadow">
+        <iframe class="embed-responsive-item" src="https://view.officeapps.live.com/op/embed.aspx?src=<%- lurl %>" width="100%" height="100%" frameborder="no" allowfullscreen mozallowfullscreen webkitallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+        </div></div></div>
+        <% } else { %>
+        <div id="">
+            <div id="" class="style-ebook">
+                <div id="articleContent" class="margin-medium size-medium">
+                    <% if (!util.empty(lbit.title)) { %>
+                    <h1><%- lbit.title %></h1>
+                    <hr>
+                    <% } %>
+                    <%
+                      var bodyStr = lbit.body || '';
+                      if (locals.host_url_http && locals.host_url_https) {
+                        bodyStr = bodyStr.replace(new RegExp(locals.host_url_http, 'ig'), locals.host_url_https);
+                      }
+                    %>
+                    <%- bodyStr %>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </body>
+    <% if (lbit.type !== 'pdf' && !lbit.optimised) { %>
+        <% if (req.user && !req.user.guestMode) { %>
+            <script src="<%- locals.page_options.cdn_prefix %>/javascripts/annotator-full.min.js?<%- locals.page_options.version %>"></script>
+            <script>
+                var annotatePlugin = $('#articleContent').annotator();
+                annotatePlugin.annotator('addPlugin', 'Store', {
+                    prefix: '/userdata/<%- lbit._id %>',
+                    annotationData: {
+                    'lbit': '<%- lbit._id %>',
+                    'user': '<% if (req.user && req.user._id) { %><%- req.user._id %><% } %>',
+                    },
+                });
+            </script>
+        <% } %>
+    <% } %>
+</html>

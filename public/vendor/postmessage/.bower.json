@@ -1,0 +1,14 @@
+{
+  "name": "postmessage",
+  "homepage": "https://github.com/colearnr/ender-postmessage",
+  "version": "0.1.4",
+  "_release": "0.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.4",
+    "commit": "545830afeb6fcdea9a30f7734c1483bd32da3720"
+  },
+  "_source": "git://github.com/colearnr/ender-postmessage.git",
+  "_target": "0.1.4",
+  "_originalSource": "git://github.com/colearnr/ender-postmessage"
+}

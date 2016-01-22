@@ -1,0 +1,13 @@
+{
+  "name": "postmessage",
+  "description": "Simple and easy window.postMessage communication using jQuery",
+  "version": "0.1.4",
+  "homepage": "https://github.com/colearnr/ender-postmessage",
+  "authors": ["Thomas Sturm <@thomassturm>", "Prabhu Subramanian <@CoLearnr>"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/colearnr/ender-postmessage.git"
+  },
+  "keywords": ["ender", "postmessage"],
+  "main": "./ender-postmessage.js"
+}

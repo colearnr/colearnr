@@ -1,0 +1,129 @@
+.module {
+  z-index: 40;
+  float: left;
+  width: 50px;
+  max-width: 50px;
+  margin: 0;
+  top: 30px;
+  left: 0;
+  position: fixed;
+  background: #f6f6f6; /* Old browsers */
+  /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Y2ZjZmNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlYWVhZWEiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+  background: -moz-linear-gradient(top,  #f6f6f6 0%, #eaeaea 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f6f6f6), color-stop(100%,#eaeaea)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #f6f6f6 0%,#eaeaea 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #f6f6f6 0%,#eaeaea 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #f6f6f6 0%,#eaeaea 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #f6f6f6 0%,#eaeaea 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f6f6f6', endColorstr='#eaeaea',GradientType=0 ); /* IE6-8 */
+  overflow: hidden;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  -webkit-transition: width 0.2s ease-out;
+          transition: width 0.2s ease-out;
+  opacity: 0.8;
+}
+
+.module .h1,
+.module h1,
+.module .h2,
+.module h2,
+.module .h3,
+.module h3 {
+  margin: 0px;
+  padding: 5px;
+  text-align: left;
+  font-size: 12px;
+  text-transform: capitalize;
+  font-weight: 400;
+  border-bottom: 2px solid #ccc;
+  color: #555;
+  line-height: 140%;
+}
+
+.module .h3 .index-number,
+.module h3 .index-number {
+  margin-left: 5px;
+}
+
+.module ul {
+  width: 100%;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin-bottom: 0;
+  max-width: 50px;
+  overflow: hidden;
+}
+.module ul li {
+  list-style: none;
+}
+.module ul li:hover {
+  background-color: #486D98;
+}
+
+.module ul li a {
+  display: block;
+  padding: 10px;
+  color: #000;
+}
+
+.module ul li a {
+  font-size: 1.4em;
+  text-decoration: none;
+}
+
+.module ul li:hover a,
+.module ul li a:hover {
+  color: #FFFFFF;
+}
+
+.module .toc-text {
+  display: none;
+}
+
+#toc .toc-active {
+  background: rgba(72, 109, 152, 0.8);
+}
+
+span.index-title-lg,
+span.index-title {
+  font-size: 28px;
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+span.index-title-lg {
+  display: none;
+}
+
+span.index-number {
+  display: inline;
+  font-size: 28px;
+  font-weight: 400;
+  font-weight: bold;
+  text-align: left;
+}
+
+.module:hover {
+  opacity: 1;
+  z-index: 125;
+  width: 240px;
+  max-width: 240px;
+}
+
+.module:hover .toc-text {
+  display: inline;
+  margin-left: 5px;
+}
+
+.module:hover ul {
+  width: 240px;
+  max-width: 240px;
+}
+
+.module:hover span.index-title-lg {
+  display: inline;
+}

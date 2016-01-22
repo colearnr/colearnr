@@ -1,0 +1,15 @@
+.DS_Store
+.settings
+elasticsearch/
+node_modules/
+.idea/
+*.log
+*.sublime-project
+*.sublime-workspace
+test/casper/*.png
+dump.rdb
+public/cache/*
+apps/
+.sass-cache
+public/dist/*
+.vscode/

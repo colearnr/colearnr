@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- start: Meta -->
+<meta charset="utf-8">
+<title>Edit Profile | CoLearnr</title>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<meta name="author" content=""/>
+<!-- end: Meta -->
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+
+<!-- start: Mobile Specific -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- end: Mobile Specific -->
+
+<!-- start: Facebook Open Graph -->
+<meta property="og:title" content=""/>
+<meta property="og:description" content=""/>
+<meta property="og:type" content=""/>
+<meta property="og:url" content=""/>
+<meta property="og:image" content=""/>
+<!-- end: Facebook Open Graph -->
+
+<% include ../includes/css-common.html %>
+<link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/jquery-ui/jquery-ui-flick.min.css">
+<% include ../includes/scripts-common.html %>
+</head>
+<body>
+<div id="wrap">
+    <!--start: Header -->
+    <header>
+
+        <!--start: Container -->
+        <div class="container">
+        <% include ../includes/nav.html %>
+        </div>
+        <!--end: Container-->
+
+    </header>
+    <!--end: Header-->
+
+<!--start: Container -->
+<div id="main" class="container">
+
+    <!-- start: Page Title -->
+    <div class="row">
+    <div id="page-title" class="col-md-12">
+        <h1><i class="fa fa-pencil-square-o"></i>&nbsp; Edit Profile</h1>
+    </div>
+    </div>
+    <!-- end: Page Title -->
+
+    <!--start: Wrapper-->
+    <div id="wrapper" class="row">
+        <div class='notifications top-right'></div>
+        <!-- start: Row -->
+        <div class="form-panel">
+            <% if (locals.error && locals.error != '') { %>
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Something is not right!</strong> <%- error %>
+            </div>
+            <% } %>
+
+            <div class="posts col-md-9 col-xs-12 col-sm-12">
+                <form class="form-horizontal" id="edit-profile-form">
+                    <input type="hidden" id="oid" name="oid" value="<%- user._id %>"/>
+                    <fieldset>
+                        <!-- Text input-->
+                        <div class="control-group">
+                          <label class="control-label">Name</label>
+                          <div class="controls">
+                            <input id="name" name="name" type="text" placeholder="Name" class="form-control input-xlarge" value="<%- locals.displayName || user.displayName || "" %>" required="">
+                            <p class="help-block">Full name</p>
+                          </div>
+                        </div>
+
+                        <div class="control-group">
+                          <label class="control-label">Email</label>
+                          <div class="controls">
+                            <input id="email" name="email" type="email" placeholder="Email" class="form-control input-xlarge" value="<%- locals.email || user.emails[0] || "" %>" required="">
+                            <p class="help-block">Email</p>
+                          </div>
+                        </div>
+
+                        <% if (locals.chat_id || user.chat_id) { %>
+                        <div class="control-group">
+                          <label class="control-label">Chat Email</label>
+                          <div class="controls">
+                            <input id="chat_id" name="chat_id" type="chat_id" placeholder="Chat Email" class="form-control input-xlarge disabled" value="<%- locals.chat_id || user.chat_id || '' %>" readonly>
+                            <p class="help-block">Auto generated email for use in external IM clients. Do not use this as a primary email</p>
+                          </div>
+                        </div>
+                        <% } %>
+
+                        <!-- Textarea -->
+                        <div class="control-group">
+                          <label class="control-label">Description</label>
+                          <div class="controls">
+                            <textarea class="form-control" id="description" name="description" data-edit="summernote" data-info="true"><%- locals.description || user.description || "" %></textarea>
+                            <p class="help-block">A brief intro about you. We use this information to selectively invite users to become collaborators</p>
+                          </div>
+                        </div>
+
+                    </fieldset>
+                    <div class="row">
+                        <div class="pull-right">
+                            <button class="btn btn-lg btn-primary postdata" type="submit">Save changes</button>
+                            <button class="btn btn-link btn-lg btn-done" onclick="self.location='/user/topic'" type="button">Cancel</button>
+                        </div>
+                    </div>
+
+            </div>
+
+            <% include ../includes/thumb-sidebar.html %>
+        </form>
+        </div>
+    <!-- end: Wrapper  -->
+    </div>
+
+</div>
+<!--end: Container-->
+
+</div>
+<% include ../includes/underfooter.html %>
+<% include ../includes/submenu-script.html %>
+<script src="<%- locals.page_options.cdn_prefix %>/javascripts/custom.js" type="text/javascript"></script>
+<% include ../includes/filepicker.html %>
+<% include ../includes/editor.ejs %>
+
+<script>
+    $(function(){
+
+        // $("#edit-profile-form").validate();
+
+        $("#edit-profile-form").submit(function(event) {
+            event.preventDefault();
+
+            var data = form2js('edit-profile-form', '.', true);
+            if (window.thumblist) {
+                data['profileImage'] = (thumblist.length) ? thumblist[0] : '';
+                data['img_url'] = JSON.stringify(thumblist);
+            }
+            $.ajax({
+                url: '/profile/save',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    window.location = '/user/topic';
+                },
+                error: function (xhr, status, data) {
+                    $('.top-right').notify({
+                        type: 'danger',
+                        message: { text: xhr.responseText }
+                    }).show();
+                }
+            });
+        });
+        <% include ../includes/thumbupload.html %>
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "name": "colearnrwebapp",
+  "version": "2.4.1",
+  "authors": [
+    "CoLearnr <hello@colearnr.com>"
+  ],
+  "description": "CoLearnr web app",
+  "main": "app.js",
+  "license": "Commercial",
+  "private": true,
+  "directory": "public/vendor",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "audiojs": "*",
+    "bootstrap-sass-official": "~3.2.0",
+    "bootstrap-tour": "~0.9.0",
+    "flippy": "git://github.com/colearnr/flippy.git#0.1.4",
+    "jquery-bbq": "git://github.com/cowboy/jquery-bbq.git#~1.2.1",
+    "jquery-hashchange": "git://github.com/cowboy/jquery-hashchange",
+    "modernizr": "~2.7.1",
+    "moment": "~2.5.1",
+    "ifvisible.js": "~1.0.1",
+    "layout": "git://github.com/colearnr/layout.git#1.4.3",
+    "video.js": "~4.11.4",
+    "videojs-youtube": "git://github.com/colearnr/videojs-youtube.git#1.2.8",
+    "videojs-vimeo": "git://github.com/colearnr/videojs-vimeo.git#1.0.1",
+    "postmessage": "git://github.com/colearnr/ender-postmessage#0.1.4",
+    "bootstrap-notify": "git://github.com/colearnr/bootstrap-notify.git#0.2.1",
+    "jquery.lazyload": "~1.9.3",
+    "summernote": "git://github.com/colearnr/summernote.git#0.6.2",
+    "fontawesome": "~4.2.0",
+    "code-prettify": "git://github.com/colearnr/code-prettify.git#0.0.3",
+    "isotope": "~2.1.0",
+    "OwlCarousel2": "git://github.com/colearnr/OwlCarousel2.git#2.0.0",
+    "showdown": "~0.3.4",
+    "dropzone": "~4.0.1"
+  },
+  "resolutions": {
+    "fontawesome": "~4.2.0",
+    "video.js": "~4.11.4"
+  }
+}

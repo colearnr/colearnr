@@ -1,0 +1,61 @@
+<%
+var user_voted = false;
+if (lbit.votes && user && user._id && lbit.votes.indexOf(user._id) != -1) {
+    user_voted = true;
+}
+%>
+<div id="vote-results">
+    <table <% if (user && !user.guestMode && !user_voted) { %>style="display:none"<% } %>class="result-table">
+        <% body.choices.forEach(function (achoice, index) { %>
+        <tr>
+            <td><span class="poll-choice"><%- achoice.text || '' %></span></td>
+            <td>
+                <% var tvotes = (lbit.choice_votes && lbit.choice_votes[achoice.id] && lbit.choice_votes[achoice.id].length) ? lbit.choice_votes[achoice.id].length : 0; %>
+                <% if (tvotes) { %>
+                <table style="background-color: lightblue; width: <%- (tvotes / lbit.votes.length) * 100 %>%; text-align: right">
+                    <tr><td><span class="poll-choice"><%- tvotes %></span></td></tr>
+                </table>
+                <% } else { %>
+                <table>
+                    <tr><td>0</td></tr>
+                </table>
+                <% } %>
+            </td>
+        </tr>
+        <% }) %>
+    </table>
+</div>
+
+<% if (user && !user.guestMode && !user_voted) { %>
+<form class="form-horizontal" id="vote-form">
+    <input type="hidden" id="oid" name="oid" value="<%- lbit._id %>"></input>
+    <fieldset>
+        <% body.choices.forEach(function (achoice, index) { %>
+        <% if (achoice && achoice != "") { %>
+        <div class="control-group">
+          <div class="controls">
+            <label class="radio inline">
+              <input type="radio" id="choice" name="choice" value="<%- achoice.id %>" /><span class="poll-choice"><%- achoice.text %></span>
+            </label>
+          </div>
+          <% } %>
+          <% }) %>
+        </div>
+        <p><hr></p>
+        <div class="row">
+        <div class="col-xs-6">
+            <button id="voteBtn" class="btn btn-lg btn-primary postdata">Vote &raquo;</button>
+        </div>
+        </div>
+    </fieldset>
+</form>
+<% } %>
+<div class="votes-description">
+    <% if (user && !user.guestMode && lbit.votes && lbit.votes.length) { %>
+    <p class="vote_info"><%- lbit.votes.length %> votes so far. <% if (user_voted) { %>Thanks for voting!<% } else { %>Please cast your vote!<% } %></p>
+    <% } else if (user && user.guestMode) { %>
+    <p class="vote_info">Please login to participate in this poll!</p>
+    <% } else { %>
+    <p class="vote_info">Be the first person to vote!</p>
+    <% } %>
+</div>

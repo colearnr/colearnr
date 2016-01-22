@@ -1,0 +1,37 @@
+<div class="control-group">
+  <label class="control-label">Topics</label>
+  <div class="controls">
+    <input class="link_outlist" id="link_out" name="link_out" type="text" placeholder="Topics that link with this topic" class="input-xlarge">
+    <p class="help-block">List of topics that link with this topic. Start typing to search for topics.</p>
+  </div>
+</div>
+
+<script>
+    $().ready(function() {
+        $('.link_outlist').select2({
+            width: '100%',
+            multiple: true,
+            minimumInputLength: 3,
+            ajax: {
+                url: '/api/topic/quicksearch',
+                dataType: 'json',
+                quietMillis: 200,
+                data: function (term, page) {
+                    return {
+                        q: term,
+                        filter_edit: 1
+                    };
+                },
+                results: function (data, page) {
+                    return data;
+                }
+            },
+            formatResult: function(data, container, query) {
+                return data.text + "<span class='pull-right'>Path: <strong>" + (data.path || 'parent') + "</strong></span>";
+            }
+        });
+        <% if (locals.topic.link_out_topics) { %>
+        $('.link_outlist').select2("data", <%- topic.link_out_topics %>);
+        <% } %>
+    });
+</script>

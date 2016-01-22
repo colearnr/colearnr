@@ -1,0 +1,40 @@
+<% var topicUserRole = topic.user_role && topic.user_role[req.user._id] ? topic.user_role[req.user._id] : null %>
+<% if (constants.TOPIC_COLLAB_ROLE == topicUserRole || constants.TOPIC_ADMIN_ROLE == topicUserRole || constants.ADMIN_ROLE == topicUserRole || topic.added_by == user._id) { %>
+        <div class="control-group">
+          <label class="control-label">Collaborators</label>
+          <div class="controls">
+            <input id="collaborators" name="collaborators" type="text" value="" placeholder="Collaborators for this topic" class="form-control input-xlarge">
+            <p class="help-block">Begin typing their email address. New users will be automatically invited for collaboration</p>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Privacy Mode</label>
+          <div class="controls">
+            <label class="radio inline">
+              <input type="radio" name="privacy_mode" value="private" <% if (topic.privacy_mode && topic.privacy_mode == 'private' && util.empty(topic.colearnrs) ) { %>checked="true"<% } %>>
+              <i class="fa fa-lock"></i> &nbsp;Keep this topic private
+              <p class="help-block">Owner and collaborators can view and edit as normal. No access for anyone else</p>
+            </label>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <label class="radio inline">
+              <input type="radio" name="privacy_mode" value="public" <% if (topic.privacy_mode && topic.privacy_mode == 'public') { %>checked="true"<% } %>>
+              <i class="fa fa-globe"></i> &nbsp;Make this topic visible for everyone
+              <p class="help-block">Owner and collaborators can view and edit as normal. Others can just view</p>
+            </label>
+          </div>
+        </div>
+        <div class="control-group" id="selected_colearnrs">
+          <div class="controls">
+            <label class="radio inline">
+            <input type="radio" style="margin-bottom: 10px;" name="privacy_mode" value="private" <% if (topic.privacy_mode && topic.privacy_mode == 'private' && !util.empty(topic.colearnrs)) { %>checked="true"<% } %>>
+              <i class="fa fa-users"></i> &nbsp;Make this visible only for these CoLearnrs
+            </label>
+            <input id="colearnrs" name="colearnrs" type="text" value="" placeholder="CoLearnrs for this topic" class="form-control input-xlarge">
+            <p class="help-block">Begin typing their email address. New users will be automatically invited for CoLearning</p>
+          </div>
+        </div>
+<% } %>

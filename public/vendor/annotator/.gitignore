@@ -1,0 +1,6 @@
+/.redo
+*.redo?.tmp
+.DS_Store
+.cake_task_cache
+*.sublime-workspace
+node_modules

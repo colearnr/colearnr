@@ -1,0 +1,196 @@
+/* Body, typography & Misc */
+
+body {
+	background: url("/images/landing/img/tiny-grid.png") repeat;
+	color: #241B29;
+}
+
+h1, h2, h3, h4, h5 {
+	font-family: 'Permanent Marker', cursive;
+	color: #241B29;
+}
+
+hr {
+	border-color: #AAA -moz-use-text-color #FFF;
+}
+
+.box-border {
+	background-color: transparent;
+	border: 3px solid black;
+	border-image: url("/images/landing/img/border3.png") 8 4 round;
+	-o-border-image: url("/images/landing/img/border3.png") 8 4 round;
+	-webkit-border-image: url("/images/landing/img/border3.png") 8 4 round;
+	-moz-border-image: url("/images/landing/img/border3.png") 8 4 round;
+	padding: 20px;
+    margin-bottom: 30px;
+}
+
+a {
+	text-decoration: none;
+	color: #ED1A4B;
+}
+
+a:hover {
+	color: #ED1A4B;
+}
+
+/* Highlighting */
+
+::-moz-selection{ background: transparent; }
+::selection { background: transparent; }
+
+p::-moz-selection,a::-moz-selection, h1::-moz-selection, h2::-moz-selection, h3::-moz-selection, h4::-moz-selection, h5::-moz-selection, blockquote::-moz-selection, small::-moz-selection, label::-moz-selection { background: #ED1A4B; color: #fff; }
+
+p::selection, h1::selection, h2::selection, h3::selection, h4::selection, h5::selection, blockquote::selection, small::selection, label::selection { background: #ED1A4B; color: #fff; }
+
+/* Signup Form */
+
+div.top-padding {
+	height: 20px;
+}
+
+div.signup {
+	text-align: right;
+	-webkit-box-shadow: 7px -7px 5px rgba(50, 50, 50, 0.25);
+	-moz-box-shadow: 7px -7px 5px rgba(50, 50, 50, 0.25);
+	box-shadow: 7px -7px 5px rgba(50, 50, 50, 0.25);
+}
+
+a.magenta.btn {
+	background-color: #ED166A;
+	background-image: -moz-linear-gradient(top, #FF3869, #CF002D);
+	background-image: -ms-linear-gradient(top, #FF3869, #CF002D);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FF3869), to(#CF002D));
+	background-image: -webkit-linear-gradient(top, #FF3869, #CF002D);
+	background-image: -o-linear-gradient(top, #FF3869, #CF002D);
+	background-image: linear-gradient(top, #FF3869, #CF002D);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF3869', endColorstr='#CF002D', GradientType=0);
+	border-color: #ED1A4B #CF002D #CF002D #ED1A4B;
+	border-color: rgba(0, 0, 0, 0.25) rgba(0, 0, 0, 0.35) rgba(0, 0, 0, 0.35) rgba(0, 0, 0, 0.25);
+	color: #FFFFFF;
+    text-shadow: 0 -1px 0 #CF002D;
+}
+
+a.magenta.btn:hover {
+	background-image: -moz-linear-gradient(center top , #FF3869, #CF002D);
+}
+
+.input-prepend .add-on, .input-append .add-on, .input-prepend .btn, .input-append .btn {
+	margin-left: -4px;
+}
+
+/* Arrows */
+
+div.arrow {
+	text-align: center;
+}
+
+.arrow.top div.arrow-top-padding {
+	height: 125px;
+}
+
+/* Hero Title */
+
+div.hero-title {
+	font-size: 60px;
+	text-align: center;
+}
+
+/* Social Media */
+
+div.social {
+	text-align: center;
+	-webkit-box-shadow: -7px 7px 5px rgba(50, 50, 50, 0.25);
+	-moz-box-shadow: -7px 7px 5px rgba(50, 50, 50, 0.25);
+	box-shadow: -7px 7px 5px rgba(50, 50, 50, 0.25);
+}
+
+/* Social Media */
+.social-icon i {
+	overflow: hidden;
+	height: 24px;
+	width: 24px;
+	display: inline-block;
+}
+
+.social-icon i:hover {
+	background-position: 0 24px;
+}
+
+a.googleplus i {
+	background-image: url("/images/landing/img/tablet-social-googleplus.png");
+}
+
+a.facebook i {
+	background-image: url("/images/landing/img/tablet-social-facebook.png");
+}
+
+a.linkedin i {
+	background-image: url("/images/landing/img/tablet-social-linkedin.png");
+}
+
+a.twitter i {
+	background-image: url("/images/landing/img/tablet-social-twitter.png");
+}
+
+a.skype i {
+	background-image: url("/images/landing/img/tablet-social-skype.png");
+}
+
+a.pinterest i {
+	background-image: url("/images/landing/img/tablet-social-pinterest.png");
+}
+
+@media (min-width: 980px) {
+
+	.social-icon i {
+		overflow: hidden;
+		height: 48px;
+		width: 48px;
+		display: inline-block;
+	}
+
+	.social-icon i:hover {
+		background-position: 0 48px;
+	}
+
+	a.googleplus i {
+		background-image: url("/images/landing/img/social-googleplus.png");
+	}
+
+	a.facebook i {
+		background-image: url("/images/landing/img/social-facebook.png");
+	}
+
+	a.linkedin i {
+		background-image: url("/images/landing/img/social-linkedin.png");
+	}
+
+	a.twitter i {
+		background-image: url("/images/landing/img/social-twitter.png");
+	}
+
+	a.skype i {
+		background-image: url("/images/landing/img/social-skype.png");
+	}
+
+	a.pinterest i {
+		background-image: url("/images/landing/img/social-pinterest.png");
+	}
+
+}
+/* Company Info */
+
+div.company-info {
+	-webkit-box-shadow: 7px 7px 5px rgba(50, 50, 50, 0.25);
+	-moz-box-shadow: 7px 7px 5px rgba(50, 50, 50, 0.25);
+	box-shadow: 7px 7px 5px rgba(50, 50, 50, 0.25);
+}
+
+blockquote.pull-right {
+	border-right-color: #AAA ;
+}
+
+.sqrt {
+	padding-top: 20px;
+}

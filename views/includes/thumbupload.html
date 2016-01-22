@@ -1,0 +1,98 @@
+<%
+var collection = locals.lbit || locals.topic || locals.user;
+var collectionName = 'user';
+if (locals.lbit && locals.lbit._id) {
+    collectionName = 'lbit';
+} else if (locals.topic) {
+    collectionName = 'topic';
+}
+%>
+
+<% var profileImageMode = !locals.lbit && !locals.topic && !!locals.user %>
+function handleSelectThumb(turl) {
+    if (window.thumblist) {
+        var tmplist = new Array();
+        tmplist[0] = turl;
+        thumblist.forEach(function (aurl) {
+            if (aurl != tmplist[0]) {
+                tmplist.push(aurl);
+            }
+        });
+        thumblist = tmplist;
+    }
+}
+
+$(function() {
+    if (typeof window.Dropzone !== undefined) {
+        <%
+        var collectionOid = collection._id;
+        %>
+        var uploadUrl = '<% if (locals.profileImageMode) { %>/user/image/<%- user._id %><% } else { %>/<%- collectionName %>/<%- collectionOid %>/media_upload<% } %>';
+        var lbitDropzone = new Dropzone(document.body, {
+            url: uploadUrl,
+            maxFilesize: 15,
+            paramName: 'file',
+            uploadMultiple: false,
+            clickable: '#thumbUpload',
+            previewsContainer: "#previews",
+            acceptedFiles: '.jpg,.png,.gif,.jpeg,.webp',
+            dictResponseError: "There is a problem adding this learnbit",
+            dictDefaultMessage: '<p class="help-block">Drop images here or click to upload</p>'
+        });
+        lbitDropzone.on("sending", function(e, xhr, form) {
+            xhr.setRequestHeader('cl-sessionid', window.sessionid || '');
+            xhr.setRequestHeader('cl-upload-topic', '<% if (locals.topic && locals.topic._id) { %><%- topic._id %><% } %>');
+        });
+
+        lbitDropzone.on("drop", function(e, f) {
+            var handles = [];
+            if (e.dataTransfer.types) {
+                [].forEach.call(e.dataTransfer.types, function (type) {
+                    handles.push(entities(e.dataTransfer.getData(type)));
+                });
+            }
+
+            var val = e.dataTransfer.getData('Text');
+            if (!val && handles.length) {
+                val = handles[0];
+            }
+            if (!val || val.substring(0, 6) == "about:" || val.substring(0, 11) == "javascript:") {
+                return false;
+            }
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            return false;
+        });
+
+        lbitDropzone.on("success", function(f, data) {
+            setTimeout(function() {
+                lbitDropzone.removeFile(f);
+              }, 500);
+            var iurl = '/media/' + data.file._id;
+            $('#chosen_thumb_url').val(iurl);
+            var curr_chosen = $('.chosen');
+            curr_chosen.removeClass('chosen');
+            var new_thumb_node = $('<a href="#" class="selectThumb"><img src="' + iurl + '" class="img-polaroid chosen" width="100px" height="auto" /></a>');
+            $('#new_thumb_placeholder').append(new_thumb_node);
+            if (window.thumblist) {
+                thumblist.push(iurl);
+            }
+            handleSelectThumb(iurl);
+        });
+
+        lbitDropzone.on("error", function(f, errorMessage) {
+
+        });
+    }
+});
+
+$(document).on("click", "a.selectThumb", function (e) {
+    e.preventDefault();
+    if (e && e.target) {
+        var curr_chosen = $('.chosen').removeClass('chosen');
+        var ele = $(e.target);
+        ele.addClass('chosen');
+        handleSelectThumb(ele.attr('src'));
+    }
+});

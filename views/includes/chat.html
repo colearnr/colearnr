@@ -1,0 +1,42 @@
+<% if (!locals.isMobile && req.user && !req.user.guestMode && config.chat_enabled) { %>
+<link rel="stylesheet" type="text/css" media="screen" href="<%- page_options.cdn_prefix %>/vendor/converse/css/converse.min.css">
+<script src="<%- page_options.cdn_prefix %>/vendor/converse/builds/converse-no-locales-no-otr.min.js"></script>
+<script defer>
+    require(['converse'], function (converse) {
+        function initConverse(converse) {
+            converse.initialize({
+                bosh_service_url: '/chat/http-bind',
+                i18n: locales['en'],
+                jid: '<%- req.user.chat_id || req.user.emails[0] %>',
+                api_key: 'KEY:<%- req.user.api_key %>',
+                sid: null,
+                rid: null,
+                prebind: true,
+                keepalive: true,
+                message_carbons: true,
+                play_sounds: true,
+                roster_groups: false,
+                show_controlbox_by_default: false,
+                allow_otr: false,
+                auto_list_rooms: false,
+                forward_messages: false,
+                auto_subscribe: true,
+                domain_placeholder: '<%- config.chat_domain || "talk.colearnr.com" %>',
+                fullname: "<%- req.user.displayName || '' %>",
+                hide_muc_server: true,
+                allow_muc: false,
+                allow_registration: false,
+                allow_logout: false,
+                allow_dragresize: true,
+                auto_reconnect: true,
+                default_box_height: 400,
+                expose_rid_and_sid: false,
+                animate: false,
+                xhr_user_search: true,
+                xhr_user_search_url: '/api/chat/search'
+            });
+        }
+        initConverse(converse);
+    });
+</script>
+<% } %>

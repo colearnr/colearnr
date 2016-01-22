@@ -1,0 +1,14 @@
+<div id='toolbar1' class='flexpaper_toolbar flexpaper_toolbarios'>
+    <img data-minscreenwidth="600" src='/javascripts/flexpaper/images/touch/print.png' class='flexpaper_bttnPortrait flexpaper_tbbutton_large flexpaper_print' style='margin-left:5px;' onclick='$FlexPaper("documentViewer").printPaper();'/>
+    <img data-minscreenwidth="600" src='/javascripts/flexpaper/images/touch/document.png' class='flexpaper_tbbutton_large flexpaper_tbbutton_viewmode  flexpaper_singlepage' style='margin-left:15px;' onclick='$FlexPaper("documentViewer").switchMode("Portrait")'>
+    <img data-minscreenwidth="600" src='/javascripts/flexpaper/images/touch/thumbs.png' style='margin-left:-1px;' class='flexpaper_bttnTileMode flexpaper_tbbutton_large flexpaper_tbbutton_viewmode flexpaper_thumbview' onclick='$FlexPaper("documentViewer").switchMode("Tile")' >
+    <img src='/javascripts/flexpaper/images/touch/zoomin.png' class='flexpaper_bttnZoomIn flexpaper_tbbutton_large' style='margin-left:15px;' onclick='$FlexPaper("documentViewer").ZoomIn()'/>
+    <img src='/javascripts/flexpaper/images/touch/zoomout.png' class='flexpaper_bttnZoomOut flexpaper_tbbutton_large' style='margin-left:-1px;' onclick='$FlexPaper("documentViewer").ZoomOut()' />
+    <img src='/javascripts/flexpaper/images/touch/fullscreen.png' class='flexpaper_bttnFullScreen flexpaper_tbbutton_large' style='margin-left:-1px;' onclick='jQuery("#documentViewer").showFullScreen();'/>
+    <img src='/javascripts/flexpaper/images/touch/prev.png' class='flexpaper_bttnPrevPage flexpaper_tbbutton_large flexpaper_previous' style='margin-left:15px;' onclick='$FlexPaper("documentViewer").prevPage()'/>
+    <input type='text' class='flexpaper_txtPageNumber flexpaper_tbtextinput_large flexpaper_currPageNum' value='1' style='width:80px;text-align:right;' />
+    <div class='flexpaper_lblTotalPages flexpaper_tblabel_large flexpaper_numberOfPages'> / </div>
+    <img src='/javascripts/flexpaper/images/touch/next.png'  class='flexpaper_bttnPrevNext flexpaper_tbbutton_large flexpaper_next' onclick='$FlexPaper("documentViewer").nextPage()'/>
+    <input type='text' class='flexpaper_txtSearchText flexpaper_tbtextinput_large' style='margin-left:15px;width:130px;' />
+    <img src='/javascripts/flexpaper/images/touch/search.png' class='flexpaper_bttnTextSearch flexpaper_find flexpaper_tbbutton_large' style='' onclick='$FlexPaper("documentViewer").searchText(jQuery(this).parent().find(".flexpaper_txtSearchText").val());' />
+</div>

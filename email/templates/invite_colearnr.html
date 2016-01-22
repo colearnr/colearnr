@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <!-- Facebook sharing information tags -->
+        <meta property="og:title" content="<%= invited_by.displayName %> invites you for CoLearning!" />
+
+        <title><%= invited_by.displayName %> invites you for CoLearning</title>
+        <% include includes/styles.html %>
+    </head>
+    <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+        <center>
+            <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable">
+                <tr>
+                    <td align="center" valign="top" style="padding-top:20px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateContainer">
+                            <% include includes/header.html %>
+                            <tr>
+                                <td align="center" valign="top">
+                                    <!-- // Begin Template Body \\ -->
+                                    <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateBody">
+                                        <tr>
+                                            <td valign="top">
+
+                                                <!-- // Begin Module: Standard Content \\ -->
+                                                <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                                                    <tr>
+                                                        <td valign="top" class="bodyContent">
+                                                            <div mc:edit="std_content00">
+                                                                <h1 class="h1">You are now a CoLearnr</h1>
+                                                                <h4 class="h4"><%= invited_by.displayName %> has added you as a CoLearnr for the topic <a href="<%= base_url %>/topic/<%= topic._id %>"><%= topic.name %></a></h4>
+                                                                <p>As a CoLearnr, you will be able view all the resources in this topic.</p>
+                                                                <br />
+                                                                See you soon.
+                                                                <br />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="center" valign="top" style="padding-top:0;">
+                                                            <table border="0" cellpadding="15" cellspacing="0" class="templateButton">
+                                                                <tr>
+                                                                    <td valign="middle" class="templateButtonContent">
+                                                                        <div mc:edit="std_content01">
+                                                                            <a href="<%= base_url %>/topic/<%= topic._id %>" target="_blank">Take me to <%= topic.name %></a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                                <!-- // End Module: Standard Content \\ -->
+
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <!-- // End Template Body \\ -->
+                                </td>
+                            </tr>
+                            <% include includes/footer.html %>
+                        </table>
+                        <br />
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </body>
+</html>

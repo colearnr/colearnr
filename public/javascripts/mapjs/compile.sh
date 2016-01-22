@@ -1,0 +1,2 @@
+cat jquery.mousewheel-3.1.3.js jquery.hotkeys.js jquery.hammer.js underscore-1.4.4.js kinetic-v4.5.4.js color-0.4.1.js mapjs.js observable.js url-helper.js content.js layout.js map-model.js drag-and-drop.js kinetic.connector.js kinetic.link.js kinetic.clip.js kinetic.idea.js kinetic-mediator.js map-toolbar-widget.js png-exporter.js map-widget.js link-edit-widget.js image-drop-widget.js > mapjs-compiled.js
+uglifyjs -o mapjs.min.js mapjs-compiled.js

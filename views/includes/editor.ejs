@@ -1,0 +1,157 @@
+<script src="<%- locals.page_options.cdn_prefix %>/javascripts/summernote/summernote.all.js?<%- locals.page_options.version %>"></script>
+<link rel="stylesheet" type="text/css" href="/vendor/summernote/dist/summernote.css?<%- locals.page_options.version %>">
+<link rel="stylesheet" type="text/css" href="/stylesheets/summernote/summernote-overrides.css?<%- locals.page_options.version %>">
+
+<% include filepicker.html %>
+
+<script type="text/javascript" defer>
+
+  var summernoteEditorInit = function(){
+    var $summernoteEditor;
+    $summernoteEditor = $("[data-edit=summernote]");
+    if ($summernoteEditor.length) {
+      $summernoteEditor.each(function(i, el) {
+        var $el = $(el);
+        var embedSize = 'large';
+        if ($el.data("minimal")) {
+          embedSize = 'small';
+        } else if ($el.data("info")) {
+          embedSize = 'medium';
+        }
+        var height = $el.data('height') || 500;
+        var autoSaveUrl = $el.data('autosaveurl');
+        var options = {
+          height: height,
+          minHeight: 100,
+          focus: $el.data('autofocus') || false,
+          disableLinkTarget: true,
+          disableLinkEmbed: false,
+          plugins: {
+            video: {
+              uploadServerPrefix: '<%- config.upload_server_prefix %>',
+              storatePath: '<%- config.cdn_contrib_prefix || 'colearnr' %>/learnbits/<%- user._id %>/',
+              urlPrefix: '<%- locals.host_url %>/embed?topicId=<%- locals.topicId || '' %>',
+              embedSize: embedSize
+            }
+          },
+          onChange: function(html, $editable) {
+            if (autoSaveUrl) {
+              $.post(autoSaveUrl, {data: html}).done(function(data) {
+              });
+            }
+          },
+          onCreateLink: function (url, $editable, linkInfo, options) {
+            if (linkInfo && !linkInfo.embedLink) {
+                return false;
+            }
+            var lbit_url_prefix = "lbit=",
+              base_url = "<%- config.base_url %>",
+              CL_COM = "<%- constants.COLEARNR_COM %>",
+              media_regex = [/youtube\.com\/watch/i, /youtu\.be/i, /vimeo\.com/i, /\.m3u8/i, /\.f4m/i, /rtmp:\/\//i, /\.mp3/i, /\.m4a/i, /\.pdf/i, /\.swf/i],
+              dom = $.summernote.core.dom,
+              $editor = $(".note-editor"),
+              layoutInfo = dom.buildLayoutInfo($editor);
+            if (url.indexOf(lbit_url_prefix) != -1) {
+              var lindex = url.indexOf(lbit_url_prefix);
+              var lbit_id = url.substring(lindex + 5);
+              if (lbit_id) {
+                lbit_id = lbit_id.split('/')[0];
+                var iurl = "<%- locals.host_url %>/lbit/embed/" + lbit_id + "?topicId=<%- locals.topicId || '' %>&embedSize=" + embedSize;
+                $.summernote.pluginEvents['createVideoNode'](layoutInfo, iurl, embedSize);
+                return true;
+              }
+            } else if (url.indexOf(base_url) != -1 || url.indexOf(CL_COM) != -1) {
+                var iurl = "<%- locals.host_url %>/embed?topicId=<%- locals.topicId || '' %>&url=" + encodeURIComponent(url) + "&embedSize=" + embedSize;
+                $.summernote.pluginEvents['createIFrameNode'](layoutInfo, iurl, embedSize);
+                return true;
+            } else {
+              var handled = false;
+              media_regex.forEach(function(aregex) {
+                if (url.match(aregex)) {
+                  var iurl = "<%- locals.host_url %>/embed?topicId=<%- locals.topicId || '' %>&url=" + encodeURIComponent(url) + "&embedSize=" + embedSize;
+                  $.summernote.pluginEvents['createVideoNode'](layoutInfo, iurl, embedSize);
+                  handled = true;
+                  console.log('CAll create video node');
+                  return true;
+                }
+              });
+              if (!handled) {
+                $.summernote.pluginEvents['createSimpleLinkNode'](layoutInfo, iurl, linkInfo);
+                return true;
+              } else {
+                return handled;
+              }
+            }
+          }
+        };
+
+        if ($el.data("minimal")) {
+          var minimal = { toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['layout', ['ul', 'ol']]
+          ]};
+          options.height = 100;
+          options.focus = true;
+          options = $.extend(options, minimal);
+        } else if ($el.data("chat")) {
+          var chat = { toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['layout', ['ul', 'ol']],
+            ['insert', ['embed', 'addTag', 'codeview']]
+          ]};
+          options.height = 100;
+          options.focus = true;
+          options = $.extend(options, chat);
+        } else if ($el.data("info")) {
+          var infoOpts = { toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['layout', ['ul', 'ol']],
+            ['insert', ['embed', 'addTag', 'hr']],
+            ['misc', ['undo', 'redo', 'codeview']]
+          ]};
+          options.height = 200;
+          options.focus = true;
+          options = $.extend(options, infoOpts);
+        } else {
+          var miscToolbar = ['undo', 'redo', 'codeview'];
+          if ($el.data("fullscreen") != "no") {
+            miscToolbar.push('fullscreen');
+          }
+          var customToolbar = { toolbar: [
+              ['style', ['style']],
+              ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'strikethrough', 'clear']],
+              ['fontname', ['fontname']],
+              ['color', ['color']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['table', ['table']],
+              ['insert', ['embed', 'addTag', 'hr']],
+              ['misc', miscToolbar],
+            ]};
+          options = $.extend(options, customToolbar);
+        }
+        $el.summernote(options);
+
+        // this is messy, but necessary
+        $(document).on("mousedown", ".note-resizebar", function(){
+          $(this).on("mousemove", function(){
+            if ($('.topic_lbits').length){
+              $('.topic_lbits').isotope();
+            }
+          })
+        }).on("mouseup", function(){
+          if ($('.topic_lbits').length){
+            $('.topic_lbits').isotope();
+          }
+        });
+
+      });
+    }
+  }
+
+
+  $(document).ready(function() {
+    summernoteEditorInit();
+  });
+
+</script>

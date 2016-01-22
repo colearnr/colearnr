@@ -1,0 +1,20 @@
+<%
+var lbitDescription = lbit.description;
+var sameTopic = false;
+if (locals.topicObj && topicObj._id && topicToUse && topicToUse._id) {
+    sameTopic = (''+locals.topicObj._id == ''+topicToUse._id);
+}
+
+if (lbit.highlight && lbit.highlight.description) {
+    lbitDescription = lbit.highlight.description;
+}
+lbitDescription = util.clean_html(lbitDescription);
+%>
+<div class="description hidden-xs">
+    <div itemprop="description" class="<%- editClass %>" id="id-<%- lbit._id %>-description">
+        <% if (util.empty(lbit.description) && editAllowed) { %><span class="hidden-xs">Double click to add description ...</span><% } else { %><%- lbitDescription || '&nbsp;' %><% } %>
+    </div>
+</div>
+<div class="lbit-order-display <% if (!sameTopic || !lbit.order) { %>hide<% } %>">
+    <span id="id-display-<%- lbit._id %>-order"><%- lbit.order || "" %></span>
+</div>

@@ -1,0 +1,55 @@
+<% var collection = locals.lbit || locals.topic || locals.user %>
+<% var profileImageMode = !locals.lbit && !locals.topic && !!locals.user %>
+<script>
+var thumblist = <% if (collection.img_url) { %>JSON.parse('<%- util.stringify(collection.img_url) %>')<% } else { %>new Array()<% } %>;
+</script>
+
+<div class="sidebar col-md-3 hidden-xs hidden-sm">
+    <div class="widget first">
+        <% if (profileImageMode) { %>
+        <h2>Change photo</h2>
+        <% } else { %>
+        <h2>Advanced options</h2>
+        <div class="title"><h3>Thumbnails</h3></div>
+        <% } %>
+        <div class="flex-images">
+            <% if (collection['img_url'] && collection['img_url'].length) { %>
+            <% var i = 0 %>
+            <% util.parseJson(collection['img_url']).forEach( function (aurl) { %>
+            <a href="#" class="selectThumb"><img class="img-polaroid <% if (i == 0) { %>chosen<% } %>" width="100px" height="auto" src="<%- aurl %>" title="Choose as thumbnail for <%- collection.name || collection.title || '' %>"></a>
+            <% i++ %>
+            <% }) %>
+            <% } %>
+            <span id="new_thumb_placeholder"></span>
+            <div id="thumbUpload"><img width="100px" height="auto" src="<%- page_options.cdn_prefix %>/images/add-thumbnail.png" title="Upload new thumbnail" /></div>
+            <p class="help-block">Drag drop or click the image to upload your <% if (profileImageMode) { %>photo<% } else { %>thumbnail<% } %></p>
+        </div>
+        <div id="previews" class="dropzone-previews"></div>
+    </div>
+
+    <% if (locals.topic && !locals.newlbit) { %>
+    <div class="widget">
+        <h3>Still drafting?</h3>
+        <div class="control-group">
+          <div class="controls">
+            <label class="checkbox inline">
+              <input type="checkbox" id="draft_mode" name="draft_mode" value="true" <% if (collection.draft_mode && collection.draft_mode === true) { %>checked="true"<% } %>>
+              Do not publish this yet
+            </label>
+            <p class="help-block">Check to make this a draft. Drafts can be accessed only by the owner and collaborators</p>
+          </div>
+        </div>
+    </div>
+    <% } %>
+
+    <% if (collection.related && collection.related.length) { %>
+    <div class="widget">
+        <h3>Related Links</h3>
+        <ul class="square">
+            <% collection.related.forEach (function (entry) { %>
+            <li><a href="<%- entry.url %>?iframe=true&width=90%&height=90%" title="<%- entry.title %>" rel="prettyPhoto"><%- entry.title %></a></li>
+            <% }) %>
+        </ul>
+    </div>
+    <% } %>
+</div>

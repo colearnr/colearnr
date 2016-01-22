@@ -1,0 +1,98 @@
+<% if (locals.topicObj) { %>
+<h4>Current collborators <span class="collab_count" data-count="<% if (locals.topicObj.collaborators && locals.topicObj.collaborators.length) { %><%- topicObj.collaborators.length || 0 %><% } %>"><% if (locals.topicObj.collaborators && locals.topicObj.collaborators.length) { %> (<%- topicObj.collaborators.length %>)<% } else { %> (None)<% } %></span></h4>
+<div class="collab-wrapper row">
+<table>
+    <tbody class="collab-user-row-body">
+        <% if (locals.topicObj.collaborators && locals.topicObj.collaborators.length) { %>
+            <% topicObj.collaborators.forEach(function (acollab) { %>
+                <tr class="row collab-user-row" id="crow-<%- acollab._id %>">
+                    <td class="col-md-1 col-sm-1 col-xs-1"><img src="<%- acollab.profileImage || '' %>" width="40px" height="40px" class="img-circle" title="<%- acollab.displayName || 'New CoLearnr' %>" /></td>
+                    <td class="col-md-10"><% if (user._id == acollab._id ) { %>Me<% } else { %><%- acollab.displayName || 'New CoLearnr' %><% } %> (<%- acollab.emails[0] %>)</td>
+                    <td class="col-md-1"><a href="#" title="Remove" onclick="collabRemove('<%- acollab._id %>'); return false;"><i class="fa fa-times-circle collab-remove" /></a></td>
+                </tr>
+            <% }) %>
+        <% } %>
+    </tbody>
+</table>
+</div>
+<h4>Invite new</h4>
+<div class="inv_collab row">
+    <form class="form-horizontal" id="add-collab-form">
+    <fieldset class="col-md-12 col-sm-12 col-xs-12">
+        <div class="control-group">
+            <input id="collaborators" tabindex="1" name="collaborators" type="text" value="" placeholder="Collaborators for this topic" class="form-control input-xlarge">
+            <p class="help-block">Begin typing their email address. New users will be automatically invited for collaboration</p>
+        </div>
+    </fieldset>
+    </form>
+</div>
+<script>
+    var removedList = {};
+    var addedList = {};
+    var ucache = {};
+    $("#collaborators").tagit({
+        autocomplete: {delay: 0, minLength: 2,
+            source: "/api/user/quicksearch",
+            minLength: 2,
+            response: function( event, ui ) {
+                if (ui && ui.content && ui.content.length) {
+                    ui.content.forEach(function (acontent) {
+                        if (acontent && acontent.id) {
+                            ucache[acontent.value] = acontent;
+                        }
+                    });
+                }
+            }
+        },
+        afterTagAdded: function(event, ui) {
+            var userObj = ucache[ui.tagLabel];
+            if (userObj) {
+                if (!$('#crow-' + userObj.id).length || $('#crow-' + userObj.id).is(':hidden')) {
+                    var newRowHtml = '<tr class="row collab-user-row" id="crow-' + userObj.id + '"><td class="col-md-1 col-sm-1 col-xs-1"><img src="' + userObj.profileImage + '" width="40px" height="40px" class="img-circle" title="' + userObj.name + '" /></td><td class="col-md-10 col-sm-10 col-xs-10">' + userObj.name +  ' (' + userObj.value + ') </td><td class="col-md-1"><a href="#" title="Remove" onclick="collabRemove(' + '\'' + userObj.id + '\'' + '); return false;"><i class="fa fa-times-circle collab-remove" /></a></td></tr>';
+                    $('.collab-user-row-body').append(newRowHtml);
+                    var curr_count = parseInt($('.collab_count').data('count'), 10);
+                    if (isNaN(curr_count)) {
+                        curr_count = 0;
+                    }
+                    curr_count = curr_count + 1;
+                    $('.collab_count').data('count', curr_count);
+                    $('.collab_count').text(" (" + curr_count + ")");
+                    $("#collaborators").tagit("removeTagByLabel", ui.tagLabel);
+                    addedList[userObj.id] = null;
+                    delete removedList[userObj.id];
+                } else {
+                    $("#collaborators").tagit("removeTagByLabel", ui.tagLabel);
+                }
+            }
+        }
+    });
+    function collabRemove(id) {
+        removedList[id] = null;
+        delete addedList[id];
+        $('#crow-'+id).fadeOut();
+        var curr_count = parseInt($('.collab_count').data('count'), 10);
+        if (isNaN(curr_count)) {
+            curr_count = 0;
+        }
+        curr_count = curr_count - 1;
+        $('.collab_count').data('count', curr_count);
+        $('.collab_count').text(" (" + curr_count + ")");
+    }
+
+    $(document).on("click", "#invite-collab-confirm", function () {
+        var data = JSON.stringify({added_collab: addedList, removed_collab: removedList, new_users: $('#collaborators').val()});
+        $.ajax({
+            url: '/topic/users/<%- topicObj._id %>',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: data,
+            success: function (response) {
+            },
+            error: function (xhr, status, data) {
+
+            }
+        });
+    });    
+</script>
+<% } %>

@@ -1,0 +1,24 @@
+<script type="text/javascript">
+    jQuery('#documentViewer').bind('onCursorModeChanged',function(e,cursor){
+        jQuery(".flexpaper_tbbutton_cursormode_selected").removeClass("flexpaper_tbbutton_cursormode_selected");
+
+        if(cursor == "StrikeoutCursor"){
+            jQuery(".flexpaper_bttnStrikeout").addClass("flexpaper_tbbutton_cursormode_selected");
+        }else if(cursor == "AnnotationsCursor"){
+            $(".flexpaper_bttnHighlight").addClass("flexpaper_tbbutton_cursormode_selected");
+        }else if(cursor == "NoteCursor"){
+            jQuery(".flexpaper_bttnComment").addClass("flexpaper_tbbutton_cursormode_selected");
+        }else if(cursor == "DrawCursor"){
+            jQuery(".flexpaper_bttnDraw").addClass("flexpaper_tbbutton_cursormode_selected");
+        }
+    });
+</script>
+
+<div id="annotationsToolbar" class="flexpaper_toolbarstd_bottom flexpaper_bottomToolbar">
+    <div data-autocompactwidth="true" class="flexpaper_bttnHighlight flexpaper_tblabelbutton" style="background-image:url(/javascripts/flexpaper/images/annotations/pencil.png);width:70px;" onclick="$FlexPaper('documentViewer').setCurrentCursor('AnnotationsCursor',event.clientX)">Highlight</div>
+    <div data-autocompactwidth="true" class="flexpaper_bttnComment flexpaper_tblabelbutton" style="background-image:url(/javascripts/flexpaper/images/annotations/icon_note.png);width:80px;" onclick="$FlexPaper('documentViewer').setCurrentCursor('NoteCursor',event.clientX)">Create Note</div>
+    <div data-autocompactwidth="true" class="flexpaper_bttnStrikeout flexpaper_tblabelbutton" style="background-image:url(/javascripts/flexpaper/images/annotations/icon_strikeout.png);width:70px;padding-left:23px;" onclick="$FlexPaper('documentViewer').setCurrentCursor('StrikeoutCursor',event.clientX)">Strikeout</div>
+    <div data-autocompactwidth="true" class="flexpaper_bttnDraw flexpaper_tblabelbutton" style="background-image:url(/javascripts/flexpaper/images/annotations/drawIcon.png);width:60px;padding-left:23px;" onclick="$FlexPaper('documentViewer').setCurrentCursor('DrawCursor',event.clientX)">Draw</div>
+    <div data-autocompactwidth="true" class="flexpaper_bttnDelete flexpaper_tblabelbutton" style="background-image:url(/javascripts/flexpaper/images/annotations/deleteIcon.png);width:70px;padding-left:23px;" onclick="$FlexPaper('documentViewer').removeSelectedMark()">Delete</div>
+    <div class="flexpaper_tbtextbutton_pressed flexpaper_bttnShowHide flexpaper_tblabelbutton" style="background-image:url(/javascripts/flexpaper/images/annotations/icon-eye-gray.png);width:80px;padding-left:30px;" onclick="if($FlexPaper('documentViewer').setAnnotationsVisible()){jQuery('.flexpaper_bttnShowHide').addClass('flexpaper_tbtextbutton_pressed');}else{jQuery('.flexpaper_bttnShowHide').removeClass('flexpaper_tbtextbutton_pressed')}">Annotations</div>
+</div>

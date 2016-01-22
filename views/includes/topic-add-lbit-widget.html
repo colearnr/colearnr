@@ -1,0 +1,37 @@
+<div class="topic_lbits_wrapper dropzone">
+    <div class="container" style="padding-left:0px;padding-right:0px;">
+        <div class="row">
+            <div id="previews" class="dropzone-previews"></div>
+        </div>
+    </div>
+<div class="container topic_lbits" style="padding-left:0px;padding-right:0px;">
+<div class="title section-title">
+    <h3><a class="section-link" href="#add" onclick="javascript.void(0);">Add to <span class="active-topic-name"><%- topicObj.name %></span></a></h3>
+</div>
+<span id="newlbit_item" style="display:none"></span>
+<div class="col-md-3 col-xs-12 col-sm-6 item newlbit" id="<%- topicObj.id %>|<%- topicObj._id %>" data-id="<%- topicObj.id %>|<%- topicObj._id %>">
+    <div class="grid-title">
+        <p><span style="font-size: 14px;">Add Files or Url </span><kbd title="Shortcut key: a" class="pull-right">a</kbd></p>
+    </div>
+    <div style="padding: 10px;">
+    <div class="btn-group"><button id="new-label" class="btn btn-default dropdown-toggle" role="button" data-toggle="dropdown" data-hover="dropdown"><i class="fa fa-file-o" ></i>&nbsp; Create <span class="caret"></span></button>
+        <ul class="dropdown-menu dropdown-menu-left" role="menu" aria-labelledby="new-label">
+        <li role="presentation" class="dropdown-header">Choose type</li>
+        <li role="presentation"><a title="Create new html learnbit. Shortcut key: c" href="/lbit/new?topic_id=<%- topicObj._id %>"><i class="fa fa-book"></i> Html<kbd class="pull-right">c</kbd></a></li>
+        <li role="presentation"><a title="Create new poll. Shortcut key: p" href="/poll/new?topic_id=<%- topicObj._id %>"><i class="fa fa-tasks"></i> Poll<kbd class="pull-right">p</kbd></a></li>
+        <% if (locals.apps) { %>
+            <% for (var key in apps) { %>
+            <% var app = apps[key] %>
+            <li role="presentation"><a title="Create new <%- app.learnbitDescription %>" href="<%- constants.APP_PREFIX %>/<%- app.learnbitType %>/new?topic_id=<%- topicObj._id %>"><% if (app.textIcon) { %><i class="fa <%- app.textIcon %>"></i><% } %> <%- util.capitalise(app.learnbitDescription) %></a></li>
+            <% } %>
+        <% } %>
+    </ul>
+        <button id="fileadd" class="btn btn-primary" type="button"><i class="fa fa-cloud-upload" ></i>&nbsp; Upload</button></div>
+        <p class="apollo-seperator"> or </p><textarea class="form-control" style="width: 100%;" id="lbit_embed" cols="25" rows="5" placeholder="Copy url or html embed codes here"></textarea>
+        <div class="pull-right" style="margin: 10px 0 10px 0; font-size: 14px;">
+            <button id="lbitadd" class="btn btn-primary" type="button">Add</button>
+        </div>
+    </div>    
+</div>
+</div>    
+</div>

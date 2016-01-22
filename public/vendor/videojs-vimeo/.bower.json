@@ -1,0 +1,21 @@
+{
+  "name": "colearnr/videojs-vimeo",
+  "version": "1.0.1",
+  "main": [
+    "vjs.vimeo.js"
+  ],
+  "description": "Allows you to use Vimeo URL as source with Video.js.",
+  "dependencies": {
+    "video.js": "~4.10"
+  },
+  "homepage": "https://github.com/colearnr/videojs-vimeo",
+  "_release": "1.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.1",
+    "commit": "f0c7a12e4a49e3fe2fda7d7769c89648440f6026"
+  },
+  "_source": "git://github.com/colearnr/videojs-vimeo.git",
+  "_target": "1.0.1",
+  "_originalSource": "git://github.com/colearnr/videojs-vimeo.git"
+}

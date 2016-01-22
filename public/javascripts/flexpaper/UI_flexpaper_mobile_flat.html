@@ -1,0 +1,14 @@
+<div id='toolbar1' class='flexpaper_toolbar flexpaper_toolbarios'>
+    <img data-minscreenwidth="600" src='/javascripts/flexpaper/images/flat/touch/print.png' height="19" class='flexpaper_bttnPortrait flexpaper_tbbutton_large flexpaper_print' style='padding-top:6px;margin-left:5px;' onclick='$FlexPaper("documentViewer").printPaper();'/>
+    <img data-minscreenwidth="600" src='/javascripts/flexpaper/images/flat/touch/document.png' height="19" class='flexpaper_tbbutton_large flexpaper_tbbutton_viewmode  flexpaper_singlepage' style='padding-top:6px;margin-left:25px;' onclick='$FlexPaper("documentViewer").switchMode("Portrait")'>
+    <img data-minscreenwidth="600" src='/javascripts/flexpaper/images/flat/touch/thumbs.png' width="22" style='margin-left:7px;padding-top:5px;' class='flexpaper_bttnTileMode flexpaper_tbbutton_large flexpaper_tbbutton_viewmode flexpaper_thumbview' onclick='$FlexPaper("documentViewer").switchMode("Tile")' >
+    <img src='/javascripts/flexpaper/images/flat/touch/zoomin.png' width="20" class='flexpaper_bttnZoomIn flexpaper_tbbutton_large' style='padding-top:5px;margin-left:25px;' onclick='$FlexPaper("documentViewer").ZoomIn()'/>
+    <img src='/javascripts/flexpaper/images/flat/touch/zoomout.png' width="20" class='flexpaper_bttnZoomOut flexpaper_tbbutton_large' style='padding-top:5px;' onclick='$FlexPaper("documentViewer").ZoomOut()' />
+    <img data-minscreenwidth="600" src='/javascripts/flexpaper/images/flat/touch/fullscreen.png' width="22" class='flexpaper_bttnFullScreen flexpaper_tbbutton_large' style='padding-top:5px;' onclick='jQuery("#documentViewer").showFullScreen();'/>
+    <img src='/javascripts/flexpaper/images/flat/touch/prev.png' height="20" class='flexpaper_bttnPrevPage flexpaper_tbbutton_large flexpaper_previous' style='padding-top:5px;margin-left:25px;margin-right:5px;' onclick='$FlexPaper("documentViewer").prevPage()'/>
+    <input type='text' class='flexpaper_txtPageNumber flexpaper_tbtextinput_large flexpaper_currPageNum' value='1' style='width:80px;text-align:right;' />
+    <div class='flexpaper_lblTotalPages flexpaper_tblabel_large flexpaper_numberOfPages'> / </div>
+    <img src='/javascripts/flexpaper/images/flat/touch/next.png' height="20"  style='padding-top:5px;' class='flexpaper_bttnPrevNext flexpaper_tbbutton_large flexpaper_next' onclick='$FlexPaper("documentViewer").nextPage()'/>
+    <input data-minscreenwidth="600" type='text' class='flexpaper_txtSearchText flexpaper_tbtextinput_large' style='margin-left:25px;width:130px;' />
+    <img data-minscreenwidth="600" src='/javascripts/flexpaper/images/flat/touch/search.png' width="20" class='flexpaper_bttnTextSearch flexpaper_find flexpaper_tbbutton_large' style='padding-top:5px;' onclick='$FlexPaper("documentViewer").searchText(jQuery(this).parent().find(".flexpaper_txtSearchText").val());' />
+</div>

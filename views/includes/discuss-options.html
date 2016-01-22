@@ -1,0 +1,34 @@
+<div class="control-group">
+  <label class="control-label">Discussion Anchor</label>
+  <div class="controls">
+    <label class="radio inline">
+      <input type="radio" name="discuss_anchor" value="default" <% if ( (topic.discuss_anchor && topic.discuss_anchor === 'default') || util.empty(topic.discuss_anchor) ) { %>checked="true"<% } %>>
+      &nbsp;Create seperate thread for each learnbit
+      <p class="help-block">Each learnbit in this topic will have its own discussion thread (default)</p>
+    </label>
+  </div>
+</div>
+<div class="control-group">
+  <div class="controls">
+    <label class="radio inline">
+      <input type="radio" name="discuss_anchor" onselect="selectAnchorUrl()" onclick="selectAnchorUrl()" value="custom" <% if (topic.discuss_anchor && topic.discuss_anchor === 'custom' && !util.empty(topic.discuss_anchor_url)) { %>checked="true"<% } %>></input>
+      &nbsp;Use this custom link
+      <input id="discuss_anchor_url" name="discuss_anchor_url" type="text" placeholder="Custom discussion link" class="form-control input-xlarge <% if (topic.discuss_anchor !== 'custom') { %>disabled<% } %>" value="<%- topic.discuss_anchor_url || '' %>"></input>
+      <p class="help-block">Paste your custom discussion link here. Use variables such as <strong>$user_id, $topic_id, $lbit_id, $app_id, $user_email</strong> to pass dynamic values</p>
+    </label>
+  </div>
+</div>
+<div class="control-group">
+  <div class="controls">
+    <label class="radio inline">
+      <input type="radio" name="discuss_anchor" value="disable" <% if (topic.discuss_anchor && topic.discuss_anchor === 'disable') { %>checked="true"<% } %>>
+      &nbsp;Disable discuss for all learnbits in this topic
+      <p class="help-block">Learnbits in this topic will not have the integrated discussion feature</p>
+    </label>
+  </div>
+</div>
+<script>
+  function selectAnchorUrl() {
+    $('#discuss_anchor_url').focus().removeClass('disabled');
+  }
+</script>

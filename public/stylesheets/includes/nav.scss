@@ -1,0 +1,406 @@
+@import "base.scss";
+
+.navbar {
+  opacity: 0.9;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.navbar-brand {
+  position: relative;
+  margin-right: 10px;
+  margin-left: 0px;
+  color: $black;
+  background-image: url("/images/logo-main.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 140px;
+  vertical-align: middle;
+  max-height: 50px;
+  &:hover {
+    color: $cl_blue;
+    text-decoration: none;
+  }
+}
+
+.glyphicon-bar {
+  margin-bottom: 3px;
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: $cl_blue !important;
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+}
+
+.nav-collapse.collapse {
+  height: auto \9  !important;
+  overflow: visible \9  !important;
+  position: relative;
+  z-index: 9999;
+}
+
+.navbar {
+  .nav-widgets {
+    float: right;
+    position: relative;
+  }
+  background: transparent !important;
+  filter: none !important;
+  border: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  padding: 0px;
+  margin: 0;
+}
+
+.nav, .navbar-inverse {
+  background: transparent !important;
+  filter: none !important;
+  border: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  padding: 0px;
+  margin: 0;
+}
+
+.navbar .nav {
+  > {
+    li > a {
+      color: $black;
+      text-shadow: 0 1px 0 $white;
+      border-top: 4px solid transparent;
+      font-size: 14px;
+      padding: 12px 20px;
+      padding: 12px 10px \9;
+      -webkit-transition: all 0.3s ease-in-out;
+      -moz-transition: all 0.3s ease-in-out;
+      -o-transition: all 0.3s ease-in-out;
+      -ms-transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
+      &:focus, &:hover {
+        color: $white;
+        background-color: $cl_blue;
+      }
+    }
+    .active > a {
+      color: $cl_blue !important;
+      text-decoration: none;
+      background-color: transparent !important;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+      &:focus {
+        color: $cl_blue !important;
+        text-decoration: none;
+        background-color: transparent !important;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+      }
+      &:hover {
+        background: transparent !important;
+        color: $cl_blue !important;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+      }
+    }
+  }
+  .active a:hover > .caret {
+    color: $white;
+    border-top-color: $white !important;
+    border-bottom-color: $white !important;
+  }
+}
+
+.open .caret {
+  color: $white;
+}
+
+.nav .open > a {
+  border-color: $cl_blue_border;
+  color: $white;
+  &:hover, &:focus {
+    border-color: $cl_blue_border;
+    color: $white;
+  }
+}
+
+.dropdown-menu li > a {
+  &:hover, &:focus {
+    color: $white;
+    background: $cl_blue !important;
+  }
+}
+
+.dropdown-submenu:hover > a {
+  color: $white;
+  background: $cl_blue !important;
+}
+
+.dropdown-menu .active > {
+  a {
+    color: $cl_blue_border !important;
+    background: transparent !important;
+  }
+  .caret {
+    color: $white;
+  }
+  a:hover {
+    color: $cl_blue !important;
+    background: transparent !important;
+  }
+}
+
+.navbar .navbar-btn {
+  position: relative;
+  background: transparent;
+  text-shadow: 0 1px 0px $white;
+  color: $cl_blue;
+  border: none;
+  border-left: 1px solid $gray_nurse;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  padding: 19px 15px 18px 15px;
+  margin-top: 0px;
+  margin-right: 0px;
+  &:after {
+    content: "";
+    height: 100%;
+    position: absolute;
+    display: block;
+    font-size: 20px;
+    font-weight: 200;
+    border-right: 1px solid $alabaster;
+    left: 0px;
+    top: 0px;
+  }
+  &:before {
+    content: "";
+    height: 100%;
+    position: absolute;
+    display: block;
+    font-size: 20px;
+    font-weight: 200;
+    border-right: 1px solid $alabaster;
+    left: 0px;
+    top: 0px;
+    content: "";
+    height: 100%;
+    position: absolute;
+    display: block;
+    font-size: 20px;
+    font-weight: 200;
+    border-right: 1px solid $alabaster;
+    left: -2px;
+    top: 0px;
+  }
+  &:hover {
+    background: transparent;
+    color: $cl_blue;
+  }
+}
+
+.nav .active .dropdown-toggle .caret {
+  color: $white;
+  border-top-color: $cl_blue_border !important;
+  border-bottom-color: $cl_blue_border !important;
+}
+
+.navbar-inverse .navbar-nav > .open > a {
+  background: $cl_blue;
+  &:hover, &:focus {
+    background: $cl_blue;
+  }
+}
+
+/* Sidenav
+ *-------------------------------------------------- */
+
+.bs-sidebar {
+  border: 1px solid $alabaster;
+  border-top: 2px solid $alabaster;
+  background: $black_haze;
+  /* Old browsers */
+  /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Y2ZjZmNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlYWVhZWEiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+  background: -moz-linear-gradient(top, $black_haze 0%, $gray_nurse 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $black_haze), color-stop(100%, $gray_nurse));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, $black_haze 0%, $gray_nurse 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, $black_haze 0%, $gray_nurse 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, $black_haze 0%, $gray_nurse 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, $black_haze 0%, $gray_nurse 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$black_haze', endColorstr='$gray_nurse',GradientType=0 );
+  /* IE6-8 */
+  padding: 10px 10px 20px 10px;
+  text-shadow: 0px 1px 0px $white;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  h3 {
+    margin-left: 15px;
+  }
+}
+
+.bs-sidenav {
+  position: relative;
+  margin: 0px 0 0;
+  padding: 0;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  > {
+    li {
+      > a {
+        display: block;
+        margin: 0 0 -1px;
+        padding: 8px 14px;
+        border: 1px solid #e5e5e5;
+      }
+      &:first-child > a {
+        -webkit-border-radius: 6px 6px 0 0;
+        -moz-border-radius: 6px 6px 0 0;
+        border-radius: 6px 6px 0 0;
+      }
+      &:last-child > a {
+        -webkit-border-radius: 0 0 6px 6px;
+        -moz-border-radius: 0 0 6px 6px;
+        border-radius: 0 0 6px 6px;
+      }
+    }
+    .active > a {
+      position: relative;
+      z-index: 2;
+      padding: 9px 15px;
+      border: 0;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+    }
+  }
+  .icon-chevron-right {
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+    opacity: 0.25;
+  }
+  > li > a:hover {
+    color: rgb(255, 255, 255);
+    background: none repeat scroll 0% 0% rgb(8, 8, 8) !important;
+  }
+  a:hover .icon-chevron-right {
+    opacity: 0.5;
+  }
+  .active {
+    .icon-chevron-right, a:hover .icon-chevron-right {
+      background-image: url(/images/glyphicons_halflings-white.png);
+      opacity: 1;
+    }
+  }
+  &.affix {
+    top: 0px;
+  }
+  &.affix-bottom {
+    position: absolute;
+    top: auto;
+    bottom: 270px;
+  }
+}
+
+.owl-carousel {
+  .owl-stage-outer {
+    padding: 10px 20px 10px 20px;
+  }
+}
+
+.owl-nav {
+  float: right;
+  div {
+    width: 25px;
+    height: 38px;
+    background: transparent url(/images/arrows.png) no-repeat top left;
+    position: absolute;
+    top: 50%;
+    margin-top: -19px;
+    left: -5px;
+    text-indent: -9000px;
+    opacity: 0.7;
+    cursor: pointer;
+    z-index: 100;
+    &.owl-next {
+      background-position: top right;
+      left: auto;
+      right: 0px;
+    }
+    &:hover {
+      opacity: 1;
+    }
+    &.disabled {
+      opacity: 0.2;
+    }
+  }
+}
+
+#floating-toolbar {
+  position: absolute;
+  z-index: 999;
+  top: 120px;
+  left: 20px;
+  width: 50px;
+}
+
+.tmbar {
+  margin: 10px 0px 10px 10px;
+}
+
+#tm-opt-bar {
+  float: right;
+  position: fixed;
+  top: 140px;
+  right: 20px;
+  z-index: 100;
+}
+
+#floating-toolbar .btn-group {
+  margin-top: 5px;
+  margin-right: 0px;
+}
+
+#toolbarEdit {
+  button {
+    margin-top: 5px;
+    width: 40px;
+    height: 32px;
+  }
+  .btn-info {
+    width: 85px;
+  }
+  .btn-group {
+    margin-left: 0px;
+    padding-right: 10px;
+  }
+  button i {
+    font-size: 18px;
+  }
+}
+
+.dropdown-menu {
+    max-height: 600px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.breadcrumb > li + li #quick-nav-menu {
+  margin-left: 20px;
+}

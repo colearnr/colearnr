@@ -1,0 +1,31 @@
+{
+  "name": "flippy",
+  "version": "0.1.4",
+  "homepage": "https://github.com/yemM/flippy",
+  "authors": [
+    "Guilhem Marty"
+  ],
+  "description": "Flippy jQuery plugin",
+  "main": "jquery.flippy.min.js",
+  "keywords": [
+    "Flippy",
+    "jQuery"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "0.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.4",
+    "commit": "837404597339211cecde34ea2bbb2908f900f35c"
+  },
+  "_source": "git://github.com/colearnr/flippy.git",
+  "_target": "0.1.4",
+  "_originalSource": "git://github.com/colearnr/flippy.git"
+}

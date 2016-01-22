@@ -1,0 +1,11 @@
+<% var ss_count = util.random(10, 1000) %>
+<% var topicToUse = topicObj %>
+<% if (locals.lbit_list) { %>
+<% lbit_list.forEach(function (lbit) { %>
+<% include lbits.compiled.ejs %>
+<% ss_count = ss_count + 1 %>
+<% }) %>
+<% } else { %>
+<% include lbits.compiled.ejs %>
+<% ss_count = ss_count + 1 %>
+<% } %>

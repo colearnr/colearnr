@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Making Quines Prettier</title>
+<!-- The defer is not necessary for autoloading, but is necessary for the
+     script at the bottom to work as a Quine. -->
+<script src="../dist/prettify.js" defer="defer"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../themes/colearnr.css">
+</head>
+
+<body onload="prettyPrint();">
+<h1>Making Quines Prettier</h1>
+
+<p>
+Below is the content of this page prettified.  The <code>&lt;pre&gt;</code>
+element is prettified because it has <code>class="prettyprint"</code> and
+because the sourced script loads a JavaScript library that styles source
+code.
+</p>
+
+<p>
+The line numbers to the left appear because the preceding comment
+<code>&lt;?prettify lang=html linenums=true?&gt;</code> turns on
+line-numbering and the
+<a href="http://google-code-prettify.googlecode.com/svn/trunk/styles/index.html">stylesheet</a>
+specifies that every fifth line should be numbered.
+</p>
+
+<?prettify lang=java linenums=true?>
+<pre class="prettyprint">public class java {<br>&nbsp; &nbsp; public static void main() {<br>&nbsp; &nbsp; }<br>}</pre>
+
+<!-- Language hints can be put in XML application directive style comments. -->
+<?prettify lang=html linenums=true?>
+<pre class="prettyprint" id="quine"></pre>
+
+<script>//<![CDATA[
+(function () {
+  function html(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  var quineHtml = html(
+        '<!DOCTYPE html>\n<html>\n'
+      + document.documentElement.innerHTML
+      + '\n<\/html>\n');
+
+  // Highlight the operative parts:
+  quineHtml = quineHtml.replace(
+    /&lt;script src[\s\S]*?&gt;&lt;\/script&gt;|&lt;!--\?[\s\S]*?--&gt;|&lt;pre\b[\s\S]*?&lt;\/pre&gt;/g,
+    '<span class="operative">$&</span>');
+
+  document.getElementById("quine").innerHTML = quineHtml;
+})();
+
+$(document).on('click', 'li.line', function(e) {
+  var line = $(e.currentTarget);
+  if (line && line.length) {
+    var id = line.attr('id');
+    var evtobj=window.event? event : e;
+    if (evtobj.altKey || evtobj.ctrlKey) {
+      var hash = window.location.hash;
+      var lindex = window.location.hash.indexOf('line=');
+      var lines = window.location.hash.substring(lindex + 5);
+      if (lines) {
+        window.location.hash = 'line=' + lines + ',' + id;
+      } else {
+        window.location.hash = 'line=' + id;
+      }
+    } else {
+      window.location.hash = 'line=' + id;
+    }
+  }
+});
+
+var highlightLines = function(scroll) {
+  var hash = window.location.hash;
+  var lindex = window.location.hash.indexOf('line=');
+  var lines = window.location.hash.substring(lindex + 5);
+  if (lines) {
+    $('.line').removeClass('selected');
+    var lineList = lines.split(',');
+    var firstLine = lineList[0];
+    lineList.forEach(function (aline) {
+      $('#' + aline).addClass('selected');
+    });
+    if (scroll) {
+      var node = $("#" + firstLine);
+      if (node && node.length) {
+        $('html, body').animate({
+          scrollTop: node.offset().top - 50
+        }, 500);
+      }
+    }
+  }
+}
+
+$(window).on('hashchange', function(e) {
+  highlightLines(false);
+});
+
+$(document).ready(function() {
+  setTimeout(function() {
+    highlightLines(true);
+  }, 400)
+
+});
+//]]>
+</script></body>
+</html>

@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="/stylesheets/lbit-nav.css?<%- page_options.version %>" type="text/css" media="screen">
+<div class="module hidden-xs">
+<div id="toc"></div>
+</div>
+<script src="<%- page_options.cdn_prefix %>/javascripts/generate_toc.js?<%- page_options.version %>"></script>
+<script>
+    function generateIndex() {
+        $('#toc').toc({
+            'selectors': 'h2,h3',
+            'container': '#articleContent',
+            'smoothScrolling': true,
+            'prefix': 'toc',
+            'onHighlight': function(el) {},
+            'highlightOnScroll': true,
+            'highlightOffset': 100,
+            'anchorName': function(i, heading, prefix) {
+                return prefix+i;
+            },
+            'headerText': function(i, heading, $heading) {
+                return $heading.text();
+            },
+            'itemClass': function(i, heading, $heading, prefix) {
+              return $heading[0].tagName.toLowerCase();
+            }
+        });
+    }
+</script>

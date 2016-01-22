@@ -1,0 +1,142 @@
+<html>
+    <head>
+    <title><%- lbit.title || '' %></title>
+    <link href="/font/source-sans-pro/source-sans-pro.css" rel="stylesheet" type="text/css">
+    <link href="<%- locals.page_options.cdn_prefix %>/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/readability/readability-home.css?<%- locals.page_options.version %>" type="text/css" media="screen">
+    <link rel="stylesheet" href="<%- locals.page_options.cdn_prefix %>/stylesheets/annotator.min.css?<%- locals.page_options.version %>" type="text/css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/vendor/fontawesome/css/font-awesome.min.css?<%- locals.page_options.version %>">
+    <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/vendor/code-prettify/themes/colearnr.css">
+    <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/summernote/summernote-overrides.css?<%- locals.page_options.version %>">
+    <% include ../includes/scripts-simple.html %>
+    </head>
+    <body>
+        <% include lbit-header.html %>
+        <% var user_perms = lbit.user_perms && lbit.user_perms[user._id] ? lbit.user_perms[user._id] : null %>
+        <% var editAllowed = false %>
+        <% if (user_perms && (_.indexOf(user_perms, 'edit') != -1)) { editAllowed = true } %>
+        <% include lbit-nav.html %>
+        <div id="" class="readableContent">
+            <div id="" class="style-ebook container">
+                <div id="articleContent" class="margin-narrow size-medium">
+                    <% if (editAllowed) { %>
+                    <div class="row">
+                        <div class="pull-right">
+                            <button class="btn btn-primary" id="btnEdit">Edit</button>
+                            <button class="btn btn-primary" id="btnSave" style="display: none;">Save changes</button>
+                            <button class="btn btn-link" id="btnCancel" style="display: none;">Cancel</button>
+                        </div>
+                    </div>
+                    <hr>
+                    <% } %>
+                    <div id="annotate_wrapper">
+                        <div id="body_content" class="<% if (editAllowed) { %>body_edit<% } %>">
+                          <%
+                          var bodyStr = lbit.body || '';
+                          if (locals.host_url_http && locals.host_url_https) {
+                            bodyStr = bodyStr.replace(new RegExp(locals.host_url_http, 'ig'), locals.host_url_https);
+                          }
+                          %>
+                          <%- bodyStr %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% if (lbit.url && lbit.url != '#') { %>
+        <div id="readFooter" class="row">
+          <div class="container">
+          <div class="footer-right">
+              <p>Automatically made readable by CoLearnr. <a target="_blank" href="<%- lbit.url %>">Click here</a> to view the original content.</p>
+          </div>
+          </div>
+        </div>
+        <% } %>
+    </body>
+    <script src="<%- locals.page_options.cdn_prefix %>/vendor/code-prettify/dist/prettify.js"></script>
+    <% if (req.user && !req.user.guestMode) { %>
+    <script src="<%- locals.page_options.cdn_prefix %>/javascripts/annotator-full.min.js?<%- locals.page_options.version %>"></script>
+    <% if (editAllowed) { %>
+      <% include ../includes/editor.ejs %>
+    <% } %>
+    <script>
+      var original_html = '';
+      var prettyPrintInit = function() {
+        $('pre').addClass('prettyprint').addClass('linenums');
+        $(".prettyprint br").each(function(index, element) {
+          $(element).replaceWith(document.createTextNode("\n"));
+        });
+        prettyPrint();
+        if (window.generateIndex) {
+          generateIndex();
+        }
+      }
+      $(document).ready(function() {
+        original_html = $('.body_edit').html();
+        prettyPrintInit();
+      });
+
+      var $annotatePlugin;
+      annotateInit = function(){
+        $annotatePlugin = $('#annotate_wrapper').annotator({readOnly: <%- !editAllowed %>}).annotator('addPlugin', 'Tags').annotator('addPlugin', 'Markdown');
+        $annotatePlugin.annotator('addPlugin', 'Store', {
+            prefix: '/userdata/<%- lbit._id %>',
+            annotationData: {
+            'lbit': '<%- lbit._id %>',
+            'user': '<% if (req.user && req.user._id) { %><%- req.user._id %><% } %>',
+            },
+        });
+      };
+      annotateInit();
+
+      <% if (editAllowed) { %>
+      $(document).on("click", "#btnEdit", function () {
+          $annotatePlugin.annotator('destroy');
+          $('.body_edit')
+            .attr("data-fullscreen", "no")
+            .attr("data-edit", "summernote");
+          $('.body_edit').html(original_html);
+          summernoteEditorInit();
+          $('#btnEdit').css('display', 'none');
+          $('#btnSave').css('display', 'inline');
+          $('#btnCancel').css('display', 'inline');
+      });
+
+      $(document).on("click", "#btnSave", function () {
+          SaveAndCloseAllEditors(true);
+      });
+
+      $(document).on("click", "#btnCancel", function () {
+         SaveAndCloseAllEditors(false);
+         $('.body_edit').html(original_html);
+         prettyPrintInit();
+      });
+
+      function SaveAndCloseAllEditors(save) {
+          if ($('.body_edit').length) {
+              var html = $(".body_edit").code();
+              $(".body_edit").attr("data-edit", false);
+              $('.body_edit').destroy();
+              $('#btnEdit').css('display', 'inline');
+              $('#btnSave').css('display', 'none');
+              $('#btnCancel').css('display', 'none');
+              annotateInit();
+              if (save) {
+                  var lbit = {element_id: 'id-<%- lbit._id %>-body', update_value: html, original_html: original_html, original_value: ''};
+                  $.post('/lbit/quick_edit', lbit).done(function(data) {
+                      if (data) {
+                          original_html = html;
+                          $('.body_edit').html(html);
+                          prettyPrintInit();
+                      }
+                  }).error(function(xhr, status, data) {
+
+                  });
+              }
+          }
+      }
+      <% } %>
+
+    </script>
+    <% } %>
+</html>

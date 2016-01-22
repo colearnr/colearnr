@@ -1,0 +1,13 @@
+$('#addChoice').click(function() {
+    var newRowNum = parseInt($('#total_choices').val(), 10) + 1;
+    var addRow = $('#choice_' + (newRowNum - 1));
+    var newRow = addRow.clone();
+    newRow.attr('id', 'choice_' + newRowNum);
+    newRow.attr('name', 'choice_' + newRowNum);
+    newRow.attr('placeholder', 'Choice ' + newRowNum);
+    newRow.val('');
+    addRow.after(newRow);
+    addRow.after($('<p class="apollo-seperator"></p>'));
+    $('#total_choices').val(newRowNum);
+    return false;
+});

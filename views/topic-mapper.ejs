@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- start: Meta -->
+    <meta charset="utf-8">
+    <title><%- title %> | CoLearnr</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content=""/>
+    <!-- end: Meta -->
+
+    <!-- start: Mobile Specific -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- end: Mobile Specific -->
+
+    <!-- start: Facebook Open Graph -->
+    <meta property="og:title" content=""/>
+    <meta property="og:description" content=""/>
+    <meta property="og:type" content=""/>
+    <meta property="og:url" content=""/>
+    <meta property="og:image" content=""/>
+    <!-- end: Facebook Open Graph -->
+    <% include includes/css-common.html %>
+    <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/jquery-ui/jquery-ui-flick.min.css">
+</head>
+<body <% if (!pageView) {%>style="background: #FFFFFF; margin: 10px 10px 10px 10px;"<% } %>>
+<% if (pageView) { %>
+<% include includes/modals.html %>
+<% if (!locals.noChildMode && !locals.embedMode) { %>
+<!--start: Header -->
+<header>
+
+    <!--start: Container -->
+    <div class="container">
+    <% include includes/nav.html %>
+    </div>
+    <!--end: Container-->
+
+</header>
+<!--end: Header-->
+<% } %>
+<% } %>
+<!-- start: Container -->
+<div id="main" class="container" style="padding-bottom: 10px;">
+
+    <% if (!locals.embedMode) { %>
+    <!-- start: Page Title -->
+    <div id="page-title" class="row" style="margin-bottom: 0px;" data-intro="Create your topic structure using this interface. Double click on the new topic to change title and get started." data-position="bottom">
+        <h1><i class="fa fa-sitemap fa-rotate-270"></i>&nbsp; <span id="topic-map-name"><% if (locals.topicObj && !topicObj.empty) { %><%- topicObj.name %><% } else { %><%- 'Topic Mapper' %><% } %></span></h1>
+    </div>
+    <% } %>
+
+    <div class='notifications top-right'></div>
+    <div id="confirmExitModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmExitModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="confirmExitModalLabel">Do you really want to exit without saving?</h3>
+                </div>
+                <div class="modal-body">
+                    <p><span class="label label-info">Note</span> You will lose all your hard work on this map!</p>
+                </div>
+                <div class="modal-footer">
+                    <a id="skip-save-btn" data-dismiss="modal" href="#" class="btn btn-default btn-danger">Yes fine</a>
+                    <a id="cancel-exit-btn" href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">No</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="tm-opt-bar" class="pull-right" <% if (locals.embedMode) { %>style="top: 25px;"<% } %>>
+        <% if (!locals.readOnly) { %>
+        <button id="menuSave" data-toggle="tooltip" data-placement="bottom" title="Save this map" data-category="Toolbar Click" data-event-type="Save"  data-intro="Save map" data-position="bottom" class="btn btn-lg btn-primary save disabled" style="width: 120px;" data-mm-action="save"><i class="fa fa-floppy-o" >&nbsp; <span id="save_text">Save</span> </i></button>
+        <% } %>
+        <% if (!locals.embedMode) { %>
+        <button id="finish" data-toggle="tooltip" data-placement="bottom" title="Exit this interface" data-category="Toolbar Click" data-event-type="Finish" class="btn btn-lg btn-link finish" style="width: 120px;" data-mm-action="finish"><i class="fa fa-chevron-right" >&nbsp; Exit </i></button>
+        <% } %>
+    </div>
+    <div id="floating-toolbar">
+        <div class="toolbar-inner tmbar">
+            <div class="btn-toolbar" id="toolbarEdit">
+              <div class="btn-group">
+                <button data-toggle="tooltip" data-placement="right" title="Zoom&nbsp;in&nbsp;(z)" data-category="Toolbar Click" data-event-type="Zoom in" class="btn btn-default scaleUp"><i class="fa fa-search-plus"></i></button>
+                <button data-toggle="tooltip" data-placement="right" title="Zoom&nbsp;out&nbsp;(Shift+z)" data-category="Toolbar Click" data-event-type="Zoom out" class="btn btn-default scaleDown"><i class="fa fa-search-minus"></i></button>
+                <button data-toggle="tooltip" data-placement="right" title="Reset zoom (Esc or 0)" data-category="Toolbar Click" data-event-type="Zoom reset" class="btn btn-default resetView"><i class="fa fa-square-o"></i></button>
+              <% if (!locals.readOnly) { %>
+                <button data-toggle="tooltip" data-placement="right" title="Collapse (/)" data-category="Toolbar Click" data-event-type="Collapse idea" class="btn btn-default toggleCollapse"><i class="fa fa-leaf"></i></button>
+                <button id="menuAdd" data-toggle="tooltip" data-placement="right" title="Add sub-topic (Tab)" data-category="Toolbar Click" data-event-type="Add sub-topic" data-intro="Add sub topic" data-position="right" class="btn btn-default addSubIdea"><i class="fa fa-plus" ></i></button>
+                <button id="menuEdit" data-toggle="tooltip" data-placement="right" title="Edit topic (Spacebar)" data-category="Toolbar Click" data-event-type="Edit topic" data-intro="Edit title" data-position="right" class="btn btn-default editNode"><i class="fa fa-pencil-square-o" ></i></button>
+                <button id="menuRemove" data-toggle="tooltip" data-placement="right" title="Remove topic (Backspace)" data-category="Toolbar Click" data-event-type="Remove topic" class="btn btn-default removeSubIdea"><i class="fa fa-times" ></i></button>
+                <button id="menuLink" data-toggle="tooltip" data-placement="right" title="Link topics" data-category="Toolbar Click" data-event-type="Link topics" class="btn btn-default toggleAddLinkMode"><i class="fa fa-arrows-h" ></i></button>
+                <button id="menuLink" data-toggle="tooltip" data-placement="right" title="Preview topic (v)" data-category="Toolbar Click" data-event-type="Link topics" class="btn btn-default previewNode"><i class="fa fa-eye" ></i></button>
+                <button id="menuUndo" data-toggle="tooltip" data-placement="right" title="Undo (Ctrl+z)" data-category="Toolbar Click" data-event-type="Undo" class="btn btn-default undo disabled"><i class="fa fa-undo" ></i></button>
+                <button id="menuRedo" data-toggle="tooltip" data-placement="right" title="Redo (Ctrl+y)" data-category="Toolbar Click" data-event-type="Redo" class="btn btn-default redo disabled"><i class="fa fa-repeat" ></i></button>
+                <button id="menuCopy" data-toggle="tooltip" data-placement="right" title="Copy (Ctrl+c)" data-category="Toolbar Click" data-event-type="Copy" class="btn btn-default copy"><i class="fa fa-files-o" ></i></button>
+                <button id="menuPaste" data-toggle="tooltip" data-placement="right" title="Paste (Ctrl+v)" data-category="Toolbar Click" data-event-type="Paste" class="btn btn-default paste"><i class="fa fa-clipboard" ></i></button>
+                <% } %>
+                <button id="menuExport" data-toggle="tooltip" data-placement="right" title="Export this map as image" data-category="Toolbar Click" data-event-type="Export" class="btn btn-default export"><i class="fa fa-cloud-download" ></i></button>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="mmcontainer" class="fullpage"></div>
+
+<% if (pageView) { %>
+<% } %>
+
+<% include includes/scripts-common.html %>
+
+<script type="text/javascript" src="<%- locals.page_options.cdn_prefix %>/javascripts/mapjs/mapjs.min.js?<%- locals.page_options.version %>"></script>
+<script type="text/javascript" src="/javascripts/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="<%- locals.page_options.cdn_prefix %>/javascripts/md5.min.js?<%- locals.page_options.version %>"></script>
+<script>
+    var topicUrl = "<%- locals.url || '/user/topic' %>";
+    var isNew = <%- newTopic %>;
+    var rootTopic = <% if (locals.rootTopic) { %>{_id: '<%- rootTopic %>'}<% } else { %>null<% } %>;
+    var deletedOids = [];
+    var idea = null;
+    var idCache = {};
+    var last_msg_hash = null;
+    var navigateOid = null;
+    var user = {'_id': '<%- locals.user ? locals.user._id : "guest" %>', 'guestMode' : <%- !locals.user || !locals.user._id %>};
+    var room_joined = false;
+    var sessionid = null;
+    var saveThread = null;
+    var socket = io.connect('<%- config.socket_server %>', {
+        'reconnection delay': 1000,
+        'reconnect': true
+    });
+    var msg_missed = false;
+    jQuery.fn.attachmentEditorWidget = function (mapModel) {
+        'use strict';
+        return this.each(function () {
+            var element = jQuery(this);
+            mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
+                mapModel.setAttachment(
+                    'attachmentEditorWidget',
+                    nodeId, {
+                        contentType: 'text/html',
+                        content: prompt('attachment', attachment && attachment.content)
+                    }
+                );
+            });
+        });
+    };
+    (function () {
+        var container = jQuery('#mmcontainer'),
+        idea = MAPJS.content(<%- locals.category_map || {} %>, new Date().getTime()),
+        isTouch = false,
+        imageInsertController = new MAPJS.ImageInsertController("<%- config.base_url %>"),
+        mapModel = new MAPJS.MapModel(MAPJS.KineticMediator.layoutCalculator, ['Topic'], ['']);
+        mapModel.setEditOldEnabled(<%- locals.editOldEnabled || true %>);
+        <% if (locals.readOnly) { %>
+        mapModel.setInputEnabled(false);
+        <% } %>
+        container.mapWidget(console,mapModel, isTouch, imageInsertController);
+        jQuery('body').mapToolbarWidget(mapModel);
+        jQuery('body').attachmentEditorWidget(mapModel);
+        <% if (!locals.readOnly) { %>
+        var _changeDetect = function(model, action, source) {
+            //console.log(model, action, source, mapModel.getInputEnabled(), mapModel.isLoading());
+            $('.save').removeClass('disabled');
+            <% if (locals.autoSave) { %>
+            if (!saveThread) {
+                saveThread = setInterval(_save, 5000);
+            }
+            <% } %>
+            $('.undo').removeClass('disabled');
+            $('.redo').removeClass('disabled');
+            if (source) {
+                switch(action) {
+                    case 'removeSubIdea':
+                        if (source.oid) {
+                            idCache[source.id] = source;
+                            deletedOids.push({title: source.title, oid: source.oid});
+                        }
+                        break;
+
+                    case 'undo':
+                        if (deletedOids.length) {
+                            var tmpA = [];
+                            deletedOids.forEach(function (oidMap) {
+                                if (source.oid && oidMap.oid != source.oid) {
+                                    tmpA.push(oidMap);
+                                }
+                            });
+                            deletedOids = tmpA;
+                        }
+                        break;
+                    case 'redo':
+                        source = idCache[source];
+                        if (source && source.oid) {
+                            deletedOids.push({title: source.title, oid: source.oid});
+                        }
+                        break;
+                }
+            }
+
+            if (socket && mapModel.getInputEnabled()) {
+                var curr_tree = JSON.stringify(mapModel.getIdea()) || '';
+                var current_hash = md5(curr_tree);
+                if (current_hash != last_msg_hash) {
+                    var retMap = {
+                        <% if (locals.topicObj) { %>id: '<%- topicObj._id %>', <% } else { '' } %> isNew: isNew, sessionid: sessionid, rootTopic: rootTopic, deletedOids: deletedOids,
+                        category_map: mapModel.getIdea(), hash: current_hash};
+                    socket.emit('send:topic_tree', retMap);
+                }
+            }
+        }
+
+        var _requestTree = function(oid) {
+            if (!oid) {
+                return;
+            }
+            $.get('/api/topic/map/' + oid).done(function (tree_data) {
+                if (tree_data && tree_data['category_map']) {
+                    var idea = MAPJS.content(tree_data['category_map'], new Date().getTime());
+                    mapModel.setIdea(idea, false);
+                    mapModel.selectNodeByOid(oid);
+                    deletedOids = [];
+                    if (tree_data.topicObj && tree_data.topicObj.name) {
+                        $('#topic-map-name').html(tree_data.topicObj.name);
+                        document.title = "Topic map for " + tree_data.topicObj.name;
+                    }
+                    $('.save').addClass('disabled');
+                    rootTopic = {_id: oid};
+                    _setTree(tree_data);
+                }
+            });
+        }
+
+        var _navigateToNode = function(oid) {
+            if (!oid) {
+                return;
+            }
+            if ($('.save').length && !$('.save').hasClass('disabled')) {
+                $('#confirmExitModal').modal('toggle');
+                navigateOid = oid;
+            } else {
+                window.location.href = '/topic/' + oid + '<% if (locals.embedMode) { %>?embedMode=true<% } %>';
+            }
+        }
+
+        var _previewNode = function(oid) {
+            if (oid) {
+                var topicUrl = '/topic/' + oid + '?embedMode=true&noChild=true';
+                $("#previewModal .modal-body .content").html('<iframe src="' + topicUrl + '" width="100%" height="100%" class="embed-responsive-item" allowfullscreen mozallowfullscreen webkitallowfullscreen oallowfullscreen msallowfullscreen frameborder="no">');
+                $("#previewModal").modal('toggle');
+            }
+        }
+
+        var _validationFn = function(model, obj) {
+            if (obj && obj.type == 'invalid_text') {
+                $('.top-right').notify({
+                    type: 'danger',
+                    message: { text: 'Topic names can only have the following symbols [+,.#-_().]. Reverting to ' + obj.oldText }
+                }).show();
+            }
+        }
+
+        var _save = function(model, key, elem) {
+            if (mapModel.getCurrentlyEdited()) {
+                return;
+            }
+            if ($('.save').length && !$('.save').hasClass('disabled')) {
+                //console.log('save', new Date(), mapModel.getCurrentlyEdited());
+                $.post('/topic/map', {<% if (locals.topicObj) { %>topic_oid: '<%- topicObj._id %>', <% } else { '' } %> isNew: isNew, sessionid: sessionid, rootTopic: rootTopic, deletedOids: deletedOids,
+                    category_map: JSON.stringify(mapModel.getIdea())} ).done(function(data) {
+                    if (data.status == "success") {
+                        topicUrl = data.url;
+                        if (isNew) {
+                            isNew = false;
+                        }
+                        $('.save').addClass('disabled');
+                        var idea = MAPJS.content(data['category_map'], new Date().getTime());
+                        mapModel.setIdea(idea, true);
+                        _setTree(data);
+                        deletedOids = [];
+                    } else if (data.status == "error") {
+                        $('.save').removeClass('disabled');
+                        var noPermsMessage = 'You do not have permission to edit this topic';
+                        if (data.message == 'NO_PERMISSION' && data.topic && data.topic.name) {
+                            if (!data.path) {
+                                noPermsMessage = 'There is an existing topic with the same name "' + data.topic.name + '"';
+                            } else {
+                                noPermsMessage = 'You do not have permission to edit "' + data.topic.name + '"';
+                            }
+                        }
+                        $('.top-right').notify({
+                            type: 'danger',
+                            message: { text: (data.message == 'NO_PERMISSION' ? noPermsMessage : data.message) }
+                        }).show();
+                    } else if (data.status == "init") {
+
+                    }
+                });
+            }
+        };
+        $("[data-mm-action='save']").click(_save);
+        mapModel.addEventListener('content_change', _changeDetect);
+        mapModel.addEventListener('requestTree', _requestTree);
+        mapModel.addEventListener('navigateToNode', _navigateToNode);
+        mapModel.addEventListener('previewNode', _previewNode);
+        mapModel.addEventListener('validationFn', _validationFn);
+        //mapModel.addEventListener('analytic', function() { $("#save_message").text(""); } );
+        <% if (locals.autoSave) { %>
+        if (!saveThread) {
+            saveThread = setInterval(_save, 5000);
+        }
+        <% } %>
+        <% } %>
+        mapModel.setIdea(idea, false);
+        mapModel.setUid(user._id);
+        jQuery('#linkEditWidget').linkEditWidget(mapModel);
+        window.mapModel = mapModel;
+
+        var exportAndView = function () {
+            var pngExport = new MAPJS.pngExport(idea);
+            var fn = function(data) {
+                window.open(data,"","width=700,height=700");
+            }
+            pngExport.then(fn);
+        }
+
+        $(document).on("click", ".export", function () {
+            exportAndView();
+        });
+    }());
+
+    var _setTree = function(tree_data) {
+        if (tree_data && tree_data['category_map']) {
+            var msg_hash = tree_data.hash;
+            var curr_tree = JSON.stringify(mapModel.getIdea()) || '';
+            var current_hash = md5(curr_tree);
+            //console.log('m', msg_hash, 'c', current_hash, 'l', last_msg_hash);
+            if (msg_hash == current_hash || msg_hash == last_msg_hash) {
+                last_msg_hash = current_hash;
+                return;
+            } else {
+                var idea = MAPJS.content(tree_data['category_map'], new Date().getTime());
+                mapModel.setIdea(idea, true);
+                deletedOids = [];
+                $('.save').addClass('disabled');
+                last_msg_hash = msg_hash;
+                if (tree_data.rootTopic && tree_data.rootTopic._id) {
+                    rootTopic = tree_data.rootTopic;
+                }
+            }
+        }
+    }
+
+    $("#finish").click(function(event) {
+        if ($('.save').length && !$('.save').hasClass('disabled')) {
+            $('#confirmExitModal').modal('toggle');
+            if (saveThread) {
+                clearInterval(saveThread);
+                saveThread = null;
+            }
+        } else {
+            if (topicUrl) {
+                window.location.href = topicUrl + '<% if (locals.embedMode) { %>?embedMode=true<% } %>';
+            } else if (rootTopic && rootTopic._id) {
+                window.location.href = '/topic/' + rootTopic._id + '<% if (locals.embedMode) { %>?embedMode=true<% } %>';
+            } else {
+                window.location.href = '/user/topic';
+            }
+        }
+    });
+
+    $(document).on("click", "#cancel-exit-btn", function () {
+        navigateOid = null;
+    });
+
+    $(document).on("click", "#skip-save-btn", function () {
+        needToConfirm = false;
+        if (navigateOid) {
+            window.location.href = '/topic/' + navigateOid + '<% if (locals.embedMode) { %>?embedMode=true<% } %>';
+        } else if (topicUrl) {
+            window.location.href = topicUrl;
+        } else if (rootTopic && rootTopic._id) {
+            window.location.href = '/topic/' + rootTopic._id + '<% if (locals.embedMode) { %>?embedMode=true<% } %>';
+        } else {
+            window.location.href = '/user/topic';
+        }
+    });
+
+    var needToConfirm = true;
+    window.onbeforeunload = confirmExit;
+    function confirmExit() {
+        if (needToConfirm && $('.save').length && !$('.save').hasClass('disabled')) {
+            return "You are attempting to leave without saving. Are you sure?"
+        }
+    }
+
+    var urlparams = (function(a) {
+        if (a == "") return {};
+        var b = {};
+        for (var i = 0; i < a.length; ++i)
+        {
+            var p=a[i].split('=');
+            if (p.length != 2) continue;
+            b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+        }
+        return b;
+    })(window.location.search.substr(1).split('&'));
+
+    socket.on('connect', function(data) {
+        <% if (locals.topicObj && topicObj._id) { %>
+        socket.emit('api:join_room', 'topic:<%- topicObj._id %>');
+        room_joined = true;
+        $('.usernameText').css('font-style', 'normal');
+        sessionid = (socket && socket.socket && socket.socket.sessionid) ? socket.socket.sessionid : null;
+        <% } %>
+    });
+
+    socket.on('reconnect', function(data) {
+        <% if (locals.topicObj && topicObj._id) { %>
+        socket.emit('api:join_room', 'topic:<%- topicObj._id %>');
+        room_joined = true;
+        $('.usernameText').css('font-style', 'normal');
+        sessionid = (socket && socket.socket && socket.socket.sessionid) ? socket.socket.sessionid : null;
+        <% } %>
+    });
+
+    socket.on('disconnect', function(data) {
+        $('.usernameText').css('font-style', 'italic');
+    });
+
+    socket.on('error', function(data) {
+        $('.usernameText').css('font-style', 'italic');
+    });
+
+    socket.on('api:topic_tree', function (tree_data) {
+        _setTree(tree_data);
+    });
+
+    var tryReconnect = function() {
+        if (socket.socket.connected === false &&
+            socket.socket.connecting === false) {
+            socket.socket.connect();
+       }
+    }
+
+    var intervalID = setInterval(tryReconnect, 10000);
+
+    $( window ).unload(function() {
+        if (socket) {
+            <% if (locals.topicObj && topicObj._id) { %>
+            socket.emit('api:leave_room', 'topic:<%- topicObj._id %>');
+            <% } %>
+            socket.disconnect();
+        }
+    });
+    $("body").tooltip({ selector: '[data-toggle=tooltip]', container: 'body', animaiton: false });
+</script>
+<% include includes/submenu-script.html %>
+<% include includes/analytics.html %>
+<% if (locals.firstTime && !locals.readOnly && !locals.embedMode) { %>
+<script type="text/javascript" src="<%- locals.page_options.cdn_prefix %>/vendor/chardin/assets/javascripts/chardinjs.min.js?<%- locals.page_options.version %>"></script>
+<link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/vendor/chardin/assets/stylesheets/chardinjs.css?<%- locals.page_options.version %>">
+<script>
+    $('body').chardinJs('start');
+</script>
+<% } %>
+<% include includes/chat.html %>
+</body>
+</html>

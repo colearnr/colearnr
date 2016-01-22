@@ -1,0 +1,79 @@
+<div class='notifications top-right'></div>
+<div id="delModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="delModalLabel">Do you really want to delete this Learnbit?</h3>
+            </div>
+            <div class="modal-body">
+                <p><span class="label label-danger">Note</span> This cannot be undone!</p>
+            </div>
+            <div class="modal-footer">
+                <a id="del-confirm" data-dismiss="modal" href="#" class="btn btn-default btn-danger" onclick="delLbit($(this).data('id'), $(this).data('topicid'))">Yes delete</a>
+                <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="delTopicModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="delTopicModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="delTopicModalLabel">Do you really want to delete this topic?</h3>
+            </div>
+            <div class="modal-body">
+                <p><span class="label label-danger">Note</span> This will delete all sub-topics and learnbits!</p>
+            </div>
+            <div class="modal-footer">
+                <a id="del-topic-confirm" data-dismiss="modal" href="#" class="btn btn-default btn-danger">Yes delete</a>
+                <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="inviteCollabModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="inviteCollabModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="inviteCollabModalLabel">Invite collaborators</h3>
+            </div>
+            <div class="modal-body">
+                <span class="content"></span>
+            </div>
+            <div class="modal-footer">
+                <a id="invite-collab-confirm" data-dismiss="modal" href="#" class="btn btn-primary">Save</a>
+                <a href="#" class="btn btn-link" data-dismiss="modal" aria-hidden="true">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="previewModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="previewModalLabel">Preview topic</h3>
+            </div>
+            <div class="modal-body embed-responsive embed-responsive-16by9" style="height: 500px; padding: 0;">
+                <span class="content ">
+
+                </span>
+            </div>
+            <div class="modal-footer" style="margin-top: 0;">
+                <a href="#" class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function inviteCollab(topic_id, user_id) {
+    $.get('/topic/users/' + topic_id).done(function (data) {
+        $("#inviteCollabModal .modal-body .content").html(data);
+        $("#inviteCollabModal").modal('toggle');
+        $('#inviteCollabModal .tagit-new').click(); 
+    });
+}
+</script>

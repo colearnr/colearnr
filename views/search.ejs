@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Search result for <%- locals.query %> | CoLearnr</title>
+    <meta name="description" content="Search result page for <%- locals.query %> on CoLearnr">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Expires" CONTENT="-1">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta property="og:title" content="Search result for <%- locals.query %> on CoLearnr"/>
+    <meta property="og:description" content="Search result page for <%- locals.query %>"/>
+    <meta property="og:type" content="category"/>
+    <% var host_url = config.base_url + (config.use_port ? (':' + config.port) : '') %>
+    <meta property="og:url" content="<%- host_url %>/search?q=<%- locals.query %>"/>
+    <meta property="og:image" content="<%- host_url %>/images/logo-mini.png"/>
+    <meta property="fb:app_id" content="<%- config.fb_app_id %>"/>
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@colearnr">
+    <meta name="twitter:creator" content="@colearnr">
+    <meta name="twitter:title" content="Search result for <%- locals.query %>">
+    <meta name="twitter:description" content="Search result page for <%- locals.query %> on CoLearnr">
+    <meta name="twitter:image:src" content="<%- host_url %>/images/logo-mini.png">
+
+    <% include includes/css-common.html %>
+</head>
+<body>
+<% include includes/modals.html %>
+<div id="wrap">
+
+<!--start: Header -->
+<header>
+
+    <!--start: Container -->
+    <div class="container">
+        <% include includes/nav.html %>
+    </div>
+    <!--end: Container-->
+
+</header>
+<!--end: Header-->
+<!-- start: Container -->
+<div id="main">
+
+    <div id="page-title" style="margin-bottom: 20px;">
+        <% if (locals.results && results && results.total) { %>
+        <h1>Found <%- results.total %> <%- type %> for <%- locals.query %></h1>
+        <% } else { %>
+        <h1>Search result for <%- locals.query %></h1>
+        <% } %>
+        <div class="search-bar row">
+        <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-1 col-md-8 col-sm-8 col-xs-10">
+            <ul id="search-types" class="nav nav-tabs">
+              <li role="presentation" class="<%- type == 'learnbits' ? 'active' : '' %>"><a data-search="learnbits" href="#">Learnbits</a></li>
+              <li role="presentation" class="<%- type == 'topics' ? 'active' : '' %>"><a data-search="topics" href="#">Topics</a></li>
+              <li role="presentation"  class="<%- type == 'users' ? 'active' : '' %>"><a data-search="users" href="#">Users</a></li>
+            </ul>
+            <form id="search-form" action="#" role="form">
+            <div class="form-group ">
+              <div class="input-group">
+                <input id="q" name="q" class="form-control input-lg" placeholder="Search <%- locals.type %>" value="<%- locals.query || '' %>"></input>
+                <span class="input-group-btn">
+                    <button title="Search" class="btn btn-lg btn-primary" type="submit"><i class="fa fa-search"></i></button>
+                </span>
+                </div>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    <div class='notifications top-right'></div>
+
+    <div id="wrapper" class="row" style="margin-left: 0px; margin-right: 0px;">
+        <div id="structure" class="breadcrumb_wrapper">
+            <div class="container" style="">
+                <ul class="breadcrumb col-xs-9 pull-left">
+                    <li style="padding-top: 5px;" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb"><a itemprop="url" href="/user/topic" >My topics</a></li>
+                    <li style="padding-top: 5px;" class="active"><span itemprop="title" class="active-topic-name">Search (<%- locals.query %>)</span></li>
+                </ul>
+                <div class="col-xs-3">
+                    <% include includes/search-options.html %>
+                </div>
+            </div>
+        </div>
+
+        <div id="wall" class="">
+            <% if (locals.results && results.total) { %>
+                <% if (type == 'learnbits') { %>
+                <% var ss_count = 1 %>
+                <% var lbitIds = [] %>
+                <div class="topic_lbits_wrapper">
+                    <div class="container topic_lbits" style="padding-left:0px;padding-right:0px;">
+                        <div id="<%- type %>" class="title section-title">
+                            <h3 style="text-transform: capitalize;"><a href="/search?q=<%- locals.query %>&type=<%- type %>"><%- type %> <%
+                                if (locals.results && results.total) { %>(<%- results.total %>)<% } %>
+                                </a>
+                            </h3>
+                        </div>
+                        <% if (locals.results && results.data && results.data.length) { %>
+                        <% results.data.forEach(function(lbitSource) { %>
+                            <%
+                                var lbit = lbitSource._source;
+                                lbit.highlight = lbitSource.highlight;
+                             %>
+                            <% lbitIds.push(lbit._id)
+                            %>
+
+                            <% var topicToUse = null
+                                if (results.topicIdMap && lbit.topics && lbit.topics.length && lbit.topics[0]) {
+                                    topicToUse = results.topicIdMap[lbit.topics[0]._id];
+                                }
+                             %>
+                            <% include lbits/lbits.compiled.ejs %>
+                            <% ss_count = ss_count + 1 %>
+                        <% }) %>
+                        <% } %>
+                    </div>
+                    <% if (locals.results && results.total > pgSize) { %>
+                    <div class="container" style="padding-right: 0">
+                        <div class="row col-md-12 col-sm-12 col-xs-12" style="padding-right: 0">
+                        <div id="searchPager" class="col-md-8 col-sm-12 col-xs-12 pagination pull-right" style="padding-right: 0"></div>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+                <% } else if (type == 'topics') { %>
+                <div class="topic_lbits_wrapper">
+                <div class="container" style="padding-left:0px;padding-right:0px; padding-bottom: 10px;">
+                    <div id="<%- type %>" class="title section-title">
+                        <h3 style="text-transform: capitalize;"><a href="/search?q=<%- locals.query %>&type=<%- type %>"><%- type %> <%
+                            if (locals.results && results.total) { %>(<%- results.total %>)<% } %>
+                            </a>
+                        </h3>
+                    </div>
+                    <% if (locals.results && results.data && results.data.length) { %>
+                        <% var cnt = 0 %>
+                        <% for (var i=0; i<results.data.length; i++) {
+                            var topicSource = results.data[i];
+                            var topic = topicSource._source;
+                            var topicName = topic.name;
+                            var topicDescription = topic.description;
+                            if (topicSource.highlight && topicSource.highlight.name) {
+                                topicName = topicSource.highlight.name;
+                            }
+                            if (topicSource.highlight && topicSource.highlight.description) {
+                                topicDescription = topicSource.highlight.description;
+                            }
+                            %>
+                        <% if (cnt % 2 == 0) { %>
+                        <div class="row" data-link="/topic/<%- topic._id %>"" style="margin-top: 5px;">
+                        <% } %>
+                            <div class="search-result col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-md-2 col-sm-2 col-xs-1">
+                                    <% if (topic.img_url && topic.img_url.length) { %>
+                                    <a href="/topic/<%- topic._id %>" title="<%- topic.name || '' %>">
+                                    <img width="80" height="auto" src="<%- topic.img_url[0] || '' %>" />
+                                    <% } else { %>
+                                    <a href="<%- durl %>/user/<%- topic.added_by %>/user" title="<%- topic.name || '' %>">
+                                    <img class="img-circle" width="80" height="80" src="/user/image/<%- topic.added_by %>" />
+                                    <% } %>
+                                    </a>
+                                    </div>
+                                    <div class="col-md-10 col-sm-10 col-xs-11">
+                                    <h3><a class="link" href="/topic/<%- topic._id %>" title="<%- topic.name %>"><%- topicName %></a>
+                                        <span class="pull-right">
+                                        <a class="btn btn-default " href="/topic/map/<%- topic._id %>" title="View topic map for <%- topic.name %>">
+                                        <i class="fa fa-sitemap fa-rotate-270"></i>&nbsp; Map
+                                        </a>
+                                        </span>
+                                    </h3>
+                                    <div class="item-tags">
+                                    <%
+                                    var paths = util.split_path(topic.path);
+                                    if (paths && paths.id) {
+                                        %>
+                                    <span class="tags"><i class="fa fa-book"></i>&nbsp; <%- paths.id %></span>
+                                    <% if (topic.last_updated) { %>
+                                    <span style="color: #999;">
+                                    <i class="fa fa-clock-o"></i>&nbsp;
+                                    Updated <%- util.relativeTime(topic.last_updated) %>
+                                    </span>
+                                    <% } %>
+                                    <% } %>
+                                    </div>
+                                    <div class="description"><%- topicDescription %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% if (++cnt % 2 == 0 || cnt == results.data.length) { %>
+                        </div>
+                        <% } %>
+                        <% } %>
+                    <% } %>
+                </div>
+                </div>
+                <% } else if (type == 'users') { %>
+                <div class="topic_lbits_wrapper">
+                <div class="container" style="padding-left:0px;padding-right:0px; padding-bottom: 10px;">
+                    <div id="<%- type %>" class="title section-title">
+                        <h3 style="text-transform: capitalize;"><a href="/search?q=<%- locals.query %>&type=<%- type %>"><%- type %> <%
+                            if (locals.results && results.total) { %>(<%- results.total %>)<% } %>
+                            </a>
+                        </h3>
+                    </div>
+                    <% if (locals.results && results.data && results.data.length) { %>
+                        <% var cnt = 0 %>
+                        <% for (var i=0; i<results.data.length; i++) {
+                            var userSource = results.data[i];
+                            var userObj = userSource._source;
+                            %>
+                        <% if (cnt % 2 == 0) { %>
+                        <div class="row" data-link="<%- durl %>/user/<%- userObj._id %>/<%- userObj.displayName %>" title="<%- userObj.displayName || '' %>" style="margin-top: 5px;">
+                        <% } %>
+                            <div class="search-result col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-md-2 col-sm-2 col-xs-1">
+                                <a href="<%- durl %>/user/<%- userObj._id %>/<%- userObj.displayName %>" title="<%- userObj.displayName || '' %>">
+                                <img class="img-circle" width="80" height="auto" src="<%- userObj.profileImage || '' %>" />
+                                </a>
+                                </div>
+                                <div class="col-md-10 col-sm-10 col-xs-11">
+                                <h3><a class="link" href="<%- durl %>/user/<%- userObj._id %>/<%- userObj.displayName || 'user' %>" title="<%- userObj.displayName || 'Guest' %>"><%- userObj.displayName || 'Guest' %></a>
+                                </h3>
+                                <div class="item-tags">
+
+                                </div>
+                                <div class="description"><%- userObj.description || '' %></div>
+                                <% var aemail = userObj.emails.length ? userObj.emails[0] : ''
+                                if (aemail) {
+                                %>
+                                <p style="color: #999;">
+                                <i class="fa fa-envelope"></i>&nbsp;
+                                <a href="mailto:<%- aemail %>"><%- aemail %>
+                                </a>
+                                &nbsp;
+                                <i class="fa fa-clock-o"></i>&nbsp;
+                                Joined <%- util.relativeTime(userObj.join_date) %>
+                                </p>
+                                <% } %>
+                                </div>
+                            </div>
+                        <% if (++cnt % 2 == 0|| cnt == results.data.length) { %>
+                        </div>
+                        <% } %>
+                        <% } %>
+                    <% } %>
+                </div>
+                </div>
+                <% } %>
+            <% } else { %>
+            <div class="topic_lbits_wrapper">
+            <div class="">
+                <div class="row container" style="margin-top: 0px; margin-left: -5px;">
+                    <div class="col-xs-12" style="margin-top: 20px;">
+                        <div class="jumbotron">
+                            <% if (type == 'topics' || type == 'learnbits') { %>
+                            <h1>We can't find much on <%- query %></h1>
+                            <p>&nbsp;</p>
+                             <p>You can choose any existing topic</p>
+                             <p>Or create the topic about <a class="btn btn-primary" href="/topic/new?name=<%- query %>"><%- query %></a> now</p>
+                             <% } %>
+                             <% if (type == 'users') { %>
+                             <% var enc_url = encodeURIComponent(host_url) %>
+                             <% var enc_text = encodeURIComponent('Check out this collaborative learning platform @CoLearnr #invite ' + host_url) %>
+                            <h1>We can't find anyone named <%- query %></h1>
+                            <p>&nbsp;</p>
+                             <p>Would you like to invite someone?</p>
+                             <p>
+                                 <div class="share-block">
+                                 <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<%- enc_url %>" id="facebook-share"><i class="fa fa-facebook icon-2x" style="padding-right: 10px;"></i></a><a target="_blank" href="https://twitter.com/intent/tweet?url=<%- enc_url %>&text=<%- enc_text %>" id="twitter-intent"><i class="fa fa-twitter icon-2x" style="padding-right: 10px;"></i></a><a target="_blank" href="https://plus.google.com/share?url=<%- enc_url %>" id="google-share"><i class="fa fa-google-plus icon-2x" style="padding-right: 10px;"></i></a></div>
+                             </p>
+                             <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+</div>
+<% include includes/underfooter.html %>
+<% include includes/scripts-common.html %>
+<% include includes/topic-scripts-common.html %>
+<% include includes/chat.html %>
+<script src="<%- locals.page_options.cdn_prefix %>/javascripts/jquery.pagination.js?<%- locals.page_options.version %>"></script>
+<% include includes/submenu-script.html %>
+<% include includes/analytics.html %>
+<script type="text/javascript">
+
+$('#search-form').submit(function(event) {
+    event.preventDefault();
+    var q = $('#q').val();
+    window.location = '/search?q=' + q + '&type=<%- type %>&pg=<%- pg %>&pgSize=<%- pgSize %>'
+});
+
+$('#search-types li').click(function(event) {
+    event.preventDefault();
+    var tab = $(event.target);
+    if (tab.hasClass('active')) {
+        return;
+    }
+    var type = tab.data('search');
+    if (type) {
+        var q = $('#q').val();
+        window.location = '/search?q=' + q + '&type=' + type + '&pg=1&pgSize=<%- pgSize %>'
+    }
+});
+
+$('#searchPager').pagination(<%- results.total %>, {
+    items_per_page: <%- pgSize %>,
+    num_display_entries: 3,
+    current_page: <%- pg - 1 %>,
+    num_edge_entries: 2,
+    link_to:"javascript:void(0)",
+    callback:function(page, component){
+        window.location = '/search?q=<%- locals.query %>&type=<%- type %>&pg=' + (page + 1) + '&pgSize=<%- pgSize %>'
+    }
+});
+$('#saveSearch').click(function(e) {
+   e.preventDefault();
+   if ($('#saveSearch').text() == 'Saved') {
+    return;
+   }
+   var q = $('#q').val();
+   var data = {q: q, type: '<%- type %>', pg: <%- pg %>, pgSize: <%- pgSize %>};
+   $.post('/search/save', data).done(function(data) {
+        if (data) {
+            $('#saveSearch').text('Saved');
+            $('.top-right').notify({
+                type: 'info',
+                message: { text: 'Search saved successfully. You can find them in My Topics page' }
+            }).show();
+        }
+    }).error(function(xhr, status, data) {
+
+    });
+});
+</script>
+</body>
+</html>

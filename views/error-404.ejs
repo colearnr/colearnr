@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- start: Meta -->
+    <meta charset="utf-8">
+    <title>Oops</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content=""/>
+    <!-- end: Meta -->
+
+    <!-- start: Mobile Specific -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- end: Mobile Specific -->
+
+    <% include includes/css-common.html %>
+</head>
+<body>
+<div id="wrap">
+
+<!--start: Header -->
+<header>
+
+    <!--start: Container -->
+    <div class="container">
+        <% include includes/nav.html %>
+    </div>
+    <!--end: Container-->
+
+</header>
+<!--end: Header-->
+<!-- start: Container -->
+<div id="main" class="container">
+
+<!-- start: Page Title -->
+<div id="page-title" style="margin-bottom: 20px;">
+    <h1>Unknown learning</h1>
+</div>
+    <!--start: Row -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="jumbotron">
+                <h1>This topic is new to us</h1>
+                <p>&nbsp;</p>
+                <p>Would you like to create this from scratch? <a href="/topic/new<% if (locals.topicname) { %>?name=<%- topicname %><% } %>" class="btn btn-primary">Yes</a></p>
+                <% if (locals.topicname) { %>
+                <p>Or <a href="/search?q=<%- topicname %>&type=topics" class="btn btn-primary">Search</a> to see if there is something similar</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<% include includes/underfooter.html %>
+<% include includes/scripts-common.html %>
+<% include includes/submenu-script.html %>
+<% include includes/analytics.html %>
+</body>
+</html>

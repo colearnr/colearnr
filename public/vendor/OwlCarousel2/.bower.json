@@ -1,0 +1,24 @@
+{
+  "name": "owl.carousel",
+  "version": "2.0.0",
+  "main": [
+    "./dist/owl.carousel.js"
+  ],
+  "dependencies": {
+    "jquery": ">= 1.8.3"
+  },
+  "devDependencies": {
+    "foundation": "5.2.2",
+    "qunit": "1.14.0"
+  },
+  "homepage": "https://github.com/colearnr/OwlCarousel2",
+  "_release": "2.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.0.0",
+    "commit": "d0eb081fb24118c907c9f39888ce1066b4a1df80"
+  },
+  "_source": "git://github.com/colearnr/OwlCarousel2.git",
+  "_target": "2.0.0",
+  "_originalSource": "git://github.com/colearnr/OwlCarousel2.git"
+}

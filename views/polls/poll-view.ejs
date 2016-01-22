@@ -1,0 +1,125 @@
+<html>
+    <head>
+    <title><%- lbit.title || '' %></title>
+    <link href="<%- locals.page_options.cdn_prefix %>/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/readability/readability-home.css?<%- locals.page_options.version %>" type="text/css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/vendor/fontawesome/css/font-awesome.min.css?<%- locals.page_options.version %>">
+    <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/vendor/code-prettify/themes/colearnr.css">
+    <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/summernote/summernote-overrides.css?<%- locals.page_options.version %>">
+    <script src="<%- locals.page_options.cdn_prefix %>/javascripts/jquery-1.9.1.min.js" ></script>
+    <script src="<%- locals.page_options.cdn_prefix %>/javascripts/bootstrap.min.js"></script>
+    <script src="<%- locals.page_options.cdn_prefix %>/vendor/bootstrap-notify/js/bootstrap-notify.js"></script>
+    <style>
+    .votes-description {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 14px;
+    }
+    .poll-choice {
+        font-weight: normal;
+        margin-left: 20px;
+        text-transform: capitalize;
+        color: #000;
+    }
+    .form-horizontal {
+        margin-top: 20px;
+    }
+    .result-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .result-table td {
+        padding: 8px;
+    }
+
+    .result-table > tbody > tr > td:first-child {
+        width: 20%;
+        max-width: 300px;
+        text-align: right;
+    }
+    .notifications{position:fixed; z-index:1000;}.notifications.top-right{right:10px;top:25px;}
+    </style>
+    </head>
+    <body>
+        <div id="">
+            <div id="" class="style-ebook">
+                <div class='notifications top-right'></div>
+                <div id="articleContent" class="margin-medium size-medium">
+                    <% if (!util.empty(lbit.title) && lbit.title != "#") { %>
+                    <div class="page-header">
+                    <h1 class="readable-title"><%- lbit.title %></h1>
+                    </div>
+                    <% } %>
+                    <% var body = util.parseJson(lbit.body); %>
+                    <div class="well well-lg">
+                    <%
+                      var bodyStr = body.body || '';
+                      if (locals.host_url_http && locals.host_url_https) {
+                        bodyStr = bodyStr.replace(new RegExp(locals.host_url_http, 'ig'), locals.host_url_https);
+                      }
+                    %>
+                    <%- bodyStr %>
+                    </div>
+                    <div id="vote-content-div">
+                        <% include poll-vote-result.ejs %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/javascripts/socket.io/socket.io.min.js" ></script>
+        <script src="<%- locals.page_options.cdn_prefix %>/javascripts/ejs.min.js?<%- locals.page_options.version %>" ></script>
+        <script>
+        EJS.config({cache: false});
+        var user = {'_id': '<%- locals.user ? locals.user._id : "guest" %>', 'guestMode' : <%- !locals.user || !locals.user._id %>};
+        var user_voted = <%- lbit.votes && user && user._id && lbit.votes.indexOf(user._id) != -1 %>;
+        var socket = io.connect('<%- config.socket_server %>', {
+            'reconnection delay': 1000
+        });
+        socket.on('connect', function (data) {
+            socket.emit('api:join_room', 'lbit:<%- lbit._id %>');
+        });
+
+        socket.on('api:poll_myvote', function (data) {
+            data['user'] = user;
+            new EJS({url:'/ejs/polls/poll-vote-result.ejs'}).update('vote-content-div', data);
+        });
+
+        socket.on('api:poll_vote', function (data) {
+            if (user_voted || user.guestMode) {
+                data['user'] = user;
+                new EJS({url:'/ejs/polls/poll-vote-result.ejs'}).update('vote-content-div', data);
+            }
+        });
+
+        $("#vote-form").submit(function(event) {
+            event.preventDefault();
+            var data = $("#vote-form").serialize();
+            $.ajax({
+                url: '/poll/vote',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    $('.top-right').notify({
+                        message: { text: "You have voted succesfully!" }
+                    }).show();
+                    var voteObj = {user: '<%- (user && user._id) ? user._id : '' %>', lbit: '<%- (lbit && lbit._id) ? lbit._id : '' %>', option: $("#vote-form input[type='radio']:checked").val()};
+                    socket.emit('send:poll_vote', voteObj);
+                    user_voted = true;
+                },
+                error: function (xhr, status, data) {
+                    $('.top-right').notify({
+                        type: 'danger',
+                        message: { text: xhr.responseText }
+                    }).show();
+                }
+            });
+        });
+
+        $( window ).unload(function() {
+            socket.emit('api:leave_room', 'lbit:<%- lbit._id %>');
+        });
+
+        </script>
+    </body>
+</html>

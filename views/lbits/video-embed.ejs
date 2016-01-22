@@ -1,0 +1,200 @@
+<html>
+    <head>
+    <title><% if (locals.lbit && locals.lbit.title) { %><%- lbit.title %> | Powered by CoLearnr <% } else { %><%- locals.title || locals.url %> | Powered by CoLearnr<% } %></title>
+    <script src="<%- locals.page_options.cdn_prefix %>/javascripts/jquery-1.9.1.min.js" ></script>
+    <script src="<%- locals.page_options.cdn_prefix %>/vendor/postmessage/ender-postmessage.min.js"></script>
+    <script src="<%- locals.page_options.cdn_prefix %>/javascripts/videojs/video.all.js?<%- locals.page_options.version %>"></script>
+    <script>
+        videojs.options.flash.swf = "<%- locals.page_options.cdn_prefix %>/javascripts/videojs/video-js.swf";
+    </script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/videojs/video-embed.css?<%- locals.page_options.version %>" />
+    </head>
+    <body>
+        <%
+            var width = '640';
+            var height = '480';
+            var topic_id = (locals.topic && locals.topic._id) ? topic._id : '';
+            if (locals.embedSize) {
+                if (embedSize.toLowerCase() == 'small') {
+                    width = '360';
+                    height = '240';
+                } else if (embedSize.toLowerCase() == 'medium') {
+                    width = '480';
+                    height = '360';
+                } else if (embedSize.toLowerCase() == 'full') {
+                    width = '800';
+                    height = '640';
+                }
+            }
+        %>
+        <div class="media-wrapper"><div class="media-container"><div class="media-shadow">
+        <% if (locals.lbit && locals.lbit.title && info) { %>
+        <p class="embed-title"><%- lbit.title %></p>
+        <% } %>
+        <% var uid = Math.floor(Math.random()*101) %>
+        <% if (locals.type == 'video' || locals.type == 'flash-video') { %>
+            <%
+            var vid_type = 'mp4';
+            switch (locals.extn) {
+                case '.flv':
+                    vid_type = 'flv';
+                    break;
+                case '.webm':
+                    vid_type = 'webm';
+                    break;
+                default:
+                    vid_type = 'mp4';
+                    break;
+            }
+            %>
+            <video x-webkit-airplay="allow" id="ownvideo-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>" data-setup='{"nativeControlsForTouch": true}'><source src="<%- locals.url %>" type="video/<%- vid_type %>" />
+                <track kind="chapters" src="/lbit/tracks/chapters/<%- lbit._id %>" srclang="en" label="English" default>
+            </video>
+            <script>
+            videoJsObj = videojs("ownvideo-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto", 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>',
+            plugins: { autoResume: { namespace: 'namespace', 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>', 'start' : <%- lbit.start || options.start || null %>, 'end': <%- lbit.end || options.end || null %>, autoplay: false } } }, function(){
+                this.videoAnalytics({'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>'});
+                <% if (locals.info) { %>
+                this.overlay({
+                  content: '<a href="http://www.colearnr.com" target="_new"><img src="/images/logo-mini.png" width="64px" height="auto" /></a>',
+                  overlays: [{
+                    start: 'pause',
+                    end: 'play',
+                    align: 'top-right'
+                  }]
+                });
+                this.hotkeys();
+                <% } %>
+            });
+            </script>
+        <% } else if (locals.type == 'rtmp-live') { %>
+            <video x-webkit-airplay="allow" id="livevideo-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>" data-setup='{ "techOrder": ["flash"] }'><source src="<%- locals.url %>" type="rtmp/mp4" /></video>
+            <script>
+            videoJsObj = videojs("livevideo-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto", 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>' }, function() {
+            });
+            </script>
+        <% } else if (locals.type == 'hls-live') { %>
+            <video x-webkit-airplay="allow" id="hlslive-<%- uid %>" class="video-js vjs-default-skin" autoplay="autoplay" controls poster="" width="<%- width %>" height="<%- height %>"><source src="<%- locals.url %>" type="video/mp4" /></video>
+            <script>
+            videoJsObj = videojs("hlslive-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto", 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>', plugins: { autoResume: { namespace: 'namespace', 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>', 'start' : null, 'end': null, autoplay: false } } }, function(){
+                this.videoAnalytics({'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>'});
+                <% if (locals.info) { %>
+                this.overlay({
+                  content: '<a href="http://www.colearnr.com" target="_new"><img src="/images/logo-mini.png" width="64px" height="auto" /></a>',
+                  overlays: [{
+                    start: 'pause',
+                    end: 'play',
+                    align: 'top-right'
+                  }]
+                });
+                this.hotkeys();
+                <% } %>
+            });
+            </script>
+        <% } else if (locals.type == 'audio') { %>
+            <audio id="ownaudio-<%- uid %>" class="audio-js" src="<%- locals.url %>" preload="auto"></audio>
+            <script>
+            if (window.audiojs) {
+                audiojs.events.ready(function() {
+                    audiojs.createAll();
+                });
+            }
+            </script>
+        <% } else if (locals.type == 'youtube') { %>
+            <video x-webkit-airplay="allow" id="youtube-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>"><source src="<%- locals.url %>" type="video/youtube" />
+                <track kind="chapters" src="/lbit/tracks/chapters/<%- lbit._id %>" srclang="en" label="English" default>
+            </video>
+        <% } else if (locals.type == 'vimeo') { %>
+            <video x-webkit-airplay="allow" id="vimeo-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>"><source src="<%- locals.url %>" type="video/vimeo" />
+                <track kind="chapters" src="/lbit/tracks/chapters/<%- lbit._id %>" srclang="en" label="English" default>
+            </video>
+        <% } else if (locals.type == 'hstalks') { %>
+            <script type="text/javascript" src="http://hstalks.com/tycoon/layers/gui/base/js/json2.js?6"></script>
+            <script type="text/javascript" src="http://hstalks.com/tycoon/layers/gui/base/js/Utilities.js?6"></script>
+            <script type="text/javascript" src="http://hstalks.com/tycoon/layers/gui/base/js/AJAX.js?6"></script>
+            <script type="text/javascript" src="http://hstalks.com/tycoon/layers/gui/base/js/HyperlinkTabControl.js?6"></script>
+            <script type="text/javascript" src="http://hstalks.com/main/js/Effects.js?6"></script>
+            <script type="text/javascript" src="http://hstalks.com/main/js/HSTEffects.js?6"></script>
+            <link href="http://hstalks.com/main/css/global/page_layout.css?6" rel="stylesheet" type="text/css" />
+            <link href="http://hstalks.com/main/css/global/styles.css?6" rel="stylesheet" type="text/css" />
+            <link href="http://hstalks.com/main/css/global/styles-blsc.css?6" rel="stylesheet" type="text/css" />
+            <div id="ovpTalkPlayer" style="background-color:#111111; width:627px; height:100%;">
+                <div style="text-align:center; color:#ddd; padding-top:250px;"><p><img src="http://hstalks.com/main/img/player/player_loading.gif" width="32" height="32" alt="" /></p><p>&nbsp;Loading...</p></div>
+            </div>
+            <div id="ovpTalkPlayerErrorPanel" class="talkPlayerErrorPanel">
+                <p>
+                  This talk is not yet available, however should be within a few days.
+                </p><p>
+                  We apologize for the inconvenience.
+                </p>
+            </div>
+            <script src="<%- locals.page_options.cdn_prefix %>/vendor/kaltura/assets/javascripts/kplayer.js"></script>
+            <script src="<%- locals.page_options.cdn_prefix %>/vendor/kaltura/assets/javascripts/kplayer-config.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $('.embed-title').hide();
+                    $('.embed-description').hide();
+                    launchKalturaPlayer('/proxy?url=http://hstalks.com/websvc/flashAuth.php%3Fovp=1%26talks=<%- options.t || '' %>%26r=<%- options.r || '' %>%26j=<%- options.j || '755' %>%26c=<%- options.c || '' %>',
+                                          '/vid_track?',
+                                          false,
+                                          null,
+                                          null,
+                                          Math.round((new Date()).getTime() / 1000),
+                                          'akamai',
+                                          false,
+                                          false);
+                  });
+            </script>
+        <% } %>
+        <% if (locals.lbit && locals.lbit.description && info) { %>
+        <div class="embed-description"><p style="margin: 0 10px 0px 10px;"><%- lbit.description %></p></div>
+        <% } %>
+        </div></div></div>
+        <% if (locals.type == 'youtube' || locals.type == 'vimeo') { %>
+        <script>
+        var args = { "controls": true, "autoplay": false, "preload": "auto", "techOrder": ['<%- locals.type %>'],
+            "src": '<%- url %>',
+            plugins: { autoResume: { namespace: 'namespace', 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>', 'start' : <%- lbit.start || options.start || null %>, 'end': <%- lbit.end || options.end || null %>, autoplay: false } } };
+
+            <% if (locals.type == 'youtube') { %>
+            args['ytcontrols'] = false;
+            args['quality'] = '480p';
+            args['autoplay'] = false;
+            args['playsInline'] = true;
+            args['forceSSL'] = true;
+            args['forceHTML5'] = true;
+            <% } %>
+            args['start'] = <%- lbit.start || options.start || null %>;
+            args['end'] = <%- lbit.end || options.end || null %>;
+            args['width'] = '<%- width %>';
+            args['height'] = '<%- height %>';
+            args['lbit_id'] = '<%- lbit._id %>';
+            args['topic_id'] = '<%- topic_id %>';
+
+            videoJsObj = videojs("<%- locals.type %>-<%- uid %>", args, function(){
+                this.videoAnalytics({'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>'});
+                <% if (locals.info) { %>
+                this.overlay({
+                  content: '<a href="http://www.colearnr.com" target="_new"><img src="/images/logo-mini.png" width="64px" height="auto" /></a>',
+                  overlays: [{
+                    start: 'pause',
+                    end: 'play',
+                    align: 'top-right'
+                  }]
+                });
+                this.hotkeys();
+                <% } %>
+            });
+            </script>
+        <% } %>
+        <% if (options.notifyTime) { %>
+        <script>
+            videoJsObj.on('pause', function() {
+                if ($.postMessage) {
+                    $.postMessage(JSON.stringify({currentTime: videoJsObj.currentTime(), duration: videoJsObj.duration()}), '*', parent);
+                }
+            });
+        </script>
+        <% } %>
+    </body>
+</html>

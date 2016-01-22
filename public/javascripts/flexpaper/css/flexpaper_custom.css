@@ -1,0 +1,14 @@
+.flexpaper_printdialog td,
+.flexpaper_tblabel {
+    color: #000;
+}
+
+.flexpaper_pages_border {
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+}
+
+.flexpaper_page {
+    margin-top: 10px !important;
+}

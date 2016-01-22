@@ -1,0 +1,74 @@
+<script src="<%- page_options.cdn_prefix %>/vendor/postmessage/ender-postmessage.min.js"></script>
+<div class="control-group">
+  <label class="control-label">Preview</label>
+  <div class="controls">
+      <iframe id="previewVideo" src='/lbit/embed/<%- lbit._id %>?info=false&notifyTime=true&<% if (locals.topic && locals.topic._id) { %>topicId=<%- locals.topic._id %>&<% } %>embedSize=medium' frameborder='0' height='400px' width='520px'></iframe>
+  </div>
+</div>
+
+<% var chapters = util.parseJson(lbit.track_chapters); %>
+<% var chapters_length = (chapters && chapters.length && chapters.length > constants.DEFAULT_CHAPTERS_COUNT) ? chapters.length : constants.DEFAULT_CHAPTERS_COUNT; %>
+<input id="total_chapters" name="total_chapters" type="hidden" value="<%- chapters_length %>"></input>
+<input id="video_duration" name="video_duration" type="hidden" value="<%- lbit.video_duration || null %>"></input>
+<div class="control-group">
+<label class="control-label">Chapters</label>
+  <div class="controls">
+
+    <% for (var i=1; i<chapters_length + 1; i++) { %>
+    <div class="row" id="chapter_row_<%- i %>">
+      <div class="col-md-3 col-sm-3 col-xs-3">
+        <input id="time_<%- i %>" name="time_<%- i %>" type="text" placeholder="Start time <%- i %>" class="form-control input-xlarge positive-integer time_txt" value="<%- (chapters[i-1]) ? chapters[i-1].time : "" %>" required="">
+      </div>
+      <div class="col-md-9 col-sm-9 col-xs-9" style="padding-left: 0;">
+        <input id="chapter_<%- i %>" name="chapter_<%- i %>" type="text" placeholder="Chapter text <%- i %>" class="form-control input-xlarge chapter_txt" value="<%- (chapters[i-1]) ? chapters[i-1].text : "" %>" required="">
+      </div>
+    </div>
+    <p class="apollo-separator"></p>
+    <% } %>
+    <p class="help-block">Enter start time in seconds in the first box. Chapter name in the second box 2</p>
+    <button type="button" id="addChapter" class="btn btn-link pull-right"><span class="fa fa-plus"></span> Add another</button>
+    </p>
+  </div>
+</div>
+
+<script>
+    $('#addChapter').click(function() {
+      var newRowNum = parseInt($('#total_chapters').val(), 10) + 1;
+      var addRow = $('#chapter_row_' + (newRowNum - 1));
+      var newRow = addRow.clone();
+      newRow.attr('id', 'chapter_row_' + newRowNum);
+      newRow.find('.time_txt').attr('id', 'time_' + newRowNum);
+      newRow.find('.time_txt').attr('name', 'time_' + newRowNum);
+      newRow.find('.time_txt').attr('placeholder', 'Start time ' + newRowNum);
+      newRow.find('.time_txt').val('');
+
+      newRow.find('.chapter_txt').attr('id', 'chapter_' + newRowNum);
+      newRow.find('.chapter_txt').attr('name', 'chapter_' + newRowNum);
+      newRow.find('.chapter_txt').attr('placeholder', 'Chapter text ' + newRowNum);
+      newRow.find('.chapter_txt').val('');
+      addRow.after(newRow);
+      addRow.after($('<p class="apollo-seperator"></p>'));
+      $('#total_chapters').val(newRowNum);
+      return false;
+  });
+
+    if ($.receiveMessage) {
+        $.receiveMessage(function (msg) {
+            if (msg && msg.data && typeof msg.data == "string" ) {
+                try {
+                  var data = JSON.parse(msg.data);
+                  var currentTime = data.currentTime;
+                  if (currentTime) {
+                      currentTime = parseFloat(currentTime);
+                  }
+                  var duration = data.duration;
+                  if (duration) {
+                    $('#video_duration').val(duration);
+                  }
+                } catch (e) {
+
+                }
+            }
+        });
+    }
+</script>

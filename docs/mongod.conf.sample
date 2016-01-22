@@ -1,0 +1,39 @@
+systemLog:
+  destination: file
+  path: "/var/log/mongodb/mongodb.log"
+  quiet: true
+  logAppend: true
+  logRotate: reopen
+storage:
+  dbPath: "/var/lib/mongodb"
+  directoryPerDB: true
+  journal:
+    enabled: true
+    commitIntervalMs: 250
+  engine: wiredTiger
+  wiredTiger:
+    engineConfig:
+      cacheSizeGB: 1
+      journalCompressor: snappy
+      directoryForIndexes: true
+    collectionConfig:
+      blockCompressor: snappy
+    indexConfig:
+      prefixCompression: true
+operationProfiling:
+   slowOpThresholdMs: 250
+   mode: slowOp      
+processManagement:
+  pidFilePath: "/var/run/mongodb/mongod.pid"
+  fork: true  
+net:
+  port: 27017
+  http:
+    enabled: false
+    JSONPEnabled: false
+replication:
+  replSetName: clrs0
+  enableMajorityReadConcern: true
+security:
+  keyFile: /var/lib/mongodb/dbkey.txt
+  clusterAuthMode: keyFile

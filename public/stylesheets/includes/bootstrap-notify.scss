@@ -1,0 +1,35 @@
+.notifications {
+  position: fixed;
+  z-index: 9000;
+  &.top-right {
+    right: 10px;
+    top: 25px;
+  }
+  &.top-left {
+    left: 10px;
+    top: 25px;
+  }
+  &.bottom-left {
+    left: 10px;
+    bottom: 25px;
+  }
+  &.bottom-right {
+    right: 10px;
+    bottom: 25px;
+  }
+  > div {
+    position: relative;
+    z-index: 9999;
+    margin: 5px 0px;
+  }
+  &.center {
+    top: 48%;
+    left: 0;
+    width: 100%;
+    > div {
+      margin: 5px auto;
+      width: 20%;
+      text-align: center;
+    }
+  }
+}

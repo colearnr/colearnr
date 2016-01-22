@@ -1,0 +1,51 @@
+@import "base.scss";
+
+.search-results {
+  max-height: 60%;
+  overflow: auto;
+  position: fixed;
+}
+
+.search-category {
+  font-weight: bold;
+  background: $mercury;
+  width: 100%;
+}
+
+.search-item {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+}
+
+.search-item-info {
+  font-weight: lighter;
+  font-size: 10px;
+  padding-left: 15px;
+}
+
+.menu-category {
+  font-size: 14px;
+  font-weight: bold;
+  background: $mercury;
+  clear: both;
+  color: $cl_blue_border;
+  display: block;
+  line-height: 25px;
+  padding: 3px 25px;
+  white-space: nowrap;
+}
+
+.nav-search {
+  margin-top: 0px;
+  width: 70%;
+  float: right;
+  height: 34px;
+}
+
+.search-result em, .description em, .item_title em, .search-item em {
+  font-style: normal;
+  background: rgba(255, 255, 140, 0.5);
+}

@@ -1,0 +1,14 @@
+<html>
+<head>
+    <title><%- title %></title>
+</head>
+<body>
+<% if (names.length) { %>
+<ul>
+    <% names.forEach(function(name){ %>
+    <li><%- name %></li>
+    <% }) %>
+</ul>
+<% } %>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<nav class="fabContainer">
+  <% if (locals.apps) { %>
+    <% for (var key in apps) { %>
+      <% var app = apps[key] %>
+      <a class="buttons" data-toggle="tooltip" data-placement="left" title="<%- app.learnbitDescription %>" href="<%- constants.APP_PREFIX %>/<%- app.learnbitType %>/new?topic_id=<%- topicObj._id %>">
+        <% if (app.textIcon) { %><i class="fa <%- app.textIcon %>"></i>
+          <% } %>
+      </a>
+    <% } %>
+  <% } %>
+  <a href="/poll/new?topic_id=<%- topicObj._id %>" class="buttons" data-toggle="tooltip" data-placement="left" title="Create poll (p)"><i class="fa fa-tasks"></i></a>
+  <a href="#" id="fileadd" class="buttons" data-toggle="tooltip" data-placement="left" title="Upload file"><i class="fa fa-cloud-upload" ></i></a>
+  <a id="linkEmbedPopup" role="button" data-placement="left" data-html="true" href="#" rel="clickover" data-content='<textarea class="form-control" id="lbit_embed" cols="25" rows="5" placeholder="Copy url or embed code from external sites here"></textarea><div class="pull-right" style="margin: 10px 0 10px 0; font-size: 14px;"><a id="lbitadd" href="javascript:addLbit()" class="btn btn-primary">Add</a><button class="btn btn-link" data-dismiss="clickover" type="button">Cancel</button></div>'
+  class="buttons" data-toggle="tooltip" title="Add link or embed code"><i class="fa fa-link"></i></a>
+  <a href="/lbit/new?topic_id=<%- topicObj._id %>" class="buttons" data-toggle="tooltip" data-placement="left" title="Blank page (c)"><i class="fa fa-file-text-o"></i></a>
+  <a class="buttons plusButton" href="javascript:fabMenu();">
+    <span class="buttons" data-toggle="tooltip" data-placement="left" title="Add content (a)"><span class="rotate" ></span></span>
+  </a>
+</nav>

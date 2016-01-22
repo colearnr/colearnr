@@ -1,0 +1,157 @@
+<% if (req.user && !req.user.guestMode) { %>
+
+<script type="text/javascript" defer>
+<% if (locals.topicObj && topicObj._id) { %>
+    var startMsgShown = false;
+    var ACCEPT_EXT = [<%- locals.topicObj.ACCEPT_EXT || config.ACCEPT_EXT %>];
+    var VIDEO_ACCEPT_EXT = [<%- locals.topicObj.VIDEO_ACCEPT_EXT || config.VIDEO_ACCEPT_EXT %>];
+    ACCEPT_EXT.forEach(function (aext) {
+        ACCEPT_EXT.push("." + aext.toUpperCase());
+    });
+    VIDEO_ACCEPT_EXT.forEach(function (aext) {
+        VIDEO_ACCEPT_EXT.push("." + aext.toUpperCase());
+    });
+
+    $(function() {
+        if (typeof window.Dropzone !== undefined) {
+            var tid = $("#wall").data('id');
+            var lbitDropzone = new Dropzone(document.body, {
+                url: '<%- config.learnbit_upload_url || "/lbit/upload" %>',
+                maxFilesize: 50,
+                paramName: 'file',
+                uploadMultiple: true,
+                parallelUploads: 1,
+                clickable: 'a#fileadd',
+                previewsContainer: "#previews",
+                acceptedFiles: ACCEPT_EXT.toString(),
+                dictResponseError: "There is a problem adding this learnbit"
+            });
+            lbitDropzone.on("sending", function(e, xhr, form) {
+                xhr.setRequestHeader('cl-sessionid', window.sessionid || '');
+                xhr.setRequestHeader('cl-upload-topic', tid);
+            });
+
+            lbitDropzone.on("drop", function(e, f) {
+                var handles = [];
+                if (e.dataTransfer.types) {
+                    [].forEach.call(e.dataTransfer.types, function (type) {
+                        handles.push(entities(e.dataTransfer.getData(type)));
+                    });
+                }
+
+                var val = e.dataTransfer.getData('Text');
+                if (!val && handles.length) {
+                    val = handles[0];
+                }
+                if (!val || val.substring(0, 6) === "about:" || val.substring(0, 11) === "javascript:" || val.substring(0, 5) === "file:") {
+                    return false;
+                }
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                return saveUrl(val, tid);
+            });
+
+            lbitDropzone.on("success", function(file, dataObj) {
+              setTimeout(function() {
+                lbitDropzone.removeFile(file);
+              }, 500);
+              if (dataObj.message) {
+                $('.top-right').notify({
+                  type: 'info',
+                  message: { text: dataObj.message}
+                }).show();
+              }
+              if (!dataObj.data) {
+                return;
+              }
+              var $newItems = $(dataObj.data.replace(/\n/,''));
+              $('.topic-' + tid).isotope( 'insert', $newItems);
+               // Setup pretty photo and edit in place
+               if ( location.href.indexOf('#lbit') !== -1 ) location.hash = '';
+               $('.emptyTopicMsg').hide();
+               $('.topic-' + tid).isotope('layout');
+               $.each($newItems.find('img.lazy'), function (index, anode) {
+                  var elem = $(anode);
+                  var lbitId = elem.prop('id').replace('id-','').replace('-thumbnail', '');
+                  if (lbitId) {
+                    if (socket) {
+                      socket.emit('api:join_room', 'lbit:' + lbitId);
+                    }
+                  }
+                  if (elem.attr('src') && elem.attr('src') != elem.attr('data-original')) {
+                    elem.attr('src', elem.attr('data-original'));
+                  }
+               });
+               setup();
+            });
+
+            lbitDropzone.on("error", function(file, errorMessage) {
+                $('.dropzone-content').hide();
+                $('.top-right').notify({
+                type: 'danger',
+                message: { text: 'Oops. We are not able to add ' + file.name + '. Please try again later'}
+              }).show();
+            });
+        }
+    });
+
+    function saveUrl(val, tid) {
+        var lbit = {tid: tid};
+        var url = '';
+        var content = '';
+        if (isUrl(val)) {
+            url = encodeURI(val);
+        } else {
+            content = val;
+        }
+        lbit['url'] = url;
+        lbit['content'] = content;
+        lbit['sessionid'] = window.sessionid || null;
+        $.post('<%- config.learnbit_add_url || "/lbit/add" %>', lbit).done(function(data) {
+            if (data) {
+                if (data.redirectUrl) {
+                    window.location = data.redirectUrl;
+                } else {
+                    var $newItems = $(data.data.replace(/\n/,''));
+                    $('.topic-' + tid).isotope( 'insert', $newItems);
+                    // Setup pretty photo and edit in place
+                    if ( location.href.indexOf('#lbit') !== -1 ) location.hash = '';
+                    $.each($newItems, function (index, anode) {
+                      var tmpA = $(anode).prop('id').split('-');
+                      if (tmpA && tmpA.length > 2) {
+                        var lbitId = tmpA[1];
+                        if (lbitId) {
+                          if (socket) {
+                            socket.emit('api:join_room', 'lbit:' + lbitId);
+                          }
+                        }
+                      }
+                    });
+                    setup();
+                    $('.emptyTopicMsg').hide();
+                }
+            }
+        }).error(function(xhr, status, data) {
+                    $('.top-right').notify({
+                        type: 'danger',
+                        message: { text: xhr.responseText }
+                    }).show();
+                });
+        return false;
+    }
+
+    function addLbit() {
+        var content = $('#lbit_embed').val();
+        var tid = $("#wall").data('id');
+        saveUrl(content, tid);
+        $('#lbit_embed').val('');
+    }
+
+<% } %>
+function videoadd() {
+    var tid = $("#wall").data('id');
+    // Video add
+}
+</script>
+<% } %>

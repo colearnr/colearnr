@@ -1,0 +1,84 @@
+<script src="<%- page_options.cdn_prefix %>/javascripts/bootstrap-tour.min.js?<%- page_options.version %>"></script>
+<script>
+    var tour = new Tour({
+        name: "coLearnr-tour",
+        keyboad: true,
+        template: "<div class='popover tour'>\
+            <div class='arrow'></div>\
+            <h3 class='popover-title'></h3>\
+            <div class='popover-content'></div>\
+            <div class='popover-navigation'>\
+                <button class='btn btn-default' data-role='prev'>« Prev</button>\
+                <button class='btn btn-primary' data-role='next'>Next »</button>\
+                <button class='btn btn-link' data-role='end'>End tour</button>\
+            </div>\
+            </nav>\
+          </div>",
+        onEnd: function (tour) { $.get('/tour-finish'); window.localStorage.clear(); }
+    });
+    tour.addStep({
+        element: ".navbar-brand",
+        <% if (locals.user && !locals.user.guestMode) { %>
+        title: "Welcome <%- user.displayName %>!",
+        <% } else { %>
+        title: "Welcome to CoLearnr!",
+        <% } %>
+        content: "Let's learn about CoLearnr in the next few minutes. Click next to continue.",
+        placement: "bottom",
+        backdrop: false
+    });
+    tour.addStep({
+        element: ".navbar-brand",
+        title: "It's all topic",
+        content: "Every page on CoLearnr is a <strong>topic</strong>. Topic pages will have your content and sub-topics",
+        placement: "bottom",
+        backdrop: false
+    });
+    tour.addStep({
+        element: "#learn-menu",
+        title: "Topic menu",
+        content: "You can use this menu to find existing topics or create your own personal topic.",
+        placement: "bottom"
+    });
+    tour.addStep({
+        element: "#discuss-menu",
+        title: "Discuss menu",
+        content: "Use the discuss menu to participate in discussions about a topic. Discussions are <strong>realtime</strong> and way cool. Check it out!",
+        placement: "bottom"
+    });
+    tour.addStep({
+        element: "#collab-menu",
+        title: "Collaborate menu",
+        content: "Use this menu for collaborating with other users on this topic",
+        placement: "bottom"
+    });
+
+    tour.addStep({
+        element: '.item:first',
+        title: "This is your content",
+        content: "We support several kinds of content - videos, documents, images, web pages. You can view them by clicking the link",
+        placement: "right"
+    });
+    tour.addStep({
+        element: '.section-link:first',
+        title: "This is a sub-topic",
+        content: "You can find upto four recent content here. Navigate to the topic by clicking the name to view all of its contents.",
+        placement: "right"
+    });
+
+    <% var enc_url = encodeURIComponent(host_url) %>
+    <% var enc_text = encodeURIComponent('I just found this collaborative learning platform @CoLearnr - ' + host_url) %>
+
+    tour.addStep({
+        element: ".navbar-brand",
+        title: "All done!",
+        content: '<div class="share-block"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<%- enc_url %>" id="facebook-share"><i class="fa fa-facebook icon-2x" style="padding-right: 10px;"></i></a><a target="_blank" href="https://twitter.com/intent/tweet?url=<%- enc_url %>&text=<%- enc_text %>" id="twitter-intent"><i class="fa fa-twitter icon-2x" style="padding-right: 10px;"></i></a><a target="_blank" href="https://plus.google.com/share?url=<%- enc_url %>" id="google-share"><i class="fa fa-google-plus icon-2x" style="padding-right: 10px;"></i></a></div>Do tweet about us and share with your friends. Happy CoLearning!<br/>',
+        placement: "bottom",
+        backdrop: false
+    });
+
+    $(document).ready(function() {
+        tour.init();
+        tour.start(true);
+    });
+</script>

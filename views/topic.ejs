@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title><% if (locals.topicObj) { %><%- topicObj.name %><% } %> | CoLearnr</title>
+    <meta name="description" content="<% if (locals.topicObj && locals.topicObj.description) { %><%- topicObj.description %><% } %>">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Expires" CONTENT="-1">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta property="og:title" content="<% if (locals.topicObj) { %><%- topicObj.name %> | CoLearnr<% } %>"/>
+    <meta property="og:description" content="<% if (locals.topicObj && topicObj.description) { %><%- topicObj.description %><% } %>"/>
+    <meta property="og:type" content="category"/>
+    <% var host_url = config.base_url + (config.use_port ? (':' + config.port) : '') %>
+    <meta property="og:url" content="<% if (locals.topicObj && topicObj._id) { %><%- host_url %>/topic/<%- topicObj._id %>/<%- topicObj.id %><% } %>"/>
+    <meta property="og:image" content="<% if (locals.topicObj && locals.topicObj.img_url && topicObj.img_url.length) { %><%- topicObj.img_url[0] %><% } else { %><%- host_url %>/images/logo-mini.png<% } %>"/>
+    <meta property="fb:app_id" content="<%- config.fb_app_id %>"/>
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@colearnr">
+    <meta name="twitter:creator" content="@colearnr">
+    <meta name="twitter:title" content="<% if (locals.topicObj) { %><%- topicObj.name %> | CoLearnr<% } %>">
+    <meta name="twitter:description" content="<% if (locals.topicObj && topicObj.description) { %><%- topicObj.description %><% } %>">
+    <meta name="twitter:image:src" content="<% if (locals.topicObj && locals.topicObj.img_url && topicObj.img_url.length) { %><%- topicObj.img_url[0] %><% } else { %><%- host_url %>/images/logo-mini.png<% } %>">
+
+    <% include includes/css-common.html %>
+    <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/jquery-ui/jquery-ui-flick.min.css">
+</head>
+<body>
+<% include includes/modals.html %>
+<div id="wrap">
+
+<% if (!locals.noChildMode && !locals.embedMode) { %>
+<!--start: Header -->
+<header>
+
+    <!--start: Container -->
+    <div class="container">
+    <% include includes/nav.html %>
+    </div>
+    <!--end: Container-->
+
+</header>
+<!--end: Header-->
+<% } %>
+<div id="main" <% if (locals.noChildMode) { %>style="padding-bottom: 0px;"<% } %> >
+<%
+var isCollaborator = locals.topicObj && topicObj.collaborators && topicObj.collaborators.indexOf(user._id) != -1;
+var isColearnr = locals.topicObj && topicObj.colearnrs && topicObj.colearnrs.indexOf(user._id) != -1;
+var isOwner = locals.topicObj && topicObj.added_by == user._id;
+var isAdmin = user.roles && _.indexOf(user.roles, constants.ALL_TOPIC_ADMIN_ROLE) != -1;
+%>
+<!-- start: Page Title -->
+<% if (!locals.embedMode) { %>
+<div id="page-title" class="row titleWArt">
+    <div class="coverArt">
+        <img src="">
+        <h1><% if (locals.topicObj) { %><% if (isCollaborator) { %><i class="fa fa-users parentTopicIcon" title="Collaborator"></i> &nbsp;<% } else if (topicObj.privacy_mode == constants.PUBLIC && !isColearnr) { %><i class="fa fa-globe parentTopicIcon" title="Public topic"></i> &nbsp;<% } else if(topicObj.type == 'search') { %><i class="fa fa-search parentTopicIcon" title="Saved search"></i><% } else if (topicObj.privacy_mode == constants.PRIVATE && !isColearnr) { %><i class="fa fa-lock parentTopicIcon" title="Private topic"></i> &nbsp;<% } %><span <% if (!locals.isMyTopicsPage && user && user.hasAddPermission) { %>id="id-<%- topicObj._id %>-name" class=""<% } %>><%- topicObj.name %></span><% } %></h1>
+        <span class="topic-description"><% if (locals.topicObj && topicObj.description) { %><%- topicObj.description %><% } %></span>
+        </h1>
+    </div>
+</div>
+<% } else if (!locals.noChildMode) { %>
+<div id="page-title" class="row embedded" style="">
+    <div class="coverArt embedded">
+        <img src="">
+    </div>
+</div>
+<% } %>
+<!-- end: Page Title -->
+<% include branding/body_enhancements.ejs %>
+<!--start: Wrapper-->
+<div id="wrapper" class="row wcoverArt <% if (locals.embedMode) { %>embedded<% } %>">
+
+<% if (!locals.noChildMode) { %>
+<% include includes/breadcrumb.html %>
+<% } %>
+
+<!-- start: <%- topicObj.name %> -->
+<div id="wall" class="" <% if (user && user.hasAddPermission) { %>data-id="<%- topicObj._id %>"<% } %>>
+    <% var ss_count = 1 %>
+    <% var lbitIds = [] %>
+    <% include includes/topic-alerts.html %>
+    <div class="topic_lbits_wrapper dropzone" id="wrapper-<% if (locals.topicObj && topicObj._id) { %><%- topicObj._id %><% } %>" data-id="<% if (locals.topicObj && topicObj._id) { %><%- topicObj._id %><% } %>" data-name="<% if (locals.topicObj && topicObj._id) { %><%- topicObj.name %><% } %>" data-startdate="<% if (locals.topicObj && topicObj._id && topicObj.startdate) { %><%- topicObj.startdate %><% } %>" data-enddate="<% if (locals.topicObj && topicObj._id && topicObj.enddate) { %><%- topicObj.enddate %><% } %>" data-collaborator="<%- isCollaborator || false %>" data-colearnr="<%- isColearnr || !isCollaborator %>" data-owner="<%- isOwner || false %>" data-admin="<%- isAdmin || false %>">
+    <div class="dropzone-content">
+        <div class="row">
+            <div id="previews" class="dropzone-previews"></div>
+        </div>
+    </div>
+    <div class="topic_lbits this_topic_lbits topic<% if (locals.topicObj && topicObj._id) { %>-<%- topicObj._id %><% } %>">
+        <% if (locals.learnbits && locals.learnbits.length) { %>
+        <% var topicToUse = topicObj %>
+        <% learnbits.forEach(function(lbit) { %>
+            <% lbitIds.push(lbit._id) %>
+            <% include lbits/lbits.compiled.ejs %>
+            <% ss_count = ss_count + 1 %>
+        <% }) %>
+        <% } %>
+        <div class="row container emptyTopicMsg <% if (locals.topicObj.empty && user && user.hasAddPermission) { %><% } else { %>hide<% } %>" style="margin-top: 20px; margin-left: -5px;">
+            <div class="col-xs-12">
+                <div class="jumbotron">
+                    <h1>This topic is empty</h1>
+                    <p>&nbsp;</p>
+                    <p>To add content, drag and drop any file on to this page or simply click the <i class="fa fa-plus"></i> button for options.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <% if (user && user.hasAddPermission) { %>
+    <% include includes/topic-add-lbit.html %>
+    <% } %>
+    <% if (!util.empty(locals.virtual_learnbits)) { %>
+    <% for (key in virtual_learnbits) { %>
+    <div class="topic_lbits_wrapper">
+    <div class="topic_lbits topic-<%- key %>">
+        <% var vlbits = virtual_learnbits[key]; %>
+        <% if (vlbits && vlbits.length) { %>
+            <div id="<%- key %>" class="title section-title">
+                <h3 style="text-transform: capitalize;"><%- key %></h3>
+            </div>
+            <% if (vlbits.length > 3) { %>
+            <div class="owl-carousel">
+            <% } %>
+            <% vlbits.forEach(function(lbit) { %>
+                <% var topicToUse = ((lbit.topics) ? lbit.topics[0] : null) %>
+                <% lbitIds.push(lbit._id) %>
+                <% include lbits/lbits.compiled.ejs %>
+                <% ss_count = ss_count + 1 %>
+            <% }) %>
+            <% if (vlbits.length > 3) { %>
+            </div>
+            <% } %>
+        <% } %>
+    </div>
+    </div>
+    <% } %>
+    <% } %>
+
+    <% if (locals.firstChilds) { %>
+    <% firstChilds.forEach(function (st) { %>
+        <%
+        var isStCollaborator = st.collaborators && st.collaborators.indexOf(user._id) != -1;
+        var isStColearnr = st.colearnrs && st.colearnrs.indexOf(user._id) != -1;
+        var isStOwner = st.added_by == user._id;
+        var emptyAddAllowed = (st.empty || !locals.learnbits.length) && user && user.hasAddPermission;
+        %>
+    <div class="topic_lbits_wrapper <% if (!sub_topics_lbits[st._id].length) { %>topic_lbits_wrapper_nav<% } %>" id="wrapper-<% if (st._id) { %><%- st._id %><% } %>" data-id="<% if (st._id) { %><%- st._id %><% } %>" data-name="<% if (st._id) { %><%- st.name %><% } %>" data-startdate="<% if (st.startdate) { %><%- st.startdate %><% } %>" data-enddate="<% if (st.enddate) { %><%- st.enddate %><% } %>" data-collaborator="<%- isStCollaborator || false %>" data-colearnr="<%- isStColearnr || true %>" data-owner="<%- isStOwner || false %>" data-admin="<%- isAdmin || false %>" data-href="/topic/<%- st._id %>/<%- st.id %><% if (locals.embedMode) { %>?embedMode=true<% } %>">
+    <div class="topic_lbits topic-<%- st._id %>">
+        <% if (locals.sub_topics_lbits && sub_topics_lbits[st._id] && ( (user && user.hasViewPermission) || sub_topics_lbits[st._id].length || locals.isMyTopicsPage)) { %>
+            <div id="<%- st.id %>" class="title section-title<% if (!sub_topics_lbits[st._id].length) { %>-empty<% } %>">
+                <h3><% if (isStCollaborator) { %><i class="fa fa-users topicIcon" title="Topic collaborator"></i> &nbsp;<% } else if (st.privacy_mode == constants.PUBLIC && !isStColearnr) { %><i class="fa fa-globe topicIcon" title="<%- st.name %> is public"></i> &nbsp;<% } else if(st.type == 'search') { %><i class="fa fa-search topicIcon" title="<%- st.name %> - search"></i> &nbsp;<% } else if (st.privacy_mode == constants.PRIVATE && !isStColearnr) { %><i class="fa fa-lock topicIcon" title="<%- st.name %> is private"></i> &nbsp;<% } %><a class="section-link" href="/topic/<%- st._id %>/<%- st.id %><% if (locals.embedMode) { %>?embedMode=true<% } %>" title="<% if (st.type == 'search') { %>Search for<% } else { %>View all in topic<% } %> <%- st.name %>"><%- st.name %><span class="section-all-link"></span></a><% if (!sub_topics_lbits[st._id].length) { %><span class="empty label label-default" title="Topic is empty">empty</span><% } %><% if (st.smart && st.linked_topics && st.linked_topics.length) { %><span class="linked label label-default" title="Topic is a link">linked</span><% } %><% if (st.hidden) { %><span class="deleted label label-warning" title="Topic is deleted">deleted</span><% } %></h3>
+                <% if (st.type == 'search') { %>
+                <div class="pull-right st_options hidden-xs"><a class="btn btn-default" href="/search?q=<%- st.name %>" title="Search <%- st.name %>"><i class="fa fa-search"></i>&nbsp;Search</a></div>
+                <% } %>
+            </div>
+            <% if (!util.empty(st.description)) { %>
+            <div class="topic-synopsis col-md-12 col-sm-12 col-xs-12" style="margin-left: 0">
+                <span><%- st.description %></span>
+            </div>
+            <% } %>
+
+            <% if (emptyAddAllowed) { %>
+              <div class="row emptyTopicMsg" style="">
+
+              </div>
+            <% } %>
+            <% var allSubLbits = sub_topics_lbits[st._id]; %>
+            <% if (allSubLbits.length > 3) { %>
+            <div class="owl-carousel">
+            <% } %>
+            <% allSubLbits.forEach(function(lbit) { %>
+                <% var topicToUse = st %>
+                <% lbitIds.push(lbit._id) %>
+                <% include lbits/lbits.compiled.ejs %>
+                <% ss_count = ss_count + 1; %>
+            <% }) %>
+            <% if (allSubLbits && allSubLbits.length > 3) { %>
+            <% include lbits/lbit-view-all.html %>
+            <% } %>
+            <% if (allSubLbits.length > 3) { %>
+            </div>
+            <% } %>
+        <% } %>
+    </div>
+    </div>
+    <% }) %>
+    <% } %>
+    <% if (!locals.learnbits.length && !locals.firstChilds.length) { %>
+        <% if (locals.isMyTopicsPage) { %>
+        <div class="topic_lbits_wrapper">
+        <div class="">
+            <div class="row" style="margin: 20px 0px 0px 0px; width: 100%;">
+                <div class="col-xs-12" style="margin-top: 20px;">
+                    <div class="jumbotron">
+                        <h1>Welcome <%- user.displayName %></h1>
+                        <p>&nbsp;</p>
+                        <p>Nothing to show here :(</p>
+                        <p>Why not create your first <a class="btn btn-primary" href="/topic/new">topic</a>?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <% } %>
+    <% } %>
+</div>
+
+</div>
+</div>
+</div>
+<% if (!locals.noChildMode) { %>
+<% include includes/underfooter.html %>
+<% } %>
+<% include includes/scripts-common.html %>
+<% include includes/topic-scripts-common.html %>
+<% include lbits/lbit-edit-script.html %>
+<% if (!locals.embedMode && !locals.noChildMode) { %>
+<% include includes/chat.html %>
+<% include includes/submenu-script.html %>
+<% include includes/analytics.html %>
+<% } %>
+<% if (locals.session && locals.session.tourMode && !locals.embedMode && !locals.noChildMode) { %>
+    <% include includes/site-tour.html %>
+<% } %>
+</body>
+</html>

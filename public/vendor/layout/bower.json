@@ -1,0 +1,24 @@
+{
+  "name": "layout",
+  "version": "1.4.3",
+  "homepage": "https://github.com/allpro/layout",
+  "authors": [
+    "Kevin Dalman <kevin@jquery-dev.com>"
+  ],
+  "description": "The Ultimate Page Layout Manager",
+  "main": [
+    "./source/stable/jquery.layout_and_plugins.min.js",
+    "./source/stable/layout-default.css"
+  ],
+  "dependencies": {
+
+  },
+  "license": "MIT + GPL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

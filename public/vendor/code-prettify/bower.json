@@ -1,0 +1,27 @@
+{
+  "name": "code-prettify",
+  "version": "0.0.3",
+  "homepage": "https://github.com/colearnr/code-prettify",
+  "authors": [
+    "Prabhu Subramanian <prabhu@colearnr.com>"
+  ],
+  "description": "Automatic syntax highlighting for source code embedded in html",
+  "main": [
+    "./dist/code-prettify.js",
+    "./dist/code-prettify.css"
+  ],
+  "keywords": [
+    "code",
+    "prettify"
+  ],
+  "license": "Apache",
+  "ignore": [
+    "node_modules",
+    "tools",
+    "distrib",
+    "js-modules",
+    "tests",
+    "styles",
+    "bower_components"
+  ]
+}

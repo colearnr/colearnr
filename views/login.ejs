@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- start: Meta -->
+<meta charset="utf-8">
+<title><% if (locals.mode && locals.mode=='register') { %>Sign up<% } else {%>Login<% } %> | CoLearnr</title>
+<meta name="description" content="Collaborate and Learn more with CoLearnr"/>
+<meta name="keywords" content=""/>
+<meta name="author" content=""/>
+<!-- end: Meta -->
+
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+
+<!-- start: Mobile Specific -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- end: Mobile Specific -->
+
+<!-- start: Facebook Open Graph -->
+<meta property="og:title" content="CoLearnr | Collaborate and Learn more"/>
+    <meta property="og:description" content="Collaborate and Learn more with CoLearnr"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="<%- host_url %>"/>
+    <meta property="og:image" content="<%- host_url %>/images/logo-main.png"/>
+    <meta property="fb:app_id" content="<%- config.fb_app_id %>"/>
+<!-- end: Facebook Open Graph -->
+
+<link rel="shortcut icon" href="<%- page_options.cdn_prefix %>/images/favicon.ico" />
+<link href="<%- page_options.cdn_prefix %>/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/stylesheets/landing/css/strip.css?<%- page_options.version %>" type="text/css">
+<link rel="stylesheet" href="/stylesheets/landing/css/strip-responsive.css?<%- page_options.version %>" type="text/css">
+<link href="/font/source-sans-pro/source-sans-pro.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <header>
+    <div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="margin-right: 0;">
+        <header>
+            <div class="container" style="width: 100%;">
+                <div class="navbar-header">
+                    <a href="/" class="navbar-brand"></a>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="glyphicon glyphicon-bar"></span>
+                        <span class="glyphicon glyphicon-bar"></span>
+                        <span class="glyphicon glyphicon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a target="_new" href="https://www.colearnr.com/tour">Tour</a></li>
+                    <li><a class="" href="https://www.colearnr.com/help">Help</a></li>
+                </ul>
+                </div>
+            </div>
+        </header>
+    </nav>
+    </div>
+    </header>
+    
+    <div class="container login-box">        
+        <div class="row" style="margin-left: 0px; margin-right: 0px;">
+            <div class="col-md-5 col-md-offset-1 col-sm-6 full intro-content hidden-xs">
+                <div class="intro-spacer"></div>
+                <div class="intro-desc">                    
+                    <p>A great mind-map to organise your thoughts</p>
+                    <p>A team pinboard for all your content</p>
+                    <p>A tool to make your team more productive with work and research</p>
+                </div>                
+            </div>
+            <% if (locals.mode && locals.mode=='register') { %>
+            <div class="col-md-4 col-sm-6 col-xs-12 apollo register">
+            <% } else { %>
+            <div class="col-md-4 col-sm-6 col-xs-12 apollo">
+            <% }%>
+                <div class="intro-spacer"></div>
+                <section class="shadow">
+                <div class="apollo-container clearfix">
+                    <div class="apollo-register">
+                        <p class="apollo-heading"> Sign up </p>                        
+                        <form class="form-signin" id="apollo-register-form" method="post" action="/register">
+                            <div class="control-group">
+                                <input tabindex="1" type="text" value="" class="input-block-level" id="name" name="name" maxlength="50" placeholder="Full name" required/>
+                            </div>
+                            <div class="control-group">
+                                <input tabindex="2" type="email" value="" maxlength="100" name="email" id="email" class="input-block-level email" placeholder="Email address" required/>
+                            </div>
+                            <div class="control-group">
+                                <input tabindex="3" maxlength="50" id="password" name="password" type="password" value="" class="input-block-level" placeholder="Password" required/>
+                            </div>
+                            <% if (locals.config && locals.config.access_code && locals.config.access_code.length) { %>
+                            <div class="control-group">
+                                <input tabindex="4" maxlength="50" id="access_code" name="access_code" type="text" class="input-block-level" placeholder="Access code" required/>
+                            </div>
+                            <% } %>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <label class="checkbox-inline" for="agree_terms">
+                                        <input tabindex="5" type="checkbox" id="agree_terms" data-toggle="checkbox" name="agree_terms" value="agreed" required>I agree to <a class="terms" href="/terms.html" target="_new">CoLearnr Terms</a>
+                                    </label>
+                                </div>
+                            </div>
+                            <button class="btn btn-lg btn-block btn-primary" type="submit">Sign up</button>
+                        </form>
+                        <p class="apollo-back">Already signed up? <a href="#">Login</a> </p>
+                    </div>
+    
+                    <div class="apollo-login">
+                        <p class="apollo-heading"> Welcome </p>
+                        <% if (locals.error && locals.error.length) { %>
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <strong>Something is not right!</strong>
+                            <ul class="square">
+                            <% error.forEach(function (msg) { %>
+                                <li><%- msg %></li>
+                            <% }) %>
+                            </ul>
+                        </div>
+                        <% } %>
+                        <form class="form-signin" id="apollo-login-form">
+                            <div class="control-group">
+                                <input type="email" maxlength="100" name="email" id="email" tabindex="1" value="" class="input-block-level email" placeholder="Email address"/>
+                            </div>
+    
+                            <div class="control-group">
+                                <input type="password" maxlength="20" name="password" id="password" tabindex="2" value="" class="input-block-level" placeholder="Password"/>
+                            </div>
+    
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>                            
+                        </form>
+                        <p class="apollo-register-account"><a href="#" class="register-link">New here?</a> or forgot your <a href="#" class="password-link">password?</a> </p>
+                    </div>
+    
+                    <div class="apollo-forgotten-password">
+                        <p class="apollo-heading"> Forgot password </p>
+                        <form class="form-signin" id="apollo-forgotten-password-form">
+                            <div class="control-group">
+                                <input name="email" id="email" type="email" value="" class="input-block-level email" placeholder="Email address"/>
+                            </div>
+                            <button class="btn btn-lg btn-block btn-primary" type="submit">Reset password</button>
+                        </form>
+    
+                        <p class="apollo-back">Remember your password? <a href="#">Login</a> </p>
+                    </div>
+                    <div class="apollo-password-reset">
+                        <h2>Please check your email</h2>
+                        <p><strong>We've sent you a link to reset your password</strong></p>
+                        <p></p>
+                    </div>
+                </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <% include includes/scripts-common.html %>
+    <script src="<%- page_options.cdn_prefix %>/vendor/jquery-anystretch/jquery.anystretch.min.js"></script>
+    <script src="<%- page_options.cdn_prefix %>/javascripts/custom.js?<%- page_options.version %>"></script>
+    <script src="<%- page_options.cdn_prefix %>/javascripts/login.js?<%- page_options.version %>"></script>
+<script>
+$.anystretch("/images/cover/cover-art1.jpg", {speed: 150});
+$(function () {
+<% if (locals.mode && locals.mode=='register') { %>
+    $('.apollo-register input:first').focus();
+<% } else { %>
+    $('.apollo-login input:first').focus();
+<% } %>
+});
+</script>
+<% include includes/analytics.html %>
+</body>
+</html>

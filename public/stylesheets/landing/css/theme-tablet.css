@@ -1,0 +1,30 @@
+@media (min-width: 768px) and (max-width: 979px) {
+	/* Hero */
+	
+	.hero-phone {
+		display: none !important;
+	}
+	
+	/* Arrows */
+	.arrow.top div.arrow-top-padding {
+		height: 250px;	
+	}
+	
+	.arrow.down {
+		display: none !important;
+	}
+	
+	/* Signup Form */
+	.row-fluid .span8 {
+		width: 60%;
+	}
+}
+
+@media (max-width: 979px) {
+	.hero-phone {
+		display: none !important;
+	}
+	.arrow.down {
+		display: none !important;
+	}
+}

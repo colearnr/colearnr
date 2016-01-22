@@ -1,0 +1,31 @@
+<script type="text/javascript" src="/javascripts/socket.io/socket.io.min.js"></script>
+<script src="<%- page_options.cdn_prefix %>/javascripts/jquery-1.9.1.min.js" ></script>
+<script src="<%- page_options.cdn_prefix %>/javascripts/jquery-migrate-1.2.1.min.js"></script>
+<script src="<%- page_options.cdn_prefix %>/javascripts/jquery-ui.min.js"></script>
+<script src="<%- page_options.cdn_prefix %>/vendor/isotope/dist/isotope.pkgd.min.js"></script>
+<script src="<%- page_options.cdn_prefix %>/javascripts/scripts.combined.js?<%- page_options.version %>"></script>
+<script src="<%- page_options.cdn_prefix %>/javascripts/bootstrap.min.js"></script>
+<script src="<%- page_options.cdn_prefix %>/vendor/showdown/compressed/Showdown.min.js" defer></script>
+<script src="<%- page_options.cdn_prefix %>/javascripts/modernizr.min.js"></script>
+<script src="<%- page_options.cdn_prefix %>/javascripts/jquery.validate.min.js"></script>
+<script src="<%- page_options.cdn_prefix %>/vendor/bootstrap-notify/js/bootstrap-notify.js" defer></script>
+<script src="<%- page_options.cdn_prefix %>/vendor/jquery.lazyload/jquery.lazyload.min.js"></script>
+<script>
+var user = {'_id': '<%- locals.user ? locals.user._id : "guest" %>', 'guestMode' : <%- !locals.user || !locals.user._id %>};
+<% if (!locals.embedMode) { %>
+<% if (locals.topicObj && locals.topicObj._id) { %>
+Mousetrap.bind('a', function() { if (window.fabMenu) { fabMenu() }; return false; });
+Mousetrap.bind('t', function() { window.location = "/topic/map/<%- topicObj._id %>"; return false; });
+Mousetrap.bind('c', function() { window.location = "/lbit/new/topic/<%- locals.topicObj._id %>"; return false; });
+Mousetrap.bind('p', function() { window.location = "/poll/new/topic/<%- locals.topicObj._id %>"; return false; });
+Mousetrap.bind('e', function() { window.location = "/topic/edit/<%- locals.topicObj._id %>"; return false; });
+<% } %>
+Mousetrap.bind('d', function() { window.location = $('#discuss-menu ul.dropdown-menu li a:first').attr('href'); return false; });
+Mousetrap.bind('m', function() { window.location = "/user/topic"; return false; });
+Mousetrap.bind('n', function() { window.location = "/topic/new"; return false; });
+Mousetrap.bind('s', function() { $(".nav-search").focus(); return false; });
+<% } %>
+window.addEventListener('load', function() {
+    FastClick.attach(document.body);
+}, false);
+</script>

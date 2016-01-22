@@ -1,0 +1,21 @@
+{
+  "name": "bootstrap-notify",
+  "version": "0.2.1",
+  "main": "js/bootstrap-notify.js",
+  "dependencies": {},
+  "description": "Bootstrap alert system made better.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/colearnr/bootstrap-notify.git"
+  },
+  "homepage": "https://github.com/colearnr/bootstrap-notify",
+  "_release": "0.2.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.2.1",
+    "commit": "afe390886621ad2dc9f511a51d381bf2f2695495"
+  },
+  "_source": "git://github.com/colearnr/bootstrap-notify.git",
+  "_target": "0.2.1",
+  "_originalSource": "git://github.com/colearnr/bootstrap-notify.git"
+}

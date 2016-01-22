@@ -1,0 +1,324 @@
+
+.apollo {
+  margin: 8% auto;
+  max-width: 362px;
+  border: 2px solid rgba(0, 0, 0, 0.45);
+  border-radius: 5px;
+  position: relative;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.apollo .control-group {
+  margin-bottom: 0;
+}
+.apollo .popover {
+  width: 300px;
+}
+.apollo strong {
+  font-weight: 700;
+}
+.apollo-heading {
+  text-align: center;
+  font-size: 2.2em;
+  color: #323232;
+  padding-bottom: 5px;
+}
+.apollo.register .apollo-register {
+  display: block;
+}
+.apollo.register .apollo-forgot,
+.apollo.register .apollo-back {
+  display: block;
+}
+.apollo.register .apollo-back-visible {
+  display: block;
+}
+.apollo.register .apollo-login {
+  display: none;
+}
+.apollo.forgotten-password .apollo-forgotten-password {
+  display: block;
+}
+.apollo.forgotten-password .apollo-register {
+  display: none;
+}
+.apollo.forgotten-password .apollo-back {
+  display: block;
+}
+.apollo.forgotten-password .apollo-login {
+  display: none;
+}
+.apollo .apollo-login {
+  max-width: 300px;
+}
+.apollo .apollo-login .apollo-seperator:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 43%;
+  border-bottom: 1px solid #cccccc;
+}
+.apollo .apollo-login .apollo-seperator:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 43%;
+  border-bottom: 1px solid #cccccc;
+}
+.apollo .apollo-forgotten-password {
+  display: none;
+  max-width: 300px;
+}
+.apollo .apollo-password-reset {
+  display: none;
+  max-width: 300px;
+  text-align: center;
+}
+.apollo .apollo-register {
+  max-width: 300px;
+  display: none;
+}
+.apollo .apollo-register .apollo-seperator:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 36%;
+  border-bottom: 1px solid #cccccc;
+}
+.apollo .apollo-register .apollo-seperator:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 36%;
+  border-bottom: 1px solid #cccccc;
+}
+.apollo .apollo-register-account {
+  text-align: center;
+  margin: 25px 0 0;
+}
+.apollo .apollo-change-account,
+.apollo .apollo-forgot,
+.apollo .apollo-back {
+  font-size: 12px;
+  margin: 25px 0 0 0;
+  text-align: center;
+}
+
+.apollo .apollo-back-visible {
+  font-size: 12px;
+  margin: 25px 0 0 0;
+  text-align: center;
+}
+
+.apollo-social {
+  width: 128px;
+  height: auto;
+  display: block;
+  background: url(../images/logo-main.png) no-repeat center center;
+}
+
+.apollo-seperator {
+  position: relative;
+  display: block;
+  margin: 30px 0 30px 0;
+  text-align: center;
+  color: #666;
+}
+
+.apollo-container {
+  padding: 40px 30px 30px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.apollo-container .apollo-logging-in,
+.apollo-container .apollo-registering {
+  text-align: center;
+  display: none;
+}
+.apollo-container .apollo-image {
+
+}
+.apollo-container .btn-register {
+  margin-bottom: 20px;
+}
+.apollo-container .btn-linkedin {
+  margin-bottom: 20px;
+}
+.apollo-container .btn-twitter {
+  margin-bottom: 20px;
+}
+.apollo-container .btn-facebook {
+  margin-bottom: 20px;
+}
+.apollo-container form {
+  padding: 0;
+  margin: 0;
+}
+.apollo-container form textarea,
+.apollo-container form input[type="text"],
+.apollo-container form input[type="email"],
+.apollo-container form input[type="password"] {
+  font-size: 16px;
+  height: auto;
+  margin-bottom: 15px;
+  padding: 7px 9px;
+  width: 100%;
+}
+
+.apollo-container form input[type="checkbox"] {
+ font-size: 16px;
+  height: auto;
+  margin-bottom: 15px;
+  padding: 7px 9px;
+}
+
+.terms {
+  text-decoration: underline;
+  color: blue;
+}
+
+.apollo-container form textarea {
+  width: 100%;
+}
+
+.btn-facebook {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #2b4b90;
+  *background-color: #133783;
+  background-image: -moz-linear-gradient(top, #3b5998, #133783);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#3b5998), to(#133783));
+  background-image: -webkit-linear-gradient(top, #3b5998, #133783);
+  background-image: -o-linear-gradient(top, #3b5998, #133783);
+  background-image: linear-gradient(to bottom, #3b5998, #133783);
+  background-repeat: repeat-x;
+  border-color: #133783 #133783 #091b40;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff3b5998', endColorstr='#ff133783', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.btn-facebook:hover,
+.btn-facebook:focus,
+.btn-facebook:active,
+.btn-facebook.active,
+.btn-facebook.disabled,
+.btn-facebook[disabled] {
+  color: #ffffff;
+  background-color: #133783;
+  *background-color: #102e6d;
+}
+
+.btn-facebook:active,
+.btn-facebook.active {
+  background-color: #0d2456 \9;
+}
+
+.btn-twitter {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #1c95d0;
+  *background-color: #0271bf;
+  background-image: -moz-linear-gradient(top, #2daddc, #0271bf);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#2daddc), to(#0271bf));
+  background-image: -webkit-linear-gradient(top, #2daddc, #0271bf);
+  background-image: -o-linear-gradient(top, #2daddc, #0271bf);
+  background-image: linear-gradient(to bottom, #2daddc, #0271bf);
+  background-repeat: repeat-x;
+  border-color: #0271bf #0271bf #014473;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff2daddc', endColorstr='#ff0271bf', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.btn-twitter:hover,
+.btn-twitter:focus,
+.btn-twitter:active,
+.btn-twitter.active,
+.btn-twitter.disabled,
+.btn-twitter[disabled] {
+  color: #ffffff;
+  background-color: #0271bf;
+  *background-color: #0262a6;
+}
+
+.btn-twitter:active,
+.btn-twitter.active {
+  background-color: #01538d \9;
+}
+
+.btn-linkedin {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #60a9ce;
+  *background-color: #4393bb;
+  background-image: -moz-linear-gradient(top, #73b8db, #4393bb);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#73b8db), to(#4393bb));
+  background-image: -webkit-linear-gradient(top, #73b8db, #4393bb);
+  background-image: -o-linear-gradient(top, #73b8db, #4393bb);
+  background-image: linear-gradient(to bottom, #73b8db, #4393bb);
+  background-repeat: repeat-x;
+  border-color: #4393bb #4393bb #2f6783;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff73b8db', endColorstr='#ff4393bb', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.btn-linkedin:hover,
+.btn-linkedin:focus,
+.btn-linkedin:active,
+.btn-linkedin.active,
+.btn-linkedin.disabled,
+.btn-linkedin[disabled] {
+  color: #ffffff;
+  background-color: #4393bb;
+  *background-color: #3c84a8;
+}
+
+.btn-linkedin:active,
+.btn-linkedin.active {
+  background-color: #367595 \9;
+}
+
+.btn-google-plus {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #d34332;
+  *background-color: #c53727;
+  background-image: -moz-linear-gradient(top, #dd4b39, #c53727);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#dd4b39), to(#c53727));
+  background-image: -webkit-linear-gradient(top, #dd4b39, #c53727);
+  background-image: -o-linear-gradient(top, #dd4b39, #c53727);
+  background-image: linear-gradient(to bottom, #dd4b39, #c53727);
+  background-repeat: repeat-x;
+  border-color: #c53727 #c53727 #85251a;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdd4b39', endColorstr='#ffc53727', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+
+.btn-google-plus:hover,
+.btn-google-plus:focus,
+.btn-google-plus:active,
+.btn-google-plus.active,
+.btn-google-plus.disabled,
+.btn-google-plus[disabled] {
+  color: #ffffff;
+  background-color: #c53727;
+  *background-color: #b03123;
+}
+
+.btn-google-plus:active,
+.btn-google-plus.active {
+  background-color: #9a2b1f \9;
+}
+

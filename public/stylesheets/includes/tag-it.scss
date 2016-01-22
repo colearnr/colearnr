@@ -1,0 +1,197 @@
+@import "base.scss";
+
+ul.tagit {
+  padding: 1px 5px;
+  overflow: auto;
+  margin-left: 0;
+  margin-right: inherit;
+  width: 100%;
+  li {
+    display: block;
+    float: left;
+    margin: 2px 5px 2px 0;
+    &.tagit-choice {
+      position: relative;
+      line-height: 30px;
+    }
+  }
+}
+
+input.tagit-hidden-field {
+  display: none;
+}
+
+ul.tagit {
+  li {
+    &.tagit-choice-read-only {
+      padding: 0.2em 0.5em 0.2em 0.5em;
+    }
+    &.tagit-choice-editable {
+      padding: 0.2em 18px 0.2em 0.5em;
+    }
+    &.tagit-new {
+      padding: 0.25em 4px 0.25em 0;
+      width: 200px;
+    }
+    &.tagit-choice {
+      a.tagit-label {
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .tagit-close {
+        cursor: pointer;
+        position: absolute;
+        right: 0.1em;
+        top: 50%;
+        margin-top: -8px;
+        line-height: 17px;
+        .text-icon {
+          display: none;
+        }
+      }
+      input {
+        display: block;
+        float: left;
+        margin: 2px 5px 2px 0;
+      }
+    }
+  }
+  input[type="text"] {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: inherit;
+    background-color: inherit;
+    outline: none;
+  }
+  border-style: solid;
+  border-width: 1px;
+  border-color: $cl_blue_border;
+  li.tagit-choice {
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border: 1px solid $cl_blue_border;
+    background: none;
+    background-color: $cl_blue;
+    font-weight: normal;
+    .tagit-label:not(a) {
+      color: $white;
+    }
+    a.tagit-close {
+      text-decoration: none;
+    }
+    .tagit-close {
+      right: 0.4em;
+    }
+    .ui-icon {
+      display: none;
+    }
+    .tagit-close .text-icon {
+      display: inline;
+      font-family: "Source Sans Pro", sans-serif;
+      font-size: 16px;
+      line-height: 16px;
+      color: $white;
+    }
+    &:hover, &.remove {
+      background-color: $cl_blue;
+      border-color: $cl_blue_border;
+    }
+    a {
+      &.tagLabel:hover, &.tagit-close .text-icon:hover {
+        color: $cl_blue_border;
+      }
+    }
+  }
+  input[type="text"] {
+    color: $cl_blue_border;
+  }
+}
+
+/* used for some custom themes that don't need image icons */
+
+/* Optional scoped theme for tag-it which mimics the zendesk widget. */
+
+.ui-widget {
+  font-size: 1.1em;
+}
+
+/* Forked from a jQuery UI theme, so that we don't require the jQuery UI CSS as a dependency. */
+
+.tagit-autocomplete.ui-autocomplete {
+  position: absolute;
+  cursor: default;
+}
+
+* html .tagit-autocomplete.ui-autocomplete {
+  width: 1px;
+}
+
+/* without this, the menu expands to 100% in IE6 */
+
+.tagit-autocomplete {
+  &.ui-menu {
+    list-style: none;
+    padding: 2px;
+    margin: 0;
+    display: block;
+    float: left;
+    z-index: 1200;
+    .ui-menu {
+      margin-top: -3px;
+    }
+    .ui-menu-item {
+      margin: 0;
+      padding: 0;
+      zoom: 1;
+      float: left;
+      clear: left;
+      width: 100%;
+      a {
+        text-decoration: none;
+        display: block;
+        padding: 0.2em 0.4em;
+        line-height: 1.5;
+        zoom: 1;
+      }
+    }
+  }
+  .ui-menu .ui-menu-item a {
+    &.ui-state-hover, &.ui-state-active {
+      font-weight: normal;
+      margin: -1px;
+    }
+  }
+  &.ui-widget-content {
+    border: 1px solid #aaaaaa;
+    background: $white 50% 50% repeat-x;
+    color: $cl_blue_border;
+  }
+  &.ui-corner-all, .ui-corner-all {
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -khtml-border-radius: 4px;
+    border-radius: 4px;
+  }
+  .ui-state-hover, .ui-state-focus {
+    border: 1px solid #999999;
+    background: #dadada;
+    font-weight: normal;
+    color: #212121;
+  }
+  .ui-state-active, .ui-widget-content {
+    border: 1px solid #aaaaaa;
+  }
+}
+
+.tagit .ui-helper-hidden-accessible {
+  position: absolute !important;
+  clip: rect(1px, 1px, 1px, 1px);
+}

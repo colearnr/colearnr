@@ -1,0 +1,132 @@
+<!--start: Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="header-menu">
+    <header>
+        <div class="container">
+            <div class="navbar-header">
+            <a class="navbar-brand" href="/"></a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="glyphicon glyphicon-bar"></span>
+                <span class="glyphicon glyphicon-bar"></span>
+                <span class="glyphicon glyphicon-bar"></span>
+            </button>
+            </div>
+            <div class="navbar-collapse collapse navbar-ex1-collapse">
+                <ul id="learn-menu" class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle needsclick" data-hover="dropdown" data-toggle="dropdown"><i class="fa fa-book"></i> Topics <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-left" role="menu">
+                            <% if(locals.random_topics && random_topics.length > 0) { %>
+                                <% random_topics.forEach(function(menu){ %>
+                                <li data-submenu-id="submenu-<%- menu._id %>">
+                                    <a class="needsclick" href="/topic/<%- menu._id %>/<%- menu.id %>"><% if (menu.collaborators && menu.collaborators.indexOf(user._id) != -1) { %><i class="fa fa-users topicIcon" title="Collaborator"></i> &nbsp;<% } else if (menu.privacy_mode == constants.PUBLIC) { %><i class="fa fa-globe topicIcon" title="Public topic"></i> &nbsp;<% } else if (menu.privacy_mode == constants.PRIVATE) { %><i class="fa fa-lock topicIcon" title="Private topic"></i> &nbsp;<% } %><%- menu.name %></a>
+                                    <% if(menu.submenuList && menu.submenuList.length > 0) { %>
+                                    <div id="submenu-<%- menu._id %>" class="popover">
+                                        <h3 class="popover-title"><%- menu.name %> <a class="topic-map-menu" href="/topic/map/<%- menu._id %>">Map</a></h3>
+                                        <div class="popover-content" style="padding-left:0; padding-right: 0;">
+                                            <ul style="margin-left: -30px;">
+                                                <% menu.submenuList.forEach(function(submenu){ %>
+                                                <li class="level"><a class="needsclick" href="/topic/<%- submenu._id %>/<%- submenu.id %>"><% if (submenu.collaborators && submenu.collaborators.indexOf(user._id) != -1) { %><i class="fa fa-users topicIcon" title="Collaborator"></i> &nbsp;<% } else if (submenu.privacy_mode == constants.PUBLIC) { %><i class="fa fa-globe topicIcon" title="Public topic"></i> &nbsp;<% } else if (submenu.privacy_mode == constants.PRIVATE) { %><i class="fa fa-lock topicIcon" title="Private topic"></i> &nbsp;<% } %><%- submenu.name %></a></li>
+                                                <% }) %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                </li>
+                                <% }) %>
+                            <% } %>
+                            <% if(locals.session && session.recently_visited_topics && session.recently_visited_topics.length > 0) { %>
+                                <li class="menu-category">Recently Visited</li>
+                                <% session.recently_visited_topics.forEach(function(menu){ %>
+                                <li data-submenu-id="submenu-<%- menu._id %>">
+                                    <a class="needsclick" href="/topic/<%- menu._id %>/<%- menu.id %>"><% if (menu.collaborators && menu.collaborators.indexOf(user._id) != -1) { %><i class="fa fa-users topicIcon" title="Collaborator"></i> &nbsp;<% } else if (menu.privacy_mode == constants.PUBLIC) { %><i class="fa fa-globe topicIcon" title="Public topic"></i> &nbsp;<% } else if (menu.privacy_mode == constants.PRIVATE) { %><i class="fa fa-lock topicIcon" title="Private topic"></i> &nbsp;<% } %><%- menu.name %></a>
+                                    <% if(menu.submenuList && menu.submenuList.length > 0) { %>
+                                    <div id="submenu-<%- menu._id %>" class="popover">
+                                        <h3 class="popover-title"><%- menu.name %> <a class="topic-map-menu" href="/topic/map/<%- menu._id %>">Map</a></h3>
+                                        <div class="popover-content" style="padding-left:0; padding-right: 0;">
+                                            <ul style="margin-left: -30px;">
+                                                <% menu.submenuList.forEach(function(submenu){ %>
+                                                <li class="level"><a class="needsclick" href="/topic/<%- submenu._id %>/<%- submenu.id %>"><% if (submenu.collaborators && submenu.collaborators.indexOf(user._id) != -1) { %><i class="fa fa-users topicIcon" title="Collaborator"></i> &nbsp;<% } else if (submenu.privacy_mode == constants.PUBLIC) { %><i class="fa fa-globe topicIcon" title="Public topic"></i> &nbsp;<% } else if (submenu.privacy_mode == constants.PRIVATE) { %><i class="fa fa-lock topicIcon" title="Private topic"></i> &nbsp;<% } %><%- submenu.name %></a></li>
+                                                <% }) %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                </li>
+                                <% }) %>
+                            <% } %>
+                            <li class="divider hidden-xs"></li>
+                            <li id="new-topic" class="hidden-xs"><a href="/topic/new"><i class="fa fa-plus"></i>&nbsp; Create new <kbd class="pull-right">n</kbd></a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul id="discuss-menu" class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle needsclick" data-hover="dropdown" data-toggle="dropdown"><i class="fa fa-comments"></i> Discussions <b class="caret"></b></a>
+                        <ul class="dropdown-menu dropdown-menu-left" role="menu">
+                            <% if (locals.topicObj && topicObj.discuss_id && locals.discussion_url) { %>
+                                <li><a href="<%- locals.discussion_url %>/category/<%- topicObj.discuss_id %>/<%- topicObj.id %>"><%- topicObj.name %> <kbd class="pull-right">d</kbd></a></li>
+                            <% } else if(locals.topicObj && locals.topicObj._id) { %>
+                                <li><a href="<%- locals.discussion_url %>/category/user/<%- locals.topicObj.added_by %>/<%- topicObj._id %>/<%- topicObj.id %>"><%- topicObj.name %> <kbd class="pull-right">d</kbd></a></li>
+                            <% } else { %>
+                            <li data-submenu-id="submenu-home">
+                                <a href="<%- durl %>/">Home <kbd class="pull-right">d</kbd></a>
+                            </li>
+                            <% } %>
+                            <li data-submenu-id="submenu-recent">
+                                <a href="<%- durl %>/recent"><i class="fa fa-comment"></i> Recent</a>
+                            </li>
+                            <li class="discuss-loggedin" data-submenu-id="submenu-new">
+                                <a href="<%- durl %>/unread"><i class="fa fa-comment-o"></i> New</a>
+                            </li>
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <% if (locals.topicObj && locals.topicObj._id) { %>
+                <% var topicUserRole = topicObj.user_role && topicObj.user_role[req.user._id] ? topicObj.user_role[req.user._id] : null %>
+                <% if (constants.TOPIC_COLLAB_ROLE == topicUserRole || constants.TOPIC_ADMIN_ROLE == topicUserRole || constants.ADMIN_ROLE == topicUserRole || topicObj.added_by == user._id) { %>
+                <ul id="collab-menu" class="nav navbar-nav">
+                    <li>
+                        <a href="#" onclick="javascript:inviteCollab('<%- topicObj._id %>', '<%- user._id %>'); return false;"><i class="fa fa-users"></i> Collaborate</a>
+                    </li>
+                </ul>
+                <% } %>
+                <% } %>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" data-hover="dropdown" class="dropdown-toggle needsclick" data-toggle="dropdown">
+                            <% if (locals.user) { %><img class="navProfileImage img-circle" src="<%- user.profileImage || '/images/profile/profile_1.jpg' %>" width="25px" height="25px" /><span class="hidden-sm usernameText">&nbsp; <%- user.displayName %><% } else { %>&nbsp; Guest<% } %></span>
+                            <b class="caret"></b></a>
+                        <ul id="user_options" class="dropdown-menu dropdown-menu-right">
+                            <li><a href="http://www.colearnr.com/help" target="_new"><i class="fa fa-question-circle"></i> Help</a></li>
+                            <% if (locals.user && !locals.user.guestMode) { %>
+                            <li><a href="/user/topic"><i class="fa fa-book"></i> My Topics <kbd class="pull-right">m</kbd></a></li>
+                            <li><a href="/profile/edit"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="/logout"><i class="fa fa-sign-out"></i> Logout</a></li>
+                            <% } else { %>
+                            <li><a href="/register"> Register</a></li>
+                            <li><a href="/login"><i class="fa fa-sign-in"></i> Login</a></li>
+                            <% } %>
+                        </ul>
+                    </li>
+                </ul>
+                <% if (!locals.isSearchPage) { %>
+                <div class="col-lg-3 col-md-3 col-sm-2 hidden-xs pull-right" style="padding-right: 0;">
+                    <form class="navbar-form" method="GET" action="/search" id="navbar-search-form" role="search">
+                        <div class="input-group">
+                        <input id="searchInput" name="q" class="nav-search" type="text" placeholder="Search" autocomplete="false">
+                        <div class="input-group-btn hidden-sm">
+                            <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                        </div>
+                    </form>
+                </div>
+                <% } else { %>
+                <div class="col-lg-3 col-md-3 col-sm-2 hidden-xs pull-right" style="padding-right: 0;"></div>
+                <% } %>
+            </div>
+        </div>
+    </header>
+</nav>
+<!--end: Navigation -->
+

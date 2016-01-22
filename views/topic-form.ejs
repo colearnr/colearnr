@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- start: Meta -->
+<meta charset="utf-8">
+<title>Edit Topic | CoLearnr</title>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<meta name="author" content=""/>
+<!-- end: Meta -->
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+
+<!-- start: Mobile Specific -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- end: Mobile Specific -->
+
+<!-- start: Facebook Open Graph -->
+<meta property="og:title" content=""/>
+<meta property="og:description" content=""/>
+<meta property="og:type" content=""/>
+<meta property="og:url" content=""/>
+<meta property="og:image" content=""/>
+<!-- end: Facebook Open Graph -->
+
+<% include includes/css-common.html %>
+<link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/jquery-ui/jquery-ui-flick.min.css">
+<link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/vendor/datetimepicker/stylesheets/bootstrap-datetimepicker.min.css">
+<% include includes/scripts-common.html %>
+</head>
+<body>
+<div id="wrap">
+    <!--start: Header -->
+    <header>
+
+        <!--start: Container -->
+        <div class="container">
+        <% include includes/nav.html %>
+        </div>
+        <!--end: Container-->
+
+    </header>
+    <!--end: Header-->
+
+<!--start: Container -->
+<div id="main" class="container">
+
+    <!-- start: Page Title -->
+    <div class="row">
+    <div id="page-title" class="col-md-12">
+        <h1><i class="fa fa-pencil-square-o"></i>&nbsp; Edit Topic</h1>
+    </div>
+    </div>
+    <!-- end: Page Title -->
+
+    <!--start: Wrapper-->
+    <div id="wrapper" class="row">
+        <div class='notifications top-right'></div>
+        <!-- start: Row -->
+        <div class="form-panel">
+            <% if (locals.error && locals.error != '') { %>
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Something is not right!</strong> <%- error %>
+            </div>
+            <% } %>
+
+            <div class="form-left-part posts col-md-9 col-xs-12 col-sm-12">
+                <form class="form-horizontal tabbed" id="edit-topic-form" novalidate>
+                    <input type="hidden" id="oid" name="oid" value="<%- topic._id %>"/>
+                    <fieldset>
+                        <div class="panel-group" id="accordion">
+                          <div class="panel panel-default" style="background: transparent;">
+                            <div class="panel-heading">
+                              <h4 class="panel-title" style="font-size: 20px; font-weight: normal !important;">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#basics">
+                                  Basics
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="basics" class="panel-collapse collapse in">
+                              <div class="panel-body">
+                                <!-- Text input-->
+                                <div class="control-group">
+                                  <label class="control-label">Name</label>
+                                  <div class="controls">
+                                    <input id="name" name="name" type="text" placeholder="Name" class="form-control input-xlarge" value="<%- topic.name || '' %>" required="">
+                                    <p class="help-block">Name for the topic</p>
+                                  </div>
+                                </div>
+
+                                <!-- Textarea -->
+                                <div class="control-group">
+                                  <label class="control-label">Description</label>
+                                  <div class="controls">
+                                    <textarea class="form-control" id="description" name="description" data-edit="summernote" data-minimal="true"><%- topic.description || "" %></textarea>
+                                    <p class="help-block">Description for the topic</p>
+                                  </div>
+                                </div>
+
+                                <!-- Textarea -->
+                                <div class="control-group">
+                                  <label class="control-label">Body</label>
+                                  <div class="controls">
+                                    <textarea class="form-control" id="body" name="body" data-edit="summernote"><%- topic.body || '' %></textarea>
+                                    <p class="help-block">This content will appear on this topic page above all the learnbits</p>
+                                  </div>
+                                </div>
+
+                                <% if (topic.path) { %>
+                                <% var topicUserRole = topic.user_role && topic.user_role[req.user._id] ? topic.user_role[req.user._id] : null %>
+                                <% if (constants.TOPIC_ADMIN_ROLE == topicUserRole) { %>
+                                <!-- Text input-->
+                                <div class="control-group">
+                                  <label class="control-label">Path</label>
+                                  <div class="controls">
+                                    <input id="path" name="path" type="text" value="<%- topic.path || "" %>" placeholder="Path for this topic in the tree" class="form-control input-xlarge" readonly>
+                                    <p class="help-block">Path of this topic</p>
+                                  </div>
+                                </div>
+                                <% } %>
+
+                                <!-- Text input-->
+                                <div class="control-group">
+                                  <label class="control-label">Order</label>
+                                  <div class="controls">
+                                    <input id="order" name="order" type="text" value="<%- topic.order || "" %>" placeholder="Numerical order" class="form-control input-xlarge positive-integer">
+                                    <p class="help-block">Number representing the order for this learnbit. Leave it blank if there is no order</p>
+                                  </div>
+                                </div>
+                                <% } %>
+
+                                <!-- Text input-->
+                                <div class="control-group">
+                                  <label class="control-label">Tags</label>
+                                  <div class="controls">
+                                    <input class="taglist" id="tags" name="tags" type="text" placeholder="" class="form-control input-xlarge">
+                                    <p class="help-block">Add some tags to help with search</p>
+                                  </div>
+                                </div>
+                            </div>
+                            </div>
+                          </div>
+                          <div class="panel panel-default" style="background: transparent;">
+                            <div class="panel-heading">
+                              <h4 class="panel-title" style="font-size: 20px; font-weight: normal !important;">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#sharing">
+                                  <i class="fa fa-group"></i>&nbsp; Collaboration and Privacy
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="sharing" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <% include includes/sharing-options.html %>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="panel panel-default" style="background: transparent;">
+                            <div class="panel-heading">
+                              <h4 class="panel-title" style="font-size: 20px; font-weight: normal !important;">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#scheduling">
+                                  <i class="fa fa-clock-o"></i>&nbsp; Scheduling <span class="label label-primary">pro</span>
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="scheduling" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <% include includes/scheduling-options.html %>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="panel panel-default" style="background: transparent;">
+                            <div class="panel-heading">
+                              <h4 class="panel-title" style="font-size: 20px; font-weight: normal !important;">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#linking">
+                                  <i class="fa fa-arrows-h"></i>&nbsp; Linked Topics <span class="label label-primary">pro</span>
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="linking" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <% include includes/link-options.html %>
+                              </div>
+                            </div>
+                          </div>
+
+                        <div class="panel panel-default" style="background: transparent;">
+                            <div class="panel-heading">
+                              <h4 class="panel-title" style="font-size: 20px; font-weight: normal !important;">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#discussion">
+                                  <i class="fa fa-comments"></i>&nbsp; Discuss settings <span class="label label-primary">pro</span>
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="discussion" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <% include includes/discuss-options.html %>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </fieldset>
+                    <div class="row">
+                        <div class="pull-right">
+                            <button class="btn btn-lg btn-primary postdata" type="submit">Save changes</button>
+                            <button class="btn btn-link btn-lg btn-done" onclick="self.location='/topic/<%- locals.topic._id %>'" type="button">Cancel</button>
+                        </div>
+                    </div>
+
+            </div>
+
+            <% include includes/thumb-sidebar.html %>
+        </form>
+        </div>
+    <!-- end: Wrapper  -->
+    </div>
+
+</div>
+<!--end: Container-->
+
+</div>
+<% include includes/underfooter.html %>
+<% include includes/submenu-script.html %>
+<script src="<%- locals.page_options.cdn_prefix %>/javascripts/custom.js" type="text/javascript"></script>
+<% include includes/filepicker.html %>
+<% include includes/editor.ejs %>
+
+<script>
+    function split( val ) {
+      return val.split( /,\s*/ );
+    }
+    function extractLast( term ) {
+      return split( term ).pop();
+    }
+    $(".positive-integer").numeric({ decimal: false, negative: false }, function() { this.value = ""; this.focus(); });
+    $(function(){
+
+        // $("#edit-topic-form").validate();
+
+        $("#edit-topic-form").submit(function(event) {
+            event.preventDefault();
+            var data = form2js('edit-topic-form', '.', true);
+            if (window.thumblist) {
+                data['img_url'] = JSON.stringify(thumblist);
+            }
+            if ($('#draft_mode').is(":checked")) {
+                data['draft_mode'] = true;
+            } else {
+                data['draft_mode'] = false;
+            }
+            $.ajax({
+                url: '/topic/edit',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    window.location = '/topic/<%- topic._id %>';
+                },
+                error: function (xhr, status, data) {
+                    $('.top-right').notify({
+                        type: 'danger',
+                        message: { text: xhr.responseText }
+                    }).show();
+                }
+            });
+        });
+
+        <% if (locals.taglist) { %>
+        $('.taglist').select2({
+            width: '100%',
+            tags: [],
+            minimumResultsForSearch: -10,
+            minimumInputLength: 3,
+            maximumInputLength: 30,
+            tokenSeparators: [","]
+        });
+        $('.taglist').select2("val", <%- taglist %>);
+        <% } %>
+
+        $("#collaborators").tagit({
+            autocomplete: {delay: 0, minLength: 2,
+                source: "/api/user/quicksearch",
+                minLength: 2
+            }
+        });
+        <% if (locals.collaborators) { %>
+            <% collaborators.forEach(function (acollab) { %>
+                $("#collaborators").tagit("createTag", '<%- acollab.text %>');
+            <% }) %>
+        <% } %>
+
+        $("#colearnrs").tagit({
+            autocomplete: {delay: 0, minLength: 2,
+                source: "/api/user/quicksearch",
+                minLength: 2
+            }
+        });
+        <% if (locals.colearnrs) { %>
+            <% colearnrs.forEach(function (acolearnr) { %>
+                $("#colearnrs").tagit("createTag", '<%- acolearnr.text %>');
+            <% }) %>
+        <% } %>
+
+        $("input:radio[name=privacy_mode]").click(function(event) {
+            //console.log($('input:radio[name=privacy_mode]:checked').val());
+        });
+
+        $("#selected_colearnrs input").click(function (e) {
+            $('input:radio[name=privacy_mode]:nth(2)').attr('checked', true);
+        });
+
+        <% include includes/thumbupload.html %>
+
+    });
+</script>
+<% include includes/chat.html %>
+</body>
+</html>

@@ -1,0 +1,28 @@
+.vjs-default-skin .vjs-big-play-button {
+    display: none;
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    margin: -60px 0 0 -40px;
+    z-index: 1003;
+    text-align: center;
+    vertical-align: center;
+    cursor: pointer!important;
+    border-radius: 40px;
+    -webkit-border-radius: 40px;
+    -moz-border-radius: 40px;
+    opacity: .9;
+    border: 0;
+    background:
+    #111;
+    -webkit-box-shadow: 0 0 0 #000;
+    -moz-box-shadow: 0 0 0 #000;
+    box-shadow: 0 0 0 #000;
+}
+
+.vjs-default-skin .vjs-quality-button div {
+    display: none;
+}

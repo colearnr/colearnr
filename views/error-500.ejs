@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- start: Meta -->
+    <meta charset="utf-8">
+    <title>Oops</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="author" content=""/>
+    <!-- end: Meta -->
+
+    <!-- start: Mobile Specific -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- end: Mobile Specific -->
+
+    <% include includes/css-common.html %>
+</head>
+<body>
+<div id="wrap">
+
+<!--start: Header -->
+<header>
+
+    <!--start: Container -->
+    <div class="container">
+        <% include includes/nav.html %>
+    </div>
+    <!--end: Container-->
+
+</header>
+<!--end: Header-->
+<!-- start: Container -->
+<div id="main" class="container">
+
+<!-- start: Page Title -->
+<div id="page-title" style="margin-bottom: 20px;">
+    <h1>Unwanted distraction</h1>
+</div>
+    <!--start: Row -->
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="jumbotron">
+                <h1>There has been a problem</h1>
+                <p>&nbsp;</p>
+                <p><% if (locals.message) { %><%- locals.message %><% } else { %>You caught us in the middle of changing something!<% } %></p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<% include includes/underfooter.html %>
+<% include includes/scripts-common.html %>
+<% include includes/submenu-script.html %>
+<% include includes/analytics.html %>
+</body>
+</html>

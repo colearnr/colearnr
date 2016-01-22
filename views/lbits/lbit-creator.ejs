@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- start: Meta -->
+<meta charset="utf-8">
+<% var type_label = (locals.lbit && lbit.type == 'poll') ? lbit.type : 'learnbit' %>
+<title><% if (locals.mode && mode == 'edit') { %>Edit<% } else { %>New<% } %> <% if (locals.lbit && lbit.type == 'poll') { %>Poll<% } else { %>Learnbit<% } %> | CoLearnr</title>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<meta name="author" content=""/>
+<!-- end: Meta -->
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+
+<!-- start: Mobile Specific -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- end: Mobile Specific -->
+
+<!-- start: Facebook Open Graph -->
+<meta property="og:title" content=""/>
+<meta property="og:description" content=""/>
+<meta property="og:type" content=""/>
+<meta property="og:url" content=""/>
+<meta property="og:image" content=""/>
+<!-- end: Facebook Open Graph -->
+
+<% include ../includes/css-common.html %>
+<% include ../includes/scripts-common.html %>
+</head>
+<body>
+<div id="wrap">
+    <!--start: Header -->
+    <header>
+
+        <!--start: Container -->
+        <div class="container">
+        <% include ../includes/nav.html %>
+        </div>
+        <!--end: Container-->
+
+    </header>
+    <!--end: Header-->
+
+<!--start: Container -->
+<div id="main" class="container">
+
+    <!-- start: Page Title -->
+    <div class="row">
+    <div id="page-title" class="col-md-12">
+
+        <h1><% if (locals.lbit && lbit.type == 'poll') { %><i class="fa fa-tasks"></i><% } else { %><i class="fa fa-book"></i><% } %> &nbsp;<% if (locals.mode && mode == 'edit') { %>Edit<% } else { %>New<% } %> <% if (locals.lbit && lbit.type == 'poll') { %>Poll<% } else { %>Learnbit<% } %></h1>
+
+    </div>
+    </div>
+    <!-- end: Page Title -->
+
+    <!--start: Wrapper-->
+    <div id="wrapper" class="row">
+        <div class='notifications top-right'></div>
+        <!-- start: Row -->
+        <div class="form-panel">
+            <% if (locals.error && locals.error != '') { %>
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Something is not right!</strong> <%- error %>
+            </div>
+            <% } %>
+
+            <div class="form-left-part posts col-md-9 col-xs-12 col-sm-12">
+                <form class="form-horizontal tabbed" id="create-lbit-form" novalidate>
+                    <input type="hidden" id="topic_id" name="topic_id" value="<% if (locals.topic && locals.topic.id) { %><%- topic.id %><% } %>"/>
+                    <input type="hidden" id="topic_oid" name="topic_oid" value="<% if (locals.topic && locals.topic._id) { %><%- topic._id %><% } %>"/>
+                    <% if (lbit && lbit._id) { %><input type="hidden" id="oid" name="oid" value="<%- lbit._id %>"/><% } %>
+                    <input type="hidden" id="type" name="type" value="<%- lbit.type || 'inline-html' %>"/>
+                    <fieldset>
+                        <div class="panel-group" id="accordion">
+                          <div class="panel panel-default" style="background: transparent;">
+                            <div class="panel-heading">
+                              <h4 class="panel-title" style="font-size: 20px; font-weight: normal !important;">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#basics">
+                                  Basics
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="basics" class="panel-collapse collapse in">
+                              <div class="panel-body">
+
+                                <!-- Text input-->
+                                <div class="control-group">
+                                  <label class="control-label">Title</label>
+                                  <div class="controls">
+                                    <input id="title" name="title" type="text" placeholder="Title" class="form-control input-xlarge" value="<%- lbit.title || "" %>" required="">
+                                    <p class="help-block">Title for the <%- type_label %>.</p>
+                                  </div>
+                                </div>
+
+                                <!-- Textarea -->
+                                <div class="control-group">
+                                  <label class="control-label">Description</label>
+                                  <div class="controls">
+                                    <textarea id="description" class="form-control" name="description" data-edit="summernote" data-minimal="true"><%- lbit.description || "" %></textarea>
+                                    <p class="help-block">Description for the <%- type_label %>. Leave blank for automatic detection</p>
+                                  </div>
+                                </div>
+
+                                <% if (lbit.type == 'poll') { %>
+                                    <% include ../polls/poll-body.ejs %>
+                                <% } else { %>
+                                    <% if (!lbit.url || lbit.url == '#') { %>
+                                    <% var body = lbit.body || '' %>
+                                    <% var author = '' %>
+                                    <% if (lbit.type == 'quote') { var tmpObj = util.parseJson(lbit.body); body = tmpObj.quote || ''; author = tmpObj.author || ''; } %>
+                                    <!-- Textarea -->
+                                    <div class="control-group">
+                                      <label class="control-label"><% if (lbit.type == 'quote') { %>Quote<% } else { %>Body<% } %></label>
+                                      <div class="controls">
+                                        <textarea class="form-control <% if (lbit.type != 'quote') { %>body_edit<% } %>" id="body" name="body" data-edit="summernote"><%- body %></textarea>
+                                        <p class="help-block"><% if (lbit.type == 'quote') { %>Quote text here<% } else { %>Type the content here<% } %></p>
+                                      </div>
+                                    </div>
+                                    <% } %>
+                                <% } %>
+
+                                <% if (lbit.type == 'quote') { %>
+                                <!-- Text input-->
+                                <div class="control-group">
+                                  <label class="control-label">Author</label>
+                                  <div class="controls">
+                                    <input id="quote_author" name="quote_author" type="text" value="<%- author || "" %>" placeholder="Who made this quote" class="input-xlarge form-control ">
+                                    <p class="help-block">Who made this quote</p>
+                                  </div>
+                                </div>
+                                <% } %>
+                                <% if (lbit.type == 'pdf') { %>
+                                <div class="control-group">
+                                  <label class="control-label">Start page</label>
+                                  <div class="controls">
+                                    <input id="start" name="start" type="text" value="<%- lbit.start || "" %>" placeholder="Starting page number" class="form-control input-xlarge positive-integer">
+                                    <p class="help-block">Starting page number for the document</p>
+                                  </div>
+                                </div>
+                                <% } %>
+
+                                <% if (lbit.type == 'video' || lbit.type == 'youtube' || lbit.type == 'vimeo') { %>
+                                <div class="control-group">
+                                  <label class="control-label">Start position</label>
+                                  <div class="controls">
+                                    <input id="start" name="start" type="text" value="<%- lbit.start || "" %>" placeholder="Starting position" class="form-control input-xlarge positive-integer">
+                                    <p class="help-block">Starting position for the video (seconds)</p>
+                                  </div>
+                                </div>
+
+                                <div class="control-group">
+                                  <label class="control-label">End position</label>
+                                  <div class="controls">
+                                    <input id="end" name="end" type="text" value="<%- lbit.end || "" %>" placeholder="End position" class="form-control input-xlarge positive-integer">
+                                    <p class="help-block">End position for the video (seconds)</p>
+                                  </div>
+                                </div>
+                                <% } %>
+
+                                <!-- Text input-->
+                                <div class="control-group">
+                                  <label class="control-label">Topics</label>
+                                  <div class="controls">
+                                    <input class="topiclist" id="topics" name="topics" type="text" placeholder="Topics for learnbits" class="input-xlarge">
+                                    <p class="help-block">List of topics where this <%- type_label %> should appear. Start typing to search for topics.</p>
+                                  </div>
+                                </div>
+
+                                <!-- Text input-->
+                                <div class="control-group">
+                                  <label class="control-label">Order</label>
+                                  <div class="controls">
+                                    <input id="order" name="order" type="text" value="<%- lbit.order || "" %>" placeholder="Numerical order" class="form-control input-xlarge positive-integer">
+                                    <p class="help-block">Number representing the order for this <%- type_label %>. Leave it blank if there is no order</p>
+                                  </div>
+                                </div>
+
+                                <!-- Text input-->
+                                <div class="control-group">
+                                  <label class="control-label">Tags</label>
+                                  <div class="controls">
+                                    <input class="taglist" id="tags" name="tags" type="text" placeholder="" class="input-xlarge">
+                                    <p class="help-block">Add some tags to help with search</p>
+                                  </div>
+                                </div>
+
+                                <% if (lbit.type == 'html') { %>
+                                <!-- Multiple Checkboxes (inline) -->
+                                <div class="control-group">
+                                  <label class="control-label">Readable</label>
+                                  <div class="controls">
+                                    <label class="checkbox inline">
+                                      <input type="checkbox" name="disable_optimisation" value="true" <% if (lbit.disable_optimisation && lbit.disable_optimisation === true) { %>checked="true"<% } %>>
+                                      Do not make this readable
+                                    </label>
+                                    <p class="help-block">We make the content readable automatically by removing adverts and other distractions in them. Check to disable this feature</p>
+                                  </div>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        <% if (lbit.type == 'video' || lbit.type == 'youtube') { %>
+                        <div class="panel panel-default" style="background: transparent;">
+                            <div class="panel-heading">
+                              <h4 class="panel-title" style="font-size: 20px; font-weight: normal !important;">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#chaptering">
+                                  <i class="fa fa-comment-o"></i>&nbsp; Video chapters
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="chaptering" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <% include video-chaptering.html %>
+                              </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+                    </fieldset>
+                    <div class="row">
+                        <div class="pull-right">
+                            <button id="saveBtn" class="btn btn-lg btn-primary postdata" type="submit"><% if (locals.mode && mode == 'edit') { %>Save changes<% } else { %>Create <%- type_label %><% } %></button>
+                            <button id="doneBtn" class="btn btn-lg btn-link btn-done" onclick="self.location='<%- locals.returnTo %>'" type="button">Cancel</button>
+                        </div>
+                    </div>
+            </div>
+
+            <% include ../includes/thumb-sidebar.html %>
+        </form>
+        </div>
+    <!-- end: Wrapper  -->
+    </div>
+
+</div>
+<!--end: Container-->
+
+</div>
+<% include ../includes/underfooter.html %>
+<% include ../includes/submenu-script.html %>
+<script src="<%- locals.page_options.cdn_prefix %>/javascripts/custom.js" type="text/javascript"></script>
+<% include ../includes/filepicker.html %>
+<% include ../includes/editor.ejs %>
+
+<script>
+    $(".positive-integer").numeric({ decimal: false, negative: false }, function() { this.value = ""; this.focus(); });
+
+    $().ready(function() {
+
+        // $("#create-lbit-form").validate();
+
+        $("#create-lbit-form").submit(function(event) {
+            event.preventDefault();
+            var data = form2js('create-lbit-form', '.', true);
+            if (window.thumblist) {
+                data['img_url'] = JSON.stringify(thumblist);
+            }
+            $.ajax({
+                url: '/lbit/edit',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    if (response && response.id) {
+                        $('#oid').val(response.id);
+                    }
+                    <% if (locals.topic && locals.topic._id) { %>
+                    window.location = '/topic/<%- topic._id %>';
+                    <% } else { %>
+                    window.location = '<%- locals.returnTo %>';
+                    <% } %>
+                },
+                error: function (xhr, status, data) {
+                    $('.top-right').notify({
+                        type: 'danger',
+                        message: { text: xhr.responseText }
+                    }).show();
+                }
+            });
+        });
+
+        $('.taglist').select2({
+            width: '100%',
+            tags: [],
+            minimumResultsForSearch: -10,
+            minimumInputLength: 3,
+            maximumInputLength: 30,
+            tokenSeparators: [","]
+        });
+        <% if (locals.taglist) { %>
+        $('.taglist').select2("val", <%- taglist %>);
+        <% } %>
+
+        $('.topiclist').select2({
+            width: '100%',
+            multiple: true,
+            minimumInputLength: 3,
+            ajax: {
+                url: '/api/topic/quicksearch',
+                dataType: 'json',
+                quietMillis: 200,
+                data: function (term, page) {
+                    return {
+                        q: term,
+                        filter_edit: 1
+                    };
+                },
+                results: function (data, page) {
+                    return data;
+                }
+            },
+            formatResult: function(data, container, query) {
+                return data.text + "<span class='pull-right'>Path: <strong>" + (data.path || 'parent') + "</strong></span>";
+            }
+        });
+        <% if (locals.topiclist) { %>
+        $('.topiclist').select2("data", <%- topiclist %>);
+        <% } %>
+        <% include ../includes/thumbupload.html %>
+        <% if (lbit.type == 'poll') { %>
+            <% include ../polls/poll-body-scripts.html %>
+        <% } %>
+    });
+</script>
+<% include ../includes/chat.html %>
+</body>
+</html>

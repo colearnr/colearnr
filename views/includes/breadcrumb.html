@@ -1,0 +1,54 @@
+<div id="structure" class="breadcrumb_wrapper <% if (locals.embedMode) { %>embedded<% } %>">
+    <div class="container">
+        <ul class="breadcrumb col-xs-9">
+            <% if (locals.parents && locals.parents.length) { %>
+                <% for (var i=0; i < locals.parents.length; i++) { %>
+                    <% var parent = parents[i] %>
+                    <% if (parent) { %>
+                    <% if (i == 0 && ( ( parent.added_by == req.user._id ) || (parent.collaborators && parent.collaborators.indexOf(req.user._id) >= 0) || (parent.colearnrs && parent.colearnrs.indexOf(req.user._id) >= 0) ) ) { %>
+                    <li style="padding-top: 5px;" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb"><a itemprop="url" href="/user/topic/" >My topics</a></li>
+                    <% } %>
+                    <li style="padding-top: 5px;" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb"><a itemprop="url" href="<%- '/topic/' + parent._id + '/' + parent.id %><% if (locals.embedMode) { %>?embedMode=true<% } %>" ><%- parent.name %></a></li>
+                    <% } %>
+                <% } %>
+            <% } %>
+            <% var topicUserRole = topicObj.user_role && topicObj.user_role[req.user._id] ? topicObj.user_role[req.user._id] : [] %>
+            <% var topicUserPerms = topicObj.user_perms && topicObj.user_perms[req.user._id] ? topicObj.user_perms[req.user._id] : [] %>
+            <% var filteredList = [] %>
+            <% if (!locals.parents && locals.topicObj && (topicObj.added_by == req.user._id || constants.TOPIC_COLLAB_ROLE == topicUserRole || constants.TOPIC_COLEARNR_ROLE == topicUserRole)) { %>
+            <li style="padding-top: 5px;" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb"><a itemprop="url" href="/user/topic/" >My topics</a></li>
+            <% } %>
+            <% if (locals.topicObj && locals.firstChilds && locals.firstChilds.length) { %>
+                <% firstChilds.forEach(function (st) { %>
+                    <% if (locals.sub_topics_lbits && sub_topics_lbits[st._id] && ( (user && user.hasAddPermission) || sub_topics_lbits[st._id].length || locals.isMyTopicsPage)) { %>
+                            <% filteredList.push(st) %>
+                    <% } %>
+                <% }) %>
+            <% } %>
+            <% if (locals.topicObj && filteredList.length) { %>
+            <li class="dropdown">
+                <a href="#" class="btn btn-default dropdown-toggle quick-nav" data-hover="dropdown" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false"><span itemprop="title" class="active-topic-name"><%- locals.topicObj.name %><% if (topicObj.is_expanded) { %> (Linked)<% } %></span> <span class="caret"></span></a>
+                <ul class="dropdown-menu pull-left" id="quick-nav-menu">
+                    <li role="presentation" class="dropdown-header">Sub topics</li>
+                    <% filteredList.forEach(function (st) { %>
+                        <li role="presentation"><a href="#" onclick="javascript:navigateToNode('<%- st.id %>');return false;"><% if (st.type == 'search') { %><i class="fa fa-search">&nbsp; </i><% } %><%- st.name %></a><li>
+                    <% }) %>
+                </ul>
+            </li>
+            <% } else { %>
+            <li style="padding-top: 5px;" class="active"><% if (locals.topicObj) { %><span itemprop="title" class="active-topic-name"><%- locals.topicObj.name %><% } %></span></li>
+            <% } %>       
+        </ul>
+        <div class="col-xs-3">
+        <% if (!locals.embedMode) { %>            
+            <% include topic-options.html %>
+            <% } %>
+            <% include ../branding/extraToolbarBtn.ejs %>
+            <% if (locals.topicObj && topicObj._id) { %>
+            <div class="pull-right bc_options hidden-xs"><a class="btn btn-default" href="/topic/map/<%- topicObj._id %>" data-toggle="tooltip" data-placement="bottom" title="Topic map for <%- topicObj.name %>"><i class="fa fa-sitemap fa-rotate-270"></i>&nbsp; Map</a></div>
+            <% } else { %>
+            <div class="pull-right bc_options hidden-xs"><a class="btn btn-default" href="/topic/new" data-toggle="tooltip" data-placement="bottom" title="Create topic"><i class="fa fa-plus"></i>&nbsp; Create topic</a></div>
+        <% } %>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<% if (locals.topicObj && topicObj._id) { %>
+<% var topicUserRole = topicObj.user_role && topicObj.user_role[req.user._id] ? topicObj.user_role[req.user._id] : null %>
+    <% var alreadyFollowing = topicObj.followers && _.indexOf(topicObj.followers, user._id) > -1 %>
+    <% var alreadyCollaborator = topicObj.collaborators && _.indexOf(topicObj.collaborators, user._id) > -1 %>
+    <% var topic_url = topicObj.short_url || (config.base_url + (config.use_port ? (':' + config.port) : '') + '/topic/' + topicObj._id) %>
+    <% var enc_topic_url = encodeURIComponent(topic_url) %>
+    <% var enc_text = encodeURIComponent('I just found this topic on @CoLearnr - ' + topicObj.name + ' ' + topic_url) %>
+    <% if (locals.user && !locals.user.guestMode) { %>
+    <div class="pull-right bc_options dropdown">
+        <a href="#" class="dropdown-toggle options-btn btn btn-default" data-hover="dropdown" data-toggle="dropdown"><i class="fa fa-cog"></i> <span class="caret"></span></a>
+        <ul class="dropdown-menu dropdown-menu-left pull-right" id="topic-options-menu">
+            <li class="shuffle <% if (topicObj.empty) { %>hide<% } %>"><a href="javascript:shuffleTopic()"><i class="fa fa-random"></i>&nbsp; Shuffle</a></li>
+            <% if (constants.TOPIC_COLLAB_ROLE == topicUserRole || constants.TOPIC_ADMIN_ROLE == topicUserRole || constants.ADMIN_ROLE == topicUserRole || topicObj.added_by == user._id) { %>
+            <li><a href="/topic/edit/<%- topicObj._id %>"><i class="fa fa-edit"></i>&nbsp; Edit <kbd class="pull-right" style="text-transform: lowercase;">e</kbd></a></li>
+            <% } %>
+            <% if (topicObj.added_by != user._id) { %>
+                <li><a id="topicFollowBtn" href="#" onclick="followTopic('<%- topicObj._id %>');" title="Follow"><i class="fa fa-eye"></i>&nbsp; <span id="topicFollowLabel"><% if (alreadyFollowing) { %> Following<% } else { %> Follow<% } %></span></a></li>
+            <% } %>
+            <% if ((topicObj.is_expanded || constants.TOPIC_ADMIN_ROLE == topicUserRole || constants.ADMIN_ROLE == topicUserRole || topicObj.added_by == user._id) && (topicObj.added_by != 'colearnr' || topicObj.is_expanded) ) { %>
+                <% if (topicObj.hidden) { %>
+                    <li><a href="/topic/undelete/<%- topicObj._id %>" title="Restore">Restore</a></li>
+                <% } else { %>
+                    <li><a id="delTopic" data-id="<%- topicObj._id %>" href="#" onclick="showDelTopicModal('<%- topicObj._id %>');" title="Delete"><i class="fa fa-trash-o"></i>&nbsp; Delete</a></li>
+                <% } %>
+            <% } %>
+        </ul>
+    </div>
+    <% } %>
+<% } %>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- start: Meta -->
+<meta charset="utf-8">
+<% if (locals.mode && locals.mode == 'profile-edit') { %>
+<title>Edit Profile | CoLearnr</title>
+<% } else { %>
+<title>Registration | CoLearnr</title>
+<% } %>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<meta name="author" content=""/>
+<!-- end: Meta -->
+
+<!-- start: Mobile Specific -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<!-- end: Mobile Specific -->
+
+<!-- start: Facebook Open Graph -->
+<meta property="og:title" content=""/>
+<meta property="og:description" content=""/>
+<meta property="og:type" content=""/>
+<meta property="og:url" content=""/>
+<meta property="og:image" content=""/>
+<!-- end: Facebook Open Graph -->
+
+<% include includes/css-common.html %>
+<link rel="stylesheet" href="<%- locals.page_options.cdn_prefix %>/stylesheets/login.css?<%- locals.page_options.version %>" type="text/css">
+</head>
+<body>
+    <div id="wrap">
+        <% if (locals.user && locals.mode && locals.mode=='profile-edit') { %>
+        <!--start: Header -->
+        <header>
+            <!--start: Container -->
+            <div class="container">
+            <% include includes/nav.html %>
+            </div>
+            <!--end: Container-->
+        </header>
+        <!--end: Header-->
+        <% } %>
+        <div class="container">
+            <div class="apollo">
+                <div class="apollo-container clearfix">
+                        <p class="apollo-heading">
+                            <% if (locals.mode && locals.mode=='profile-edit') { %>
+                            <%-'Edit your profile'%>
+                            <% } else { %>
+                            <%-'Complete your profile'%>
+                            <% } %>
+                        </p>
+                        <% if (locals.error && locals.error.length) { %>
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <strong>Something is not right!</strong>
+                            <ul class="square">
+                            <% error.forEach(function (msg) { %>
+                                <li><%- msg %></li>
+                            <% }) %>
+                            </ul>
+                        </div>
+                        <% } %>
+                        <div class="profilewrapper">
+                            <img width="80px" height="auto" src="<%- profileImage || locals.page_options.cdn_prefix + '/images/profile/profile_1.jpg' %>" title="<%- name || '' %>" class="img-circle">
+                            <% if (locals.mode && locals.mode == 'profile-edit') { %>
+                            <div class="pull-right">
+                                <p><a class="btn btn-link" href="/password/change">Change Password</a></p>
+                            </div>
+                            <% } %>
+                        </div>
+                        <% if (locals.mode && locals.mode=='profile-edit') { %>
+                        <form class="form-horizontal" id="register-form" method="post" action="/profile/save">
+                        <% } else { %>
+                        <form class="form-horizontal" id="register-form" method="post" action="/complete">
+                        <% }%>
+                            <input type="hidden" id="oid" name="oid" value="<%- oid || ''%>"/>
+                            <div class="control-group">
+                                <input tabindex="1" type="text" maxlength="50" value="<% if (locals.name) { %><%- name %><% } %>" class="form-control input-block-level" id="name" name="name" placeholder="Full name" required/>
+                            </div>
+
+                            <div class="control-group">
+                                <input tabindex="2" type="text" maxlength="50" value="<% if (locals.email) { %><%- email %><% } %>" id="email" name="email" class="form-control input-block-level email" placeholder="Email address" required/>
+                            </div>
+
+                            <% if (!(locals.mode && locals.mode == 'profile-edit')) { %>
+                            <div class="control-group">
+                                <input tabindex="3" type="password" maxlength="50" id="password" name="password" placeholder="Password" class="form-control input-block-level" required/>
+                            </div>
+                            <% } %>
+
+                            <% if (locals.config && locals.config.access_code && locals.config.access_code.length) { %>
+                            <div class="control-group">
+                                <input tabindex="4" maxlength="50" id="access_code" name="access_code" value="" type="text" class="input-block-level" placeholder="Access code" required/>
+                            </div>
+                            <% } %>
+
+                            <% if (locals.mode && locals.mode == 'profile-edit') { %>
+                            <div class="control-group">
+                                <textarea class="form-control" tabindex="4" id="description" name="description" cols="18" rows="4" placeholder="Brief description about you ..." maxlength="1000"><% if (locals.description) { %><%- description %><% } %></textarea>
+                                <span class="help-block">Description will help other CoLearnrs to learn more about you. We also use this information to selectively invite CoLearnrs to become curators for topics.</span>
+                            </div>
+                            <% } %>
+
+                            <% if (!(locals.mode && locals.mode == 'profile-edit')) { %>
+                            <div class="control-group">
+                                <label class="checkbox-inline" for="agree_terms">
+                                    <input tabindex="5" type="checkbox" id="agree_terms" data-toggle="checkbox" name="agree_terms" value="agreed" required>I agree to <a class="terms" href="/terms.html" target="_new">CoLearnr Terms</a>
+                                </label>
+                            </div>
+                            <% } %>
+                            <div class="row">
+                                <div class="pull-right">
+                                    <button class="btn btn-lg btn-primary" type="submit"><% if (locals.mode && locals.mode=='profile-edit') { %>Save changes<% } else { %>Register<% } %></button>
+                                    <button class="btn btn-lg btn-link" onclick="self.location='/user/topic?login'" type="button">Cancel</button>
+                                </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<% include includes/underfooter.html %>
+<% include includes/scripts-common.html %>
+<% include includes/submenu-script.html %>
+<% include includes/analytics.html %>
+
+<script>
+    $().ready(function() {
+        $("#register-form").validate();
+    });
+</script>
+
+</body>
+</html>

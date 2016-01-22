@@ -1,0 +1,24 @@
+<html>
+    <head>
+    <title><% if (locals.topic && locals.topic.name) { %><%- topic.name %> | Powered by CoLearnr <% } else { %><%- locals.url %> | Powered by CoLearnr<% } %></title>
+    <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/videojs/video-embed.css?<%- locals.page_options.version %>" />
+    </head>
+    <body>
+        <%
+            var width = '960';
+            var height = '600';
+            if (locals.embedSize) {
+                if (embedSize.toLowerCase() == 'small') {
+                    width = '480';
+                    height = '400';
+                } else if (embedSize.toLowerCase() == 'medium') {
+                    width = '720';
+                    height = '500';
+                }
+            }
+        %>
+        <div class="media-wrapper"><div class="media-container"><div class="media-shadow">
+            <iframe src="<%- url %>?embedMode=true" width="<%- width %>" height="<%- height %>" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        </div></div></div>
+    </body>
+</html>

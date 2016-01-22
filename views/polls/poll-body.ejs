@@ -1,0 +1,25 @@
+<% var body = util.parseJson(lbit.body); %>
+<% var choices_length = (body.choices && body.choices.length && body.choices.length > constants.POLL_CHOICES_COUNT) ? body.choices.length : constants.POLL_CHOICES_COUNT; %>
+<input id="total_choices" name="total_choices" type="hidden" value="<%- choices_length %>"></input>
+<div class="control-group">
+  <label class="control-label">Question</label>
+  <div class="controls">
+    <textarea class="body_edit form-control" id="body" name="body" data-edit="summernote"><%- body.body %></textarea>
+    <p class="help-block">Type the poll question here. Feel free to use the fullscreen mode (Second button from the end)!</p>
+  </div>
+</div>
+<hr/>
+<div class="control-group">
+<label class="control-label">Choices</label>
+  <div class="controls">
+
+    <% for (var i=1; i<choices_length + 1; i++) { %>
+    <input id="choice_<%- i %>" name="choice_<%- i %>" type="text" placeholder="Choice <%- i %>" class="form-control input-xlarge" value="<%- (body && body.choices && body.choices[i-1].text) ? body.choices[i-1].text : "" %>" required="">
+    <p class="apollo-separator"></p>
+    <% } %>
+    <p class="help-block">Choices for the poll. Feel free to add more.
+    <button type="button" id="addChoice" class="btn btn-link pull-right"><span class="fa fa-plus"></span> Add another</button>
+    </p>
+  </div>
+</div>
+<hr/>

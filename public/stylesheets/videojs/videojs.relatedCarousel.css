@@ -1,0 +1,46 @@
+.vjs-related-carousel-holder {
+  position: absolute;
+  width: 90%;
+  margin: 0 5%;
+  bottom: -10em;
+  text-align: center;
+  opacity: 0.75;
+  background: #000;
+  visibility: hidden;
+  transition: all .2s ease;
+  -webkit-transition: all .2s ease;
+  -moz-transition: all .2s ease;
+  h5 {
+    margin: 0.2em;
+  }
+  &.active {
+    visibility: visible;
+    bottom: 4em;
+  }
+}
+
+/* Hide the carousel when the video is playing and the user is inactive  */
+.vjs-default-skin.vjs-has-started.vjs-user-inactive.vjs-playing .vjs-related-carousel-holder {
+  visibility: hidden;
+  opacity: 0;
+  /* transition */
+  -webkit-transition: visibility 1s, opacity 1s;
+  -moz-transition: visibility 1s, opacity 1s;
+  -o-transition: visibility 1s, opacity 1s;
+  transition: visibility 1s, opacity 1s;
+}
+
+.vjs-carousel-thumbnail {
+  width: 10%;
+  opacity: 1;
+  margin: 2px;
+}
+
+.vjs-default-skin .vjs-related-carousel-button {
+  float: right;
+  cursor: pointer;
+}
+
+.vjs-related-carousel-button:before {
+  content: "\e00d";
+}

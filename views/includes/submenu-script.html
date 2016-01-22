@@ -1,0 +1,201 @@
+<script>
+    var isMobile = window.detectBrowser ? (window.detectBrowser().iOS || window.detectBrowser().android) : false;
+    if (isMobile) {
+        $("a[rel^='prettyPhoto']").unbind('click');
+    }
+
+    var $menu = $(".dropdown-menu");
+    if (!isMobile) {
+        $menu.menuAim({
+            activate: activateSubmenu,
+            deactivate: deactivateSubmenu
+        });
+    }
+
+    function activateSubmenu(row) {
+        var $row = $(row),
+                submenuId = $row.data("submenuId"),
+                $submenu = $("#" + submenuId),
+                height = $menu.outerHeight(),
+                width = $menu.outerWidth();
+        // Show the submenu
+        $submenu.css({
+            display: "block",
+            top: -1,
+            left: width - 3,  // main should overlay submenu
+            height: height - 4  // padding for main dropdown's arrow
+        });
+
+        // Keep the currently activated row's highlighted look
+        $row.find("a").addClass("maintainHover");
+    }
+
+    function deactivateSubmenu(row) {
+        var $row = $(row),
+                submenuId = $row.data("submenuId"),
+                $submenu = $("#" + submenuId);
+
+        // Hide the submenu and remove the row's highlighted look
+        $submenu.css("display", "none");
+        $row.find("a").removeClass("maintainHover");
+    }
+
+    if (!isMobile) {
+        $(".dropdown-menu li").click(function(e) {
+            e.stopPropagation();
+        });
+
+        $(document).click(function() {
+            // Simply hide the submenu on any click. Again, this is just a hacked
+            // together menu/submenu structure to show the use of jQuery-menu-aim.
+            $(".popover").css("display", "none");
+            $("a.maintainHover").removeClass("maintainHover");
+        });
+    }
+
+    $(function() {
+        var searchInput = $('#searchInput');
+
+        $(searchInput).on('focus', function() {
+            searchInput.attr('placeholder', 'Search learnbits, topics, users ...');
+            $(this).animate({
+                width: '175%'
+            }, 300, function() {});
+        });
+
+        $(searchInput).on('blur', function() {
+            if (searchInput.val() == '') {
+                searchInput.attr('placeholder', 'Search');
+                $(searchInput).animate({
+                    width: '70%'
+                }, 300, function() {});
+            }
+        });
+    });
+    var iconsMap = {'Learnbits': 'fa fa-file-o', 'Topics': 'fa fa-book', 'Users': 'fa fa-user'};
+    $.widget( "custom.catcomplete", $.ui.autocomplete, {
+        _renderMenu: function( ul, items ) {
+            var that = this,
+            searchText = $('#searchInput').val(),
+            currentCategory = "";
+            $(ul).addClass('col-md-4 dropdown-menu search-results');
+            $.each( items, function( index, item ) {
+                if ( item.category && item.category != currentCategory ) {
+                    ul.append( "<li class='ui-autocomplete-category search-category'><i class='" + iconsMap[item.category] + "' />&nbsp; " + item.category + " <a class='pull-right' href='/search?q=" + searchText + "&type=" + item.category.toLowerCase() + "'>Search all</a></li>" );
+                    currentCategory = item.category;
+                }
+                that._renderItemData( ul, item );
+            });
+        },
+        _renderItemData: function(ul, item) {
+            var html = "<li class='search-item'>";
+            var itemLabel = (item.link ? ("<a href='" + item.link +"'><span>") : '<span>')  + item.label;
+
+            var itemInfo = item.info ? ("<br/><span class='search-item-info'>" + item.info + "</span>") : '';
+            html = html + itemLabel + itemInfo + (item.link ? "</span></a>":"</span>") + "</li>";
+            return $(html).appendTo( ul ).data( "ui-autocomplete-item", item );
+        }
+    });
+
+    $( ".nav-search" ).catcomplete({
+        source: function(request, response) {
+            var results = [];
+            $.ajax({
+                url: '/api/lbit/search',
+                dataType: 'json',
+                data: {
+                    q: request.term,
+                    ac: 1
+                },
+                success: function( data ) {
+                    $.merge(results, $.map( data, function( item ) {
+                        if(item && item._source && item._source.topics && item._source.topics[0] && item._source.topics[0]._id) {
+                            return {
+                                label: item.highlight.title || item._source.title,
+                                value: item._source.title,
+                                link: '/topic/' + item._source.topics[0]._id + '#lbit=' + item._source._id + '/show',
+                                category: 'Learnbits',
+                                info: item._source.type ? (' Type: ' + item._source.type) : ''
+                            }
+                        } else {
+                            return undefined;
+                        }
+                    }));
+                    if(results.length == 0) {
+                        response([{label:"No search results found.", value: ""}]);
+                    } else {
+                        response(results);
+                    }
+                },
+                error: function() {
+                    response(results);
+                }
+            });
+            $.ajax({
+                url: '/api/topic/search',
+                dataType: 'json',
+                data: {
+                    q: request.term,
+                    ac: 1
+                },
+                success: function( data ) {
+                    $.merge(results, $.map( data, function( item ) {
+                        if(item && item._source) {
+                            return {
+                                label: item.highlight.name || item._source.name,
+                                value: item._source.name,
+                                link: '/topic/' + item._source._id,
+                                category: 'Topics',
+                                info: item._source.path ? (' Path: ' + item._source.path) : ' Parent topic'
+                            }
+                        } else {
+                            return undefined;
+                        }
+                    }));
+
+                    if(results.length == 0) {
+                        response([{label:"No search results found.", value: ""}]);
+                    } else {
+                        response(results);
+                    }
+                },
+                error: function() {
+                    response(results);
+                }
+            });
+            $.ajax({
+                url: '/api/user/search',
+                dataType: 'json',
+                data: {
+                    q: request.term,
+                    ac: 1
+                },
+                success: function( data ) {
+                    $.merge(results, $.map( data, function( item ) {
+                        var slug = item._source.displayName.toLowerCase();
+                        return {
+                            label: slug,
+                            value: slug,
+                            link: '<%- durl %>/user/' + item._source._id + '/' + slug,
+                            category: 'Users',
+                            info: (item._source.emails && item._source.emails.length) ? (' Email: ' + item._source.emails[0]) : ''
+                        }
+                    }));
+                    if(results.length == 0) {
+                        response([{label:"No search results found.", value: ""}]);
+                    } else {
+                        response(results);
+                    }
+                },
+                error: function() {
+                    response(results);
+                }
+            });
+        },
+        select: function(event, ui) {
+            if (ui && ui.item && ui.item.link) {
+                window.location = ui.item.link;
+            }
+        }
+    });    
+</script>

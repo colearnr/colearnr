@@ -1,0 +1,155 @@
+.modal-open {
+	overflow: auto;
+}
+.note-toolbar .dropdown-menu {
+	min-width: 180px;
+}
+.note-toolbar .btn-sm {
+    height: 30px;
+}
+.note-toolbar .dropdown-menu a {
+	padding: 3px 5px;
+}
+.note-editable {
+	background-color: white;
+}
+
+.note-style .dropdown-menu h1, .note-style .dropdown-menu h2, .note-style .dropdown-menu h3, .note-style .dropdown-menu h4, .note-style .dropdown-menu h5, .note-style .dropdown-menu h6, .note-style .dropdown-menu blockquote {
+  margin: 5px !important;
+  text-transform: none !important;
+}
+
+.note-style .dropdown-menu h1 {
+  font-size: 28px !important;
+}
+
+.note-style .dropdown-menu h2 {
+  font-size: 24px !important;
+}
+
+.note-style .dropdown-menu h3 {
+  font-size: 20px !important;
+}
+
+.note-style .dropdown-menu h4 {
+  font-size: 18px !important;
+}
+
+.note-style .dropdown-menu h5 {
+  font-size: 16px !important;
+}
+
+.note-style .dropdown-menu h6 {
+  font-size: 14px !important;
+}
+
+.note-editor .dropdown-menu li {
+  line-height: 100% !important;
+  margin-bottom: 5px;
+}
+
+.modal-backdrop.in {
+	display: none;
+}
+.note-editable a {
+	color: #486D98;
+}
+.note-editable table {
+	color: black;
+}
+.note-editor .dropdown-menu {
+	z-index: 10000
+}
+
+.note-popover .popover .popover-content .dropdown-menu li a i, .note-toolbar .dropdown-menu li a i {
+  color: #486D98;
+}
+
+.note-editor .dropdown-menu li.note_tag a {
+  padding: 0px 0px 5px 15px;
+}
+
+.note-editor .dropdown-menu li.note_tag a:hover i {
+  color: #FFF;
+}
+
+.note-editor div {
+  font-size: 14px;
+}
+
+.note-editor .dropdown-menu li.note_tag a i {
+  visibility: visible !important;
+  color: #486D98;
+}
+
+div.note_tag {
+  margin: 5px 0 0 10px;
+}
+div.note_tag i.fa {
+  color: #486D98 !important;
+  font-size: 20px;
+}
+
+li.doubt i.fa,
+div.doubt i.fa,
+li.bug i.fa,
+div.bug i.fa,
+li.question i.fa,
+div.question i.fa,
+li.todo i.fa,
+div.todo i.fa {
+  color: rgb(192, 57, 43) !important;
+}
+
+li.trophy i.fa,
+div.trophy i.fa,
+li.heart i.fa,
+div.heart i.fa,
+li.done i.fa,
+div.done i.fa {
+  color: rgb(46, 204, 113) !important;
+}
+
+li.eye i.fa,
+div.eye i.fa,
+li.exclamation i.fa,
+div.exclamation i.fa,
+li.bell i.fa,
+div.bell i.fa,
+li.important i.fa,
+div.important i.fa {
+  color: rgb(243, 156, 18) !important;
+}
+
+li.brainstorm i.fa,
+div.brainstorm i.fa,
+li.quote i.fa,
+div.quote i.fa,
+li.bookmark i.fa,
+div.bookmark i.fa,
+li.at i.fa,
+div.at i.fa,
+li.lightbulb i.fa,
+div.lightbulb i.fa {
+  color: rgb(155, 89, 182) !important;
+}
+
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+  .note-editor .modal-dialog {
+    width: 90%;
+    max-width: 600px;
+  }
+}
+
+
+.note-editor .columns {
+  -moz-column-count: 3; /* Firefox */
+  -webkit-column-count: 3; /* Safari and Chrome */
+  column-count: 3;
+  width: 400px;
+}
+
+.note-editor .dropdown-menu li > a:hover {
+  color: #fff;
+  background: #486D98 !important;
+}

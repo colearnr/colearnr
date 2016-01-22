@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>audio.js</title>
+    <script src="./audiojs/audio.min.js"></script>
+    <link rel="stylesheet" href="./includes/index.css" media="screen">
+    <script>
+      audiojs.events.ready(function() { 
+        audiojs.createAll();
+      });
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>audio.js</h1>
+    </header>
+
+    <audio src="http://kolber.github.io/audiojs/demos/mp3/juicy.mp3" preload="auto"></audio>
+
+    <h3>Installation</h3>
+    <ol>
+      <li>
+        <p>Put <code>audio.js</code>, <code>player-graphics.gif</code> & <code>audiojs.swf</code> in the same folder.</p>
+      </li>
+      <li>
+        <p>Include audio.js:</p>
+        <pre><code>&lt;script src="/audiojs/audio.js"&gt;&lt;/script&gt;</code></pre>
+      </li>
+      <li>
+        <p>Initialise audio.js:</p>
+        <pre><code>&lt;script&gt;
+  audiojs.events.ready(function() {
+    var as = audiojs.createAll();
+  });
+&lt;/script&gt;</code></pre>
+      </li>
+      <li>
+        <p>Then you can use <code>&lt;audio&gt;</code> wherever you like in your HTML:</p>
+        <pre><code>&lt;audio src="/mp3/juicy.mp3" preload="auto" /&gt;</code></pre>
+      </li>
+    </ol>
+
+    <h3>Examples</h3>
+    <p>A series of API tests & examples for using and extending audio.js</p>
+    <p><em>Example 1</em> <a href="http://kolber.github.com/audiojs/demos/test1.html">Test multiple load types</a></p>
+    <p><em>Example 2</em> <a href="http://kolber.github.com/audiojs/demos/test2.html">Custom markup/css</a></p>
+    <p><em>Example 3</em> <a href="http://kolber.github.com/audiojs/demos/test3.html">Multiple players, testing <code>preload</code>, <code>loop</code> & <code>autoplay</code> attributes</a></p>
+    <p><em>Example 4</em> <a href="http://kolber.github.com/audiojs/demos/test5.html">Customised player</a></p>
+    <p><em>Example 5</em> <a href="http://kolber.github.com/audiojs/demos/test6.html">Customised playlist player</a></p>
+
+    <h3>Source code</h3>
+    <p>All efforts have been made to keep the source as clean and readable as possible. Until we release more detailed documentation, the annotated source is the best reference for usage.</p>
+    <p><a href="http://kolber.github.com/audiojs/docs/">Annotated source</a> / <a href="http://github.com/kolber/audiojs">Source on Github</a></p>
+
+    <footer>
+      <p class="ab-c"><em>&real;</em> Another <a href='http://ab-c.com.au'>ab+c</a> joint</p>
+    </footer>
+  </body>
+</html>
