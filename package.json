@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": false,
   "homepage": "https://www.colearnr.com",
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "repository": {
     "url": "https://github.com/colearnr/colearnr.git"
   },
