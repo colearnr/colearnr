@@ -1,0 +1,139 @@
+#############################################################################
+# WARNING: Use this as a guidance.
+# This config contains ejs tags and won't work out of the box with haproxy
+# Tested with version: haproxy 1.6.2
+#############################################################################
+
+global  
+  max-spread-checks 1000
+  maxconn     1000
+  nbproc      2
+  ulimit-n    2020
+  #debug
+  daemon
+  #user colearnr
+  log         127.0.0.1    local0
+  tune.ssl.cachesize 20000
+  tune.ssl.lifetime  300
+  tune.ssl.default-dh-param 2048
+  ssl-default-bind-options no-sslv3 no-tls-tickets
+  ssl-default-bind-ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+
+  ssl-default-server-options no-sslv3 no-tls-tickets
+  ssl-default-server-ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+
+defaults
+    mode        http
+    option      httplog
+    option      dontlognull
+    option      redispatch
+    option      http-server-close
+    log         global
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
+
+frontend  http
+    bind        0.0.0.0:80
+    <% clients.forEach(function (client_name) { %>
+    acl is_<%- client_name %> hdr(host) -i <%- client_name %>.<%- product_name %>
+    acl is_discuss_<%- client_name %> hdr(host) -i discuss<% if (client_name != 'www') { %>-<%- client_name %><% } %>.<%- product_name %>
+    <% }) %>
+    acl is_websocket hdr(Upgrade) -i WebSocket
+    acl is_websocket hdr_beg(Host) -i ws
+    timeout     client 86400000
+    mode        http
+    option      forwardfor
+    # Insert 250ms if the rate is more than 1000 req/s
+    acl too_fast fe_sess_rate ge 1000
+    tcp-request inspect-delay 50ms
+    tcp-request content accept if !too_fast
+    tcp-request content accept if WAIT_END
+    acl invalid-cl hdr_val(content-length) le 0
+    redirect scheme https if !{ ssl_fc }
+    <% clients.forEach(function (client_name) { %>
+    use_backend www_discuss_<%- client_name %> if is_discuss_<%- client_name %> is_websocket
+    use_backend www_discuss_<%- client_name %> if is_discuss_<%- client_name %>
+    use_backend www_<%- client_name %> if is_<%- client_name %>
+    use_backend www_<%- client_name %> if is_<%- client_name %> is_websocket
+    <% if (client_name == 'www') { %>
+    default_backend      www_www
+    <% } %>
+    <% }) %>
+
+frontend  secured
+    <% clients.forEach(function (client_name) { %>
+    acl is_<%- client_name %> hdr(host) -i <%- client_name %>.<%- product_name %>
+    acl is_discuss_<%- client_name %> hdr(host) -i discuss<% if (client_name != 'www') { %>-<%- client_name %><% } %>.<%- product_name %>
+    <% }) %>
+    acl is_websocket hdr(Upgrade) -i WebSocket
+    acl is_websocket hdr_beg(Host) -i ws
+    timeout     client 86400000
+    mode        http
+    option      forwardfor
+    tcp-request inspect-delay 250ms
+    tcp-request content accept if { req_ssl_hello_type 1 }
+    bind        0.0.0.0:443 ssl crt /cl/conf/certs
+    rspirep ^(set-cookie:.*) \1;\ Secure
+    http-response set-header Strict-Transport-Security max-age=31536000;\ includeSubdomains;\ preload
+    http-response set-header X-Forwarded-Proto https if { ssl_fc }
+    http-response set-header X-Content-Type-Options nosniff
+    http-response set-header X-Proto SSL if { ssl_fc }
+    <% clients.forEach(function (client_name) { %>
+    use_backend www_discuss_<%- client_name %> if is_discuss_<%- client_name %> is_websocket
+    use_backend www_discuss_<%- client_name %> if is_discuss_<%- client_name %>
+    use_backend www_<%- client_name %> if is_<%- client_name %>
+    use_backend www_<%- client_name %> if is_<%- client_name %> is_websocket
+    <% if (client_name == 'www') { %>
+    default_backend      www_www
+    <% } %>
+    <% }) %>
+
+<% clients.forEach(function (client_name) { %>
+<% var i=0 %>
+backend www_<%- client_name %>
+    acl methods_strict method HEAD GET PUT POST UPGRADE
+    acl methods_avoid  method TRACE CONNECT
+    acl hosts_methods-ext.edss hdr(host) SOME_SITED_WITH_EXTENDED_METHODS
+    http-request allow if !hosts_methods-ext.edss methods_strict
+    http-request allow if hosts_methods-ext.edss !methods_avoid
+    option tcplog
+    balance roundrobin
+    fullconn 10000
+    mode        http
+    option      forwardfor # This sets X-Forwarded-For
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    http-request add-header X-Proto SSL if { ssl_fc }
+    http-request add-header X-Forwarded-Ssl on if { ssl_fc }
+    cookie SERVERID insert maxidle 120 maxlife 900 indirect preserve domain .<%- product_name %>
+    timeout     server 30000
+    timeout     connect 4000
+    compression algo gzip
+    compression type text/css
+    option httpchk HEAD /check.txt HTTP/1.0
+    http-check disable-on-404
+    server      server<%- i %> container_<%- client_name %>:8080 check inter 1s downinter 1s rise 1 fall 2 cookie server<%- i %> weight 100
+
+backend www_discuss_<%- client_name %>
+    acl methods_strict method HEAD GET PUT POST UPGRADE
+    acl methods_avoid  method TRACE CONNECT
+    acl hosts_methods-ext.edss hdr(host) SOME_SITED_WITH_EXTENDED_METHODS
+    http-request allow if !hosts_methods-ext.edss methods_strict
+    http-request allow if hosts_methods-ext.edss !methods_avoid
+    option tcplog
+    balance roundrobin
+    fullconn 10000
+    mode        http
+    option      forwardfor # This sets X-Forwarded-For
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    http-request add-header X-Proto SSL if { ssl_fc }
+    http-request add-header X-Forwarded-Ssl on if { ssl_fc }
+    cookie SERVERID insert maxidle 120 maxlife 900 indirect preserve domain .<%- product_name %>
+    timeout     server 30000
+    timeout     connect 4000
+    compression algo gzip
+    compression type text/css
+    option httpchk HEAD /check.txt HTTP/1.0
+    http-check disable-on-404
+    server      dserver<%- i %> container_<%- client_name %>:4567 check inter 1s downinter 1s rise 1 fall 2 cookie dserver<%- i %> weight 100
+<% }) %>

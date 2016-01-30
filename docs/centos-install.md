@@ -35,7 +35,6 @@ export CC=/opt/rh/devtoolset-2/root/usr/bin/gcc
 export CPP=/opt/rh/devtoolset-2/root/usr/bin/cpp
 export CXX=/opt/rh/devtoolset-2/root/usr/bin/c++
 
-sudo npm install -g jscs jshint grunt grunt-cli gulp gulp-cli bower nodemon
 sudo yum install -y ruby
 sudo yum install -y gcc g++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel
 sudo yum install -y ruby-rdoc ruby-devel rubygems
