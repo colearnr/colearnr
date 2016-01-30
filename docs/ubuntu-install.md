@@ -32,17 +32,19 @@ Stylesheets are based on compass framework (http://compass-style.org). Use the b
 ```
 
 # Setup rvm to install the ruby 2.1.8
-sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 
 curl -L https://get.rvm.io | bash -s stable
-source /etc/profile.d/rvm.sh
-echo "source /etc/profile.d/rvm.sh" >> ~/.bashrc
+#source /etc/profile.d/rvm.sh
+#echo "source /etc/profile.d/rvm.sh" >> ~/.bashrc
+source ~/.rvm/scripts/rvm
+echo "source ~/.rvm/scripts/rvm" >> ~/.bashrc
 rvm install 2.1.8
 rvm use 2.1.8 --default
 
-sudo gem update
-sudo gem update --system
-sudo gem install compass
+gem update
+gem update --system
+gem install compass
 ```
 
 ## Build CoLearnr
