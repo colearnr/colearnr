@@ -50,6 +50,6 @@ CoLearnr is a node.js/express.js application
 
 Need some help here.
 
-## Did you know
+## Did you know?
 
 Nearly all of CoLearnr was developed by a single [developer](https://github.com/prabhu) who couldn't make the startup a commercial success.
