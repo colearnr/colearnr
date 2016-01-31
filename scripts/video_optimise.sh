@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 usage() {
     echo "Usage: $0 location lbitid userid cloud_prefix"
     exit 1
