@@ -44,7 +44,17 @@ sudo gem update --system
 sudo gem install compass
 ```
 
-## Build CoLearnr
+## Build/Download CoLearnr
+
+You can either build CoLearnr from source or download a pre-built version
+
+### Pre-built packages
+- [Centos 6 - .tar.xz](http://downloads.colearnr.com/centos6/colearnr-community.tar.xz)
+- [MD5 hash](http://downloads.colearnr.com/centos6/colearnr-community.tar.xz.md5)
+
+(Sorry can't afford https over azure. Sponsors are welcome)
+
+### Build
 ```
 PWD=`pwd`
 npm config set python python2.7
