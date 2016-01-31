@@ -19,14 +19,14 @@ Here are some ways people have been using CoLearnr so far
 - Personal/team knowledge management
 - Curation site
 - Simple course website
-- Kids activities
+- Kids activities [Upcoming edition](https://learnbees.colearnr.com)
 - Support website
 
 Using CoLearnr for a different purpose? We would love to hear from you.
 
 ## Installation
 
-We have installation guide for [Ubuntu 15.10](docs/ubuntu-install.md) and [Centos 6](docs/centos-install.md). We have pre-built packages from Centos 6. Docker and Windows guide is coming shortly.
+We have installation guide for [Ubuntu 15.10](docs/ubuntu-install.md) and [Centos 6](docs/centos-install.md). We have pre-built packages for [Centos 6](http://downloads.colearnr.com/centos6/colearnr-community.tar.xz) and [Ubuntu 15.10](http://downloads.colearnr.com/ubuntu1510/colearnr-community.tar.xz). Docker and Windows guide is coming shortly.
 
 ## Software stack
 
@@ -44,7 +44,7 @@ CoLearnr is a node.js/express.js application
 
 - Community edition (GPL-3.0)
 - Enterprise edition (Dual license)
-- CoLearnr for kids (GPL-3.0). Will be open-sourced soon.
+- CoLearnr for kids (GPL-3.0). Will be open-sourced soon. [demo](https://learnbees.colearnr.com)
 
 ## Documentation
 

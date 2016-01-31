@@ -15,14 +15,12 @@
 
 ```
 # Install node 5
-sudo apt-get install -y git-core curl
-sudo apt-get install -y curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties
-sudo apt-get install -y libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
+sudo apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
 curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Install ubuntu default versions
-sudo apt-get -y mongodb redis-server libreoffice python2.7
+sudo apt-get install -y mongodb redis-server libreoffice python2.7
 ```
 
 ### Optional sass support for customisation
@@ -47,7 +45,17 @@ gem update --system
 gem install compass
 ```
 
-## Build CoLearnr
+## Build/Download CoLearnr
+
+You can either build CoLearnr from source or download a pre-built version
+
+### Pre-built packages
+- [Ubuntu 15.10 - .tar.xz](http://downloads.colearnr.com/ubuntu1510/colearnr-community.tar.xz)
+- [MD5 hash](http://downloads.colearnr.com/ubuntu1510/colearnr-community.tar.xz.md5)
+
+(Sorry can't afford https over azure. Sponsors are welcome)
+
+### Build
 ```
 PWD=`pwd`
 npm config set python python2.7
