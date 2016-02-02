@@ -1,6 +1,6 @@
 #!/bin/bash
 INSTALL_DIR=/opt/colearnr
-DOWNLOAD_DIR=/opt/colearnr/install_data
+DOWNLOAD_DIR=$INSTALL_DIR/install_data
 
 if [ $EUID -ne 0 ]; then
    echo "This script must be run as root" 1>&2
@@ -93,7 +93,7 @@ fi
 mongo < $INSTALL_DIR/colearnr/scripts/db-bootstrap.js
 
 # Cleanup
-# rm -rf $DOWNLOAD_DIR
+rm -rf $DOWNLOAD_DIR
 chown -R colearnr:colearnr $INSTALL_DIR
 cd $INSTALL_DIR/colearnr && node app.js > /dev/null 2>&1 &
 cd $INSTALL_DIR/discuss && node app.js > /dev/null 2>&1 &

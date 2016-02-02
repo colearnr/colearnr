@@ -26,7 +26,7 @@ Using CoLearnr for a different purpose? We would love to hear from you.
 
 ## Installation
 
-We have installation guide for [Ubuntu 15.10](docs/ubuntu-install.md) and [Centos 6](docs/centos-install.md). We have pre-built packages for [Centos 6](http://downloads.colearnr.com/centos6/colearnr-community.tar.xz) and [Ubuntu 15.10](http://downloads.colearnr.com/ubuntu1510/colearnr-community.tar.xz). Docker and Windows guide is coming shortly.
+We have auto installation script for [Ubuntu 15.10](docs/ubuntu-install.md) and guide for [Centos 6](docs/centos-install.md). There are pre-built packages for [Centos 6](http://downloads.colearnr.com/centos6/colearnr-community.tar.xz) and [Ubuntu 15.10](http://downloads.colearnr.com/ubuntu1510/colearnr-community.tar.xz) for advanced users. Docker and Windows guide is coming shortly.
 
 ## Software stack
 
