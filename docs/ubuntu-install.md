@@ -85,7 +85,7 @@ npm start
 ## Setup database
 ```
 # Do this manually for now.
-mongo <CoLearnr webapp dir>/scripts/db-bootstrap.js
+mongo < <CoLearnr webapp dir>/scripts/db-bootstrap.js
 ```
 
 ## Setup search

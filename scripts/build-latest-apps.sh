@@ -17,10 +17,15 @@ npm install && gulp css
 rm -rf node_modules
 npm install --production --loglevel warn
 cd ..
+mv colearnr-master colearnr
+
 cd discuss-master
 npm install --production --loglevel warn
+cd ..
+mv discuss-master discuss
 
 cd $BUILD_DIR
+
 tar -cJf colearnr-community.tar.xz community
 md5sum colearnr-community.tar.xz | awk '{print $1}' > "colearnr-community.tar.xz.md5"
 
