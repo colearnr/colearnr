@@ -13,7 +13,7 @@ sudo apt-get install curl wget
 ```
 curl -sS http://downloads.colearnr.com/scripts/ubuntu-install.sh | sudo bash
 
-# Or if you need https
+# Or if you need https for installer
 curl -sS https://colearnr.blob.core.windows.net/scripts/ubuntu-install.sh | sudo bash
 ```
 
