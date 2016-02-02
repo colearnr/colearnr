@@ -1,4 +1,4 @@
-# Ubuntu dev setup
+# Ubuntu quick installation
 
 ## Versions tested
 - 15.10 (Wily Werewolf)
