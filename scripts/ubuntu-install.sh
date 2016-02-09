@@ -19,7 +19,7 @@ banner
 EDITION="community"
 UBUNTU_VERSION=`lsb_release -r -s`
 OS="ubuntu"
-OS_DIR="1510"
+OS_DIR=""
 
 if [ -d $INSTALL_DIR ]; then
     echo "Existing CoLearnr installation found in $INSTALL_DIR. This will be moved to $INSTALL_DIR.old"
@@ -29,7 +29,7 @@ else
     echo "Downloading dev and build tools"
     sudo apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
     curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-    sudo apt-get install -y nodejs mongodb redis-server libreoffice python2.7 ruby2.1
+    sudo apt-get install -y nodejs mongodb redis-server libreoffice python2.7
 
     # Set npm python to 2.7
     npm config set python python2.7
@@ -48,36 +48,40 @@ if [ $? = 0 ]; then
    echo "Found existing CoLearnr user!"
 else
    # Create colearnr user
-    useradd -M colearnr -c "User for CoLearnr" 
+    useradd -m colearnr -c "User for CoLearnr"
 fi
 
-if [ "$UBUNTU_VERSION" = "15.10" ]; then
-    echo "Wily Werewolf found. Downloading pre-built package ..."
-    wget http://downloads.colearnr.com/$OS$OS_DIR/colearnr-$EDITION.tar.xz
+OS_DIR=${UBUNTU_VERSION/./}
+echo "Checking for pre-built package for $OS $OS_DIR ..."
+wget http://downloads.colearnr.com/$OS$OS_DIR/colearnr-$EDITION.tar.xz
+if [ $? = 0 ]; then
+    echo "Extracting ..."
+    tar -xf colearnr-$EDITION.tar.xz
     if [ $? = 0 ]; then
-        echo "Extracting ..."
-        tar -xf colearnr-$EDITION.tar.xz
         mv community/colearnr $INSTALL_DIR/
         mv community/discuss $INSTALL_DIR/
     else
-        echo "Pre-built package could not be downloaded successfully. Please try later."
+        echo "Installation failed during unarchiving"
         exit 1
     fi
 else
     echo "No pre-built package found. Downloading source archive from git ..."
     wget https://github.com/colearnr/colearnr/archive/master.zip
     unzip master.zip
-    rm master.zip    
-    
+    rm master.zip
+
     wget https://github.com/colearnr/discuss/archive/master.zip
     unzip master.zip
     rm master.zip
-    
-    gem update
-    gem update --system
-    gem install compass
 
+    if [ $UBUNTU_VERSION = "14.04" ]; then
+        sudo apt-get install -y ruby2.0
+    else
+        sudo apt-get install -y ruby2.1
+    fi
+    sudo apt-get install ruby-compass
     echo "Begin npm installation"
+    npm config set python python2.7
     # Install global dependencies
     sudo npm install -g jscs grunt grunt-cli gulp gulp-cli bower nodemon
     cd $DOWNLOAD_DIR/colearnr-master

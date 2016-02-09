@@ -3,6 +3,7 @@
 ## Versions tested
 - 15.10 (Wily Werewolf)
 - 15.04 (Vivid Vervet)
+- 14.04 (Trusty Tahr)
 
 ## 1. Prepare
 ```
