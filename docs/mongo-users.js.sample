@@ -1,0 +1,16 @@
+///////////////////////////////////////////////////////////////////////////////////
+// WARNING: Use this as a guidance
+// Default installation of MongoDB is unsecure and not recommended for production IMHO
+// This script would create various users for the two CoLearnr databases
+///////////////////////////////////////////////////////////////////////////////////
+db = db.getSiblingDB('colearnr');
+db.createUser({ user: 'colearnr-dev', pwd: 'colearnr-dev', roles: ["readWrite"]});
+db.createUser({ user: 'colearnr-test', pwd: 'colearnr-test', roles: ["readWrite"]});
+db.createUser({ user: 'colearnr-prd', pwd: 'colearnr-prd', roles: ["readWrite"]});
+db.createUser({ user: 'colearnr-search', pwd: 'colearnr-search', roles: [{role: "read", db: "colearnr"}, {role: "read", db: "local"}]});
+db.createUser({ user: 'colearnr-backup', pwd: 'colearnr-backup', roles: ["read"]});
+
+db = db.getSiblingDB('colearnr_acl');
+db.createUser({ user: 'colearnr-dev', pwd: 'colearnr-dev', roles: ["readWrite"]});
+db.createUser({ user: 'colearnr-test', pwd: 'colearnr-test', roles: ["readWrite"]});
+db.createUser({ user: 'colearnr-prd', pwd: 'colearnr-prd', roles: ["readWrite"]});

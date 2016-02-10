@@ -1,0 +1,6 @@
+// Create the admin user. Connect to mongodb from the localhost first
+// mongo --port 27017
+db = db.getSiblingDB('admin');
+db.createUser({ user: "admin", pwd: "colearnr-admin", roles: ["userAdminAnyDatabase", "clusterAdmin"]});
+db.createUser({ user: 'colearnr-backup', pwd: 'colearnr-backup', roles: ["backup"]});
+db.auth('admin', 'colearnr-admin');
