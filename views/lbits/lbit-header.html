@@ -11,7 +11,7 @@
 <div id="page-title" class="spacer <%- spacerClass %>">
     <div class="row coverArt">
     		<%
-    		var images = config.DEFAULT_COVER_ARTS.split(',');
+    		var images = config.default_cover_arts.split(',');
         var randomImage = Math.floor((Math.random() * (images.length)));
         var rimg = images[randomImage].replace(/'/g, '');
         %>

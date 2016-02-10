@@ -3,13 +3,13 @@
 <script type="text/javascript" defer>
 <% if (locals.topicObj && topicObj._id) { %>
     var startMsgShown = false;
-    var ACCEPT_EXT = [<%- locals.topicObj.ACCEPT_EXT || config.ACCEPT_EXT %>];
-    var VIDEO_ACCEPT_EXT = [<%- locals.topicObj.VIDEO_ACCEPT_EXT || config.VIDEO_ACCEPT_EXT %>];
-    ACCEPT_EXT.forEach(function (aext) {
-        ACCEPT_EXT.push("." + aext.toUpperCase());
+    var accept_ext = [<%- locals.topicObj.accept_ext || config.accept_ext %>];
+    var video_accept_ext = [<%- locals.topicObj.video_accept_ext || config.video_accept_ext %>];
+    accept_ext.forEach(function (aext) {
+        accept_ext.push("." + aext.toUpperCase());
     });
-    VIDEO_ACCEPT_EXT.forEach(function (aext) {
-        VIDEO_ACCEPT_EXT.push("." + aext.toUpperCase());
+    video_accept_ext.forEach(function (aext) {
+        video_accept_ext.push("." + aext.toUpperCase());
     });
 
     $(function() {
@@ -23,7 +23,7 @@
                 parallelUploads: 1,
                 clickable: 'a#fileadd',
                 previewsContainer: "#previews",
-                acceptedFiles: ACCEPT_EXT.toString(),
+                acceptedFiles: accept_ext.toString(),
                 dictResponseError: "There is a problem adding this learnbit"
             });
             lbitDropzone.on("sending", function(e, xhr, form) {

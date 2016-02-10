@@ -55,7 +55,7 @@
    */
 
   // Suppress warnings about == null comparisons.
-  "eqnull": true,
+  "eqnull": false,
 
   "requireCamelCaseOrUpperCaseIdentifiers": false
 }
