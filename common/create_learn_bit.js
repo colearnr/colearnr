@@ -10,6 +10,12 @@ var db = require("./db"),
   YT_URL_PREFIX = 'https://youtu.be/',
   YT_URL_PARSER = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(feature\=player_embedded&))\??v?=?([^#\&\?]*).*/;
 
+/**
+ * Gets the parameter from the url
+ * @param {string} param - Required parameter
+ * @param {string} url - The url for which we need to extract the parameter
+ * It uses the regular expression to filter all the parameters from the url
+ */
 function getParam(param, url) {
   param = param.replace(/[\[]/g, "\\\[").replace(/[\]]/g, "\\\]");
   var regexS = "[\\?&]" + param + "=([^&#]*)",

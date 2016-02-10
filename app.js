@@ -52,12 +52,17 @@ if (config.use_cluster && cluster.isMaster) {
     var app = express();
 
     params.extend(app);
-
+    /**
+     * logs any errors with the application
+     */
     function logErrors(err, req, res, next) {
       logger.log('error', 'logError', {stack: err.stack, user: req.user});
       next(err);
     }
 
+    /**
+     * Captures any error with the application
+     */
     function errorHandler(err, req, res, next) {
       if (req.xhr) {
         res.status(500);
