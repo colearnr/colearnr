@@ -5,7 +5,7 @@ var log = require('../common/log')
 var logger = require('../common/log')
 var util = require('../common/util')
 var analytics = require('./analytics')
-var entitlement = require('../lib/enttlement')
+var entitlement = require('../lib/entitlement')
 var learnApps = require('../lib/apps')
 var perms = require('../lib/perms')
 
