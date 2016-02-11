@@ -27,7 +27,7 @@
                                                 <table border="0" cellpadding="20" cellspacing="0" width="100%">
                                                     <tr>
                                                         <td valign="top" class="bodyContent">
-                                                            <div mc:edit="std_content00">
+                                                            <div>
                                                                 <h1 class="h1">Welcome to CoLearnr</h1>
                                                                 <br/>
                                                                 At CoLearnr, we believe learning should be more <strong>collaborative yet personal</strong>. This is the start of a great learning experience and it's great to have you onboard.
@@ -51,7 +51,7 @@
                                                         	<table border="0" cellpadding="15" cellspacing="0" class="templateButton">
                                                             	<tr>
                                                                 	<td valign="middle" class="templateButtonContent">
-                                                                    	<div mc:edit="std_content01">
+                                                                    	<div>
                                                                             <% if (!user.email_verified && user.verification_code) { %>
                                                                         	<a href="<%= base_url %>/user/verify/<%= user.verification_code %>" target="_blank">Verify Email</a>
                                                                             <% } else { %>

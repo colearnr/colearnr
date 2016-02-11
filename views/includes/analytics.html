@@ -1,4 +1,4 @@
-<% if (locals.page_options && locals.page_options.env && locals.page_options.env.ENV_CONFIG && 'dev' != locals.page_options.env.ENV_CONFIG && 'dev-test' != locals.page_options.env.ENV_CONFIG) { %>
+<% if (locals.page_options && process.env.NODE_ENV !== 'development') { %>
 <% if (config.use_intercom) { %>
 <script id="IntercomSettingsScriptTag">
     window.intercomSettings = {

@@ -77,7 +77,7 @@ if (config.use_cluster && cluster.isMaster) {
 } else {
   var app = express()
   params.extend(app)
-  app.set('views', path.join(__dirname, '/views'))
+  app.set('views', path.resolve(__dirname, '/views'))
   app.set('view engine', 'ejs')
   app.set('view options', {layout: false})
   app.use(compression({
@@ -116,10 +116,10 @@ if (config.use_cluster && cluster.isMaster) {
   }
   app.use(allowCrossDomain)
 
-  app.use(serveStatic(path.join(__dirname, 'public'), {maxAge: maxAge}))
+  app.use(serveStatic(path.resolve(__dirname, 'public'), {maxAge: maxAge}))
   var appsMap = learnApps.list()
   for (var key in appsMap) {
-    app.use('/apps/' + key + '-static', serveStatic(path.join(__dirname, 'apps', key, 'src', 'public'), {maxAge: maxAge}))
+    app.use('/apps/' + key + '-static', serveStatic(path.resolve(__dirname, 'apps', key, 'src', 'public'), {maxAge: maxAge}))
     logger.debug('Static', '/apps/' + key + '-static')
   }
 
