@@ -1,9 +1,8 @@
-var db = require('../common/db'),
-  query = require('../common/query'),
-  _ = require('lodash'),
-  permlib = require('../lib/perms'),
-  logger = require('../common/log'),
-  util = require('../common/util')
+var db = require('../common/db')
+var _ = require('lodash')
+var permlib = require('../lib/perms')
+var logger = require('../common/log')
+var util = require('../common/util')
 
 exports.list_annotations = function (req, res) {
   var lbit_oid = req.params['lbit_oid']
@@ -12,10 +11,10 @@ exports.list_annotations = function (req, res) {
   var topicId = req.query.topic_id
   var topicObj = null
   var type = req.query.type
-  if (type && type == 'pdf') {
+  if (type && type === 'pdf') {
     // find the lbit
     db.learnbits.find({_id: db.ObjectId(lbit_oid)}, function (err, lbits) {
-      if (lbits.length) {
+      if (!err && lbits.length) {
         var lbit_topics = lbits[0].topics
         var topics = []
         // get all the topics under this lbit
@@ -26,8 +25,11 @@ exports.list_annotations = function (req, res) {
         if (topics.length) {
           // for each topic get all the admins and collaborators
           db.topics.find({_id: {$in: topics}}, function (err, topics) {
+            if (err) {
+              logger.error(err)
+            }
             for (var i = 0; i < topics.length; i++) {
-              if ('' + topics[i]._id == topicId) {
+              if ('' + topics[i]._id === topicId) {
                 topicObj = topics[i]
               }
               userList.push(topics[i].added_by)
@@ -40,7 +42,6 @@ exports.list_annotations = function (req, res) {
               userList = _.uniq(userList)
               doListingInDb()
             }
-
           })
         }
       }
@@ -52,17 +53,23 @@ exports.list_annotations = function (req, res) {
   function doListingInDb () {
     logger.log('debug', 'list_annotations lbit_oid', lbit_oid, topicId)
     permlib.checkTopicEditAccess(user, topicObj, function (err, isAllowed) {
+      if (err) {
+        logger.error(err)
+      }
       db.userdata.find({lbit_oid: lbit_oid, type: {$ne: 'notes'}, user: {$in: userList}}, {
         annotationData: 1,
         user: 1
       }, function (err, annotationList) {
+        if (err) {
+          logger.error(err)
+        }
         var annotations = []
         if (annotationList && annotationList.length) {
           for (var i = 0; i < annotationList.length; i++) {
             var obj = annotationList[i].annotationData
             obj.id = '' + annotationList[i]._id
-            if (type == 'pdf') {
-              obj.readonly = !isAllowed || (annotationList[i].user != user._id)
+            if (type === 'pdf') {
+              obj.readonly = !isAllowed || (annotationList[i].user !== user._id)
               obj.annotationId = '' + annotationList[i]._id
               obj.isUpdate = null
             }
@@ -86,6 +93,9 @@ exports.save_annotations = function (req, res) {
 
   logger.log('debug', 'save_annotations lbit_oid', lbit_oid, topicId, sessionid)
   db.userdata.save({lbit_oid: lbit_oid, user: req.user._id, annotationData: annotationData}, function (err, data) {
+    if (err) {
+      logger.error(err)
+    }
     if (req.body.annotationData) {
       annotationData.annotationId = '' + data._id
     } else {
@@ -93,9 +103,9 @@ exports.save_annotations = function (req, res) {
     }
     res.send(annotationData)
     db.topics.findOne({_id: db.ObjectId(topicId)}, function (err, topicObj) {
-      if (req.body.annotationData) {
+      if (!err && req.body.annotationData) {
         permlib.isTopicCollab(user, topicObj, function (err, collaborator) {
-          if (collaborator) {
+          if (!err && collaborator) {
             if (global.socket) {
               global.socket.emit('send:addAnnotation', {
                 annotationData: annotationData,
@@ -113,7 +123,7 @@ exports.save_annotations = function (req, res) {
             })
           } else {
             permlib.isTopicAdmin(user, topicObj, function (err, admin) {
-              if (admin) {
+              if (!err && admin) {
                 if (global.socket) {
                   global.socket.emit('send:addAnnotation', {
                     annotationData: annotationData,
@@ -149,14 +159,14 @@ exports.delete_annotations = function (req, res) {
   var sessionid = req.body.sessionid
   logger.log('debug', 'delete_annotations lbit_oid', lbit_oid, topicId, sessionid)
   db.topics.findOne({_id: db.ObjectId(topicId)}, function (err, topicObj) {
-    if (req.body.annotationData) {
+    if (!err && req.body.annotationData) {
       deleteInDb()
       permlib.isTopicCollab(user, topicObj, function (err, collaborator) {
-        if (collaborator) {
+        if (!err && collaborator) {
           broadcastDelete()
         } else {
           permlib.isTopicAdmin(user, topicObj, function (err, admin) {
-            if (admin) {
+            if (!err && admin) {
               broadcastDelete()
             } else {
               logger.log('debug', user, lbit_oid, 'is neither a collaborator nor admin')
@@ -201,14 +211,14 @@ exports.update_annotations = function (req, res) {
   var sessionid = req.body.sessionid
   logger.log('debug', 'update_annotations lbit_oid', lbit_oid, topicId, sessionid)
   db.topics.findOne({_id: db.ObjectId(topicId)}, function (err, topicObj) {
-    if (req.body.annotationData) {
+    if (!err && req.body.annotationData) {
       updateInDb()
       permlib.isTopicCollab(user, topicObj, function (err, collaborator) {
-        if (collaborator) {
+        if (!err && collaborator) {
           broadcastUpdate()
         } else {
           permlib.isTopicAdmin(user, topicObj, function (err, admin) {
-            if (admin) {
+            if (!err && admin) {
               broadcastUpdate()
             } else {
               logger.log('debug', user, lbit_oid, 'is neither a collaborator nor admin')
@@ -243,8 +253,6 @@ exports.update_annotations = function (req, res) {
 
 exports.search_annotations = function (req, res) {
   var lbit_oid = req.params['lbit_oid']
-  var user = req.user
-  var uri = req.query.uri
   logger.log('debug', 'search lbit_oid', lbit_oid)
   db.userdata.find({lbit_oid: lbit_oid, type: {$ne: 'notes'}, user: req.user._id}, {annotationData: 1}, function (err, annotationList) {
     var annotations = []
@@ -261,13 +269,16 @@ exports.search_annotations = function (req, res) {
 }
 
 exports.list_notes = function (req, res) {
-  var lbit_oid = req.params.lbit_oid,
-    user = req.user,
-    topic_oid = req.query.topic_id
+  var lbit_oid = req.params.lbit_oid
+  var user = req.user
+  var topic_oid = req.query.topic_id
   db.userdata.findOne({lbit_oid: lbit_oid, user: user._id, type: 'notes'}, function (err, currNoteObj) {
-    if (!currNoteObj) {
+    if (!err && !currNoteObj) {
       // Create an empty note and send it
       saveNotes(lbit_oid, topic_oid, user, '', function (err, noteObj) {
+        if (err) {
+          logger.error(err)
+        }
         res.render('lbits/lbit-notes.ejs', {id: noteObj._id, data: noteObj.data, user: user, lbit_oid: lbit_oid, topic_oid: topic_oid})
       })
     } else {
@@ -282,7 +293,7 @@ var saveNotes = function (lbit_oid, topic_oid, user, data, callback) {
     db.userdata.save({_id: db.ObjectId(data._id), lbit_oid: lbit_oid, user: user._id, type: 'notes', data: data}, callback)
   } else {
     db.userdata.findOne({lbit_oid: lbit_oid, user: user._id, type: 'notes'}, function (err, currNotesObj) {
-      if (currNotesObj) {
+      if (!err && currNotesObj) {
         currNotesObj.data = data
         currNotesObj.last_updated = new Date()
         currNotesObj.modified_by = user._id
@@ -297,13 +308,15 @@ var saveNotes = function (lbit_oid, topic_oid, user, data, callback) {
 }
 
 exports.save_notes = function (req, res) {
-  var lbit_oid = req.params.lbit_oid,
-    user = req.user,
-    id = req.params.id,
-    topic_oid = req.query.topic_id,
-    data = req.body.data
+  var lbit_oid = req.params.lbit_oid
+  var user = req.user
+  var topic_oid = req.query.topic_id
+  var data = req.body.data
   res.send('1')
   saveNotes(lbit_oid, topic_oid, user, data, function (err, noteObj) {
+    if (err) {
+      logger.error(err)
+    }
     // logger.log('debug', 'Saved notes', noteObj)
   })
 }
