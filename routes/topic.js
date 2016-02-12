@@ -1,33 +1,30 @@
-var util = require('../common/util'),
-  topicMapUtil = require('../common/util/topicMapUtil'),
-  query = require('../common/query'),
-  config = require('../lib/config').config,
-  perms_lib = require('../lib/perms'),
-  user_lib = require('../lib/user'),
-  db = require('../common/db'),
-  analytics = require('./analytics'),
-  constants = require('../common/constants'),
-  logger = require('../common/log'),
-  Step = require('step'),
-  wait = require('wait.for'),
-  fs = require('fs'),
-  GridFS = require('../lib/gridfs'),
-  fse = require('fs-extra'),
-  path = require('path'),
-  es = require('../common/elasticsearch'),
-  async = require('async'),
-  _ = require('lodash')
+var util = require('../common/util')
+var topicMapUtil = require('../common/util/topicMapUtil')
+var query = require('../common/query')
+var config = require('../lib/config').config
+var perms_lib = require('../lib/perms')
+var user_lib = require('../lib/user')
+var db = require('../common/db')
+var analytics = require('./analytics')
+var constants = require('../common/constants')
+var logger = require('../common/log')
+var Step = require('step')
+var wait = require('wait.for')
+var fs = require('fs')
+var GridFS = require('../lib/gridfs')
+var fse = require('fs-extra')
+var path = require('path')
+var es = require('../common/elasticsearch')
+var async = require('async')
+var _ = require('lodash')
 // Number of recent learn bits to show
 var LIMIT_RECENT_BITS = 10
-var SUCCESS = '0'
-var ERROR = '1'
-var INIT = '2'
 
 function get_discuss_host (req) {
   var config_lib = require('../lib/config')
   var hostname = req.headers['host'] ? req.headers['host'].split(':')[0] : '127.0.0.1'
   var config = config_lib.config.use_client_host ? config_lib.configure(hostname) : config_lib.config
-  return config.socket.address + ((config.socket.port != 80 && config.socket.port != 443) ? ':' + config.socket.port : '')
+  return config.socket.address + ((config.socket.port !== 80 && config.socket.port !== 443) ? ':' + config.socket.port : '')
 }
 
 function formDiscussUrl (req, atopic, user) {
@@ -60,7 +57,7 @@ function process (req, response) {
   // Clear the map for each request.
   var retMap = {}
   var user = req.user
-  var noChildMode = req.query && (req.query.noChild == 'true' || req.query.noChild == '1')
+  var noChildMode = req.query && (req.query.noChild === 'true' || req.query.noChild === '1')
   function addData (key, data) {
     if (key) {
       var d = {}
@@ -95,12 +92,12 @@ function process (req, response) {
     response.render('topic.ejs', data)
   }
 
-  var id = req.params['id']
-  var sortOrder = req.params['sortOrder']
+  // var id = req.params['id']
+  // var sortOrder = req.params['sortOrder']
   // Get the topic object
   get_topic(req, response, function (err, topicParentMap) {
     if (err) {
-      console.error(err)
+      logger.error(err)
     }
     if (!topicParentMap || !topicParentMap['topic']) {
       // console.log("No such topic")
@@ -109,9 +106,9 @@ function process (req, response) {
       return
     }
     var atopic = topicParentMap['topic']
-    var topicname = atopic.name
+    // var topicname = atopic.name
     // Redirect saved search topics
-    if (atopic.type == 'search') {
+    if (atopic.type === 'search') {
       response.redirect('/search?q=' + atopic.name)
       return
     }
@@ -125,7 +122,7 @@ function process (req, response) {
     addData('sid_id_map', sid_id_map)
     addData('parents', topicParentMap['parents'])
     // HACK: Find if this is the help page, so that we can show a support widget.
-    if (atopic.id == constants.HELP_PAGE_ID && atopic.path == null) {
+    if (atopic.id === constants.HELP_PAGE_ID && atopic.path === null) {
       addData('isHelpPage', true)
     }
 
@@ -137,11 +134,11 @@ function process (req, response) {
       function checkPerms () {
         var self = this
         perms_lib.checkTopicViewAccess(user, atopic, function (err, res) {
-          if (!res) {
+          if (!err && !res) {
             if (user.guestMode) {
               response.redirect('/login')
             } else {
-              console.log('warn', 'User', user._id, "doesn't have view permission for topic", atopic._id)
+              logger.log('warn', 'User', user._id, "doesn't have view permission for topic", atopic._id)
               response.render('error-500.ejs', {
                 message: "Looks like you don't have permission to view this topic. Please contact support!"
               })
@@ -165,8 +162,14 @@ function process (req, response) {
           var linkArgs = util.convert_links(allLinks)
           if (!util.empty(linkArgs)) {
             query.get_topics(user, linkArgs, false, function (err, tmptopiclist) {
+              if (err) {
+                logger.error(err)
+              }
               tmptopiclist.forEach(function (c) {
                 perms_lib.checkTopicViewAccess(user, c, function (err, res) {
+                  if (err) {
+                    logger.error(err)
+                  }
                   if (res) {
                     sid_id_map[c._id] = c.id
                   }
@@ -186,7 +189,7 @@ function process (req, response) {
         // First get the learn bits at this topic level.
         query.get_learn_bits(user, [{_id: atopic._id}], function (err, tlbits) {
           if (err) {
-            console.error(err)
+            logger.error(err)
           }
           addData('learnbits', tlbits)
           logger.log('debug', 'Total learnbits for topic ' + topicname + ' is', (tlbits && tlbits.length) ? tlbits.length : 0)
@@ -201,7 +204,7 @@ function process (req, response) {
 
               childs.forEach(function (c) {
                 perms_lib.checkTopicViewAccess(user, c, function (err, res) {
-                  if (res) {
+                  if (!err && res) {
                     sid_id_map[c._id] = c.id
                   }
                 })
@@ -222,18 +225,18 @@ function process (req, response) {
               // Now for each child find all the sub-topic. Use that to find all the learnbits.
               childs.forEach(function (achild) {
                 perms_lib.checkTopicViewAccess(user, achild, function (err, res) {
-                  if (res) {
+                  if (!err && res) {
                     // console.log(achild.path, achild.id)
                     query.get_sub_topics(user, achild.path, achild.id, false, function (err, subtopics) {
                       // logger.log('debug', achild.id, achild._id, subtopics.length)
-                      if (subtopics.length) {
+                      if (!err && subtopics.length) {
                         subtopics.forEach(function (st) {
                           if (st) {
-                            if (st.user_perms && st.user_perms[user._id] && _.indexOf(st.user_perms[user._id], constants.VIEW_PERMS) != -1) {
+                            if (st.user_perms && st.user_perms[user._id] && _.indexOf(st.user_perms[user._id], constants.VIEW_PERMS) !== -1) {
                               sid_id_map[st._id] = st.id
                             } else {
                               perms_lib.checkTopicViewAccess(user, st, function (err, res) {
-                                if (res) {
+                                if (!err && res) {
                                   sid_id_map[st._id] = st.id
                                 }
                               })
@@ -293,7 +296,7 @@ function save_map (req, response) {
   var _doneFn = function (sourceErr, rootTopic, topic) {
     if (sourceErr) {
       // logger.log('error', sourceErr)
-      if (sourceErr == 'NO_PERMISSION') {
+      if (sourceErr === 'NO_PERMISSION') {
         response.send({
           status: 'error',
           message: sourceErr,
@@ -309,7 +312,6 @@ function save_map (req, response) {
       // console.log(req.body.category_map)
 
       logger.log('debug', 'Topic json', req.body.category_map, 'rootTopicOid', rootTopicOid, 'deletedOids', deletedOids, 'sessionid', sessionid, 'links', links)
-      var title = category_map.title
       var oid = category_map.oid
       if (util.empty(rootTopicOid) && oid) {
         rootTopicOid = oid
@@ -341,6 +343,9 @@ function save_map (req, response) {
     // console.log("---", dbargs, rootTopic.id)
     var dataMap = {}
     send_topic_map(req, response, true, user, dbargs, dataMap, function (err, dataMap) {
+      if (err) {
+        logger.error(err)
+      }
       response.send(dataMap)
       if (global.socket) {
         global.socket.emit('send:topic_tree', dataMap)
@@ -370,12 +375,14 @@ function save_map (req, response) {
     rootTopicOid = oid
   }
 
-  var topic_oid = req.body.topic_oid
+  // var topic_oid = req.body.topic_oid
+  /*
   var isSelected = category_map.isSelected
   var selectedOid = null
   if (isSelected) {
     selectedOid = oid
   }
+  */
   var id = util.idify(title)
   var targs = {}
   if (rootTopicOid) {
@@ -390,7 +397,7 @@ function save_map (req, response) {
       }
     }
   }
-  if (!title || title == 'Topic') {
+  if (!title || title === 'Topic') {
     response.send({
       status: 'init',
       message: 'Create your topic map using this designer!'
@@ -403,10 +410,13 @@ function save_map (req, response) {
     deletedOids.forEach(function (delMap) {
       if (util.validOid(delMap.oid)) {
         db.topics.findOne({_id: db.ObjectId(delMap.oid)}, function (err, topic) {
-          if (topic) {
+          if (!err && topic) {
             perms_lib.checkTopicDeleteAccess(user, topic, function (err, isAllowed) {
-              if (isAllowed) {
+              if (!err && isAllowed) {
                 query.delete_topic(user, topic._id, false, function (err) {
+                  if (err) {
+                    logger.error(err)
+                  }
                   logger.log('debug', 'User', user._id, 'deleted the topic', topic.id, topic.path)
                 })
               } else {
@@ -423,10 +433,8 @@ function save_map (req, response) {
   query.get_topics(user, targs, false, function (err, topicList) {
     var topicObj = topicList.length ? topicList[0] : null
     // FIXME: Please revisit this restriction
-    if (topicObj && topicObj.path === null && topicObj.user_perms
-      && topicObj.user_perms[user._id]
-      && _.indexOf(topicObj.user_perms[user._id], constants.EDIT_PERMS) == -1) {
-      if (topicObj.id != id) {
+    if (topicObj && topicObj.path === null && topicObj.user_perms && topicObj.user_perms[user._id] && _.indexOf(topicObj.user_perms[user._id], constants.EDIT_PERMS) === -1) {
+      if (topicObj.id !== id) {
         response.send({
           status: 'error',
           message: 'Main topic name is already in use. Please choose a different one!'
@@ -442,7 +450,7 @@ function save_map (req, response) {
         order: category_map.id
       }
       rootTopic = topicObj
-    } else if (topicObj && rootTopicOid && '' + topicObj._id == rootTopicOid) {
+    } else if (topicObj && rootTopicOid && '' + topicObj._id === rootTopicOid) {
       rootTopic = topicObj
     }
 
@@ -459,14 +467,14 @@ function save_map (req, response) {
             var topic = wait.forMethod(query, 'update_topic', ele.name, ele.id, ele.oid, ele.path, order, false, user, ele.skipReorder, ele.link_in, ele.link_out)
             done++
             // Only render after completing the entire tree
-            if (rootTopicOid && '' + topic._id == rootTopicOid) {
+            if (rootTopicOid && '' + topic._id === rootTopicOid) {
               rootTopic = topic
             }
             if ((!rootTopic || !rootTopic._id) && index === 0) {
               rootTopic = topic
             }
 
-            if (done == category_list.length) {
+            if (done === category_list.length) {
               return _doneFn(err, rootTopic, topic)
             }
           } catch (err) {
@@ -497,7 +505,7 @@ function send_topic_map (req, response, isApi, user, dbargs, dataMap, callback) 
     }
     var tt = topicParentMap['topic']
     perms_lib.checkTopicViewAccess(user, tt, function (err, viewAllowed) {
-      if (!viewAllowed) {
+      if (!err && !viewAllowed) {
         if (isApi) {
           response.send({
             status: 'error',
@@ -536,6 +544,9 @@ function send_topic_map (req, response, isApi, user, dbargs, dataMap, callback) 
         }
         // Do we have the permission to edit the rootTopic?
         perms_lib.checkTopicEditAccess(user, tt, function (err, editAllowed) {
+          if (err) {
+            logger.error(err)
+          }
           dataMap['readOnly'] = !editAllowed
           dataMap['title'] = 'Topic map for ' + tt.name + (dataMap['readOnly'] ? ' in Read only mode' : '')
         })
@@ -557,16 +568,19 @@ function send_topic_map (req, response, isApi, user, dbargs, dataMap, callback) 
             var done = 0
             topics.forEach(function (atopic) {
               perms_lib.allowedPerms(user, atopic, function (err, permsMap) {
+                if (err) {
+                  logger.error(err)
+                }
                 var permsList = permsMap[atopic._id]
-                if (permsList && (_.indexOf(permsList, constants.EDIT_PERMS) != -1 || _.indexOf(permsList, constants.VIEW_PERMS) != -1)) {
+                if (permsList && (_.indexOf(permsList, constants.EDIT_PERMS) !== -1 || _.indexOf(permsList, constants.VIEW_PERMS) !== -1)) {
                   filteredList.push(atopic)
                 } else {
                   logger.log('info', 'Skipped topic', atopic.id, atopic.path, permsMap)
                 }
                 done++
-                if (done == topics.length) {
+                if (done === topics.length) {
                   query.convert_to_tree(filteredList, function (err, topicList) {
-                    dataMap['status'] = (err ? err : 'success')
+                    dataMap['status'] = (err || 'success')
                     dataMap['sessionid'] = sessionid
                     if (topicList && topicList.length) {
                       var ideasMap = topicMapUtil.convertToMap(topicList[0])
@@ -606,7 +620,7 @@ function load_map (req, response, readOnly, pageView, isApi) {
   dataMap['autoSave'] = false
 
   query.get_user_topics_count(user, function (err, count) {
-    if (!count) {
+    if (!err && !count) {
       dataMap['firstTime'] = true
     }
   })
@@ -618,7 +632,7 @@ function load_map (req, response, readOnly, pageView, isApi) {
   }
 
   send_topic_map(req, response, isApi, user, dbargs, dataMap, function (err, dataMap) {
-    if (isApi) {
+    if (!err && isApi) {
       response.send(dataMap)
     } else {
       response.render('topic-mapper.ejs', dataMap)
@@ -659,9 +673,9 @@ function create_new_map (req, response) {
 }
 
 function search (req, response, isApi) {
-  var q = req.query.q,
-    autoComplete = req.query.ac == '1',
-    user = req.user
+  var q = req.query.q
+  var autoComplete = req.query.ac === '1'
+  var user = req.user
   if (!q) {
     return response.json({})
   }
@@ -678,7 +692,7 @@ function search (req, response, isApi) {
 function quicksearch (req, response) {
   var q = req.query.q
   var user = req.user
-  var checkEditAccess = '1' == req.query.filter_edit
+  var checkEditAccess = (req.query.filter_edit === '1')
   if (!q) {
     response.send('')
     return
@@ -707,7 +721,7 @@ function quicksearch (req, response) {
     tmptopics.forEach(function (tt) {
       if (checkEditAccess) {
         perms_lib.checkTopicEditAccess(user, tt, function (err, res) {
-          if (res) {
+          if (!err && res) {
             var displayPath = util.formatPath(tt.path)
             topiclist.push({
               id: tt._id,
@@ -716,7 +730,7 @@ function quicksearch (req, response) {
             })
           }
           done++
-          if (done == tmptopics.length) {
+          if (done === tmptopics.length) {
             var result = {
               more: false,
               results: topiclist
@@ -726,7 +740,7 @@ function quicksearch (req, response) {
         })
       } else {
         perms_lib.checkTopicViewAccess(user, tt, function (err, res) {
-          if (res) {
+          if (!err && res) {
             var displayPath = util.formatPath(tt.path)
             topiclist.push({
               id: tt._id,
@@ -735,7 +749,7 @@ function quicksearch (req, response) {
             })
           }
           done++
-          if (done == tmptopics.length) {
+          if (done === tmptopics.length) {
             var result = {
               more: false,
               results: topiclist
@@ -745,7 +759,6 @@ function quicksearch (req, response) {
         })
       }
     })
-
   })
 }
 
@@ -800,7 +813,6 @@ function list_user_topic (req, response) {
       return
     } else {
       logger.log('debug', 'User', user._id, 'has', topics.length, 'personal topics')
-      var done = 0
       var child_lbits = {}
       addData('firstChilds', _.map(topics, function (ele) {
         formDiscussUrl(req, ele, user)
@@ -818,9 +830,9 @@ function list_user_topic (req, response) {
 
       async.each(topics, function (achild, cb) {
         formDiscussUrl(req, achild, user)
-        if (achild.type == 'search') {
+        if (achild.type === 'search') {
           es.findLearnbits({query: achild.name, user: user}, LIMIT_RECENT_BITS, function (err, data) {
-            if (data && data.hits.hits) {
+            if (!err && data && data.hits.hits) {
               var lbits = data.hits.hits.map(function (adata) {
                 return adata._source
               })
@@ -832,7 +844,7 @@ function list_user_topic (req, response) {
         } else {
           // Now for each topic find all the sub-topic. Use that to find all the learnbits.
           query.get_user_sub_topics(user, achild.path, achild.id, false, false, function (err, subtopics) {
-            if (subtopics.length) {
+            if (!err && subtopics.length) {
               subtopics.forEach(function (st) {
                 formDiscussUrl(req, st, user)
                 sid_id_map[st._id] = st.id
@@ -853,6 +865,9 @@ function list_user_topic (req, response) {
           })
         }
       }, function (err) {
+        if (err) {
+          logger.error(err)
+        }
         response.render('topic.ejs', retMap)
       })
     }
@@ -876,7 +891,7 @@ function edit_form (req, res) {
       return
     }
     perms_lib.checkTopicEditAccess(user, topic, function (err, result) {
-      if (!result) {
+      if (!err && !result) {
         res.render('error-500.ejs', {
           message: "Looks like you don't have permission to edit this topic. Please contact support!"
         })
@@ -918,6 +933,9 @@ function edit_form (req, res) {
             }
           },
           function fetchLinkedInTopics (err) {
+            if (err) {
+              logger.log('error', 'Error retrieving topiclist', err)
+            }
             var self = this
             if (!util.empty(topic.link_in)) {
               var args = util.convert_links(topic.link_in)
@@ -943,11 +961,17 @@ function edit_form (req, res) {
             }
           },
           function fetchUsers (err) {
+            if (err) {
+              logger.error(err)
+            }
             if (usersToLookup && usersToLookup.length) {
               var collaboratorList = []
               var colearnrList = []
               var tmpMap = {}
               db.users.find({$or: [{_id: {$in: usersToLookup}}, {emails: {$in: usersToLookup}}]}, function (err, users) {
+                if (err) {
+                  logger.error(err)
+                }
                 if (users) {
                   users.forEach(function (auser) {
                     tmpMap[auser._id] = auser
@@ -964,7 +988,7 @@ function edit_form (req, res) {
                   }
                 })
                 colearnrs.forEach(function (acol) {
-                  if (_.indexOf(collaborators, acol) == -1) { // Do not include any collaborators
+                  if (_.indexOf(collaborators, acol) === -1) { // Do not include any collaborators
                     if (tmpMap[acol]) {
                       colearnrList.push({id: tmpMap[acol]._id, text: tmpMap[acol].emails[0]})
                     } else { // Handles case where the collaborator has not signed up yet.
@@ -1021,14 +1045,17 @@ function delete_topic (req, res, reallyDelete) {
       return
     }
     perms_lib.checkTopicDeleteAccess(user, topic, function (err, result) {
+      if (err) {
+        logger.error(err)
+      }
+      var redirectUrl = constants.MY_TOPICS_PAGE
       if (!result) {
         res.render('error-500.ejs', {
           message: "Looks like you don't have permission to delete this topic. Please contact support!"
         })
         return
-      } else if (topic.type == 'search' || (topic.is_expanded && topic.expanded_for == oid)) { // Just a link remove it
+      } else if (topic.type === 'search' || (topic.is_expanded && topic.expanded_for === oid)) { // Just a link remove it
         db.topics.remove({_id: db.ObjectId(oid)})
-        var redirectUrl = constants.MY_TOPICS_PAGE
         if (req.xhr) {
           var data = {
             redirectUrl: redirectUrl
@@ -1040,8 +1067,11 @@ function delete_topic (req, res, reallyDelete) {
         req.query = {id: topic._id, e: reallyDelete ? 'fulldelete' : 'delete'}
         analytics.topic_track(req)
       } else {
-        var redirectUrl = '/topic/' + topic._id + '/' + topic.id
+        redirectUrl = '/topic/' + topic._id + '/' + topic.id
         query.is_topic_empty(user, topic, function (err, isEmpty) {
+          if (err) {
+            logger.error(err)
+          }
           if (isEmpty) {
             reallyDelete = true
           }
@@ -1099,6 +1129,9 @@ function undelete_topic (req, res) {
       return
     }
     perms_lib.checkTopicDeleteAccess(user, topic, function (err, result) {
+      if (err) {
+        logger.error(err)
+      }
       if (!result) {
         res.render('error-500.ejs', {
           message: "Looks like you don't have permission to restore this topic. Please contact support!"
@@ -1132,7 +1165,8 @@ function save_edit (req, res) {
   var tid = req.body.element_id
   var oldValue = req.body.original_html
   var idlist = tid.split('-')
-  var id = type = null
+  var id = null
+  var type = null
   if (idlist && idlist.length > 1) {
     id = idlist[1]
     type = idlist[2]
@@ -1142,12 +1176,11 @@ function save_edit (req, res) {
     return
   }
   /*
-  if (type == 'name' && util.hasInvalidSymbol(newValue)) {
+  if (type === 'name' && util.hasInvalidSymbol(newValue)) {
     res.status(500).send("Topic names can only have the following symbols [+,.#-_().]")
     return
   }
   */
-  var user = req.user
   query.get_topic(user, {_id: db.ObjectId(id)}, function (err, topic) {
     if (err) {
       res.status(500).send('Unable to load the topic. Please try after sometime.')
@@ -1159,6 +1192,9 @@ function save_edit (req, res) {
     }
 
     perms_lib.checkTopicEditAccess(user, topic, function (err, result) {
+      if (err) {
+        logger.error(err)
+      }
       if (!result) {
         res.status(500).send('Looks like you do not have this permission.')
         return
@@ -1177,7 +1213,7 @@ function save_edit (req, res) {
 
 // WEB-957 fix - Do not allow edit to existing topic
 function checkExistingRootTopic (idChange, newId, topic, user, callback) {
-  if (!idChange || !newId || topic.path != null) {
+  if (!idChange || !newId || topic.path !== null) {
     callback(null, true)
     return
   }
@@ -1195,15 +1231,15 @@ function save_edit_full (req, res) {
   }
   update_map['modified_by'] = req.user._id
   var oid = req.body.oid
-
+  var errorStr = ''
   if (!util.validOid(oid)) {
-    var errorStr = 'Unable to find the original topic for editing!'
+    errorStr = 'Unable to find the original topic for editing!'
     res.status(500).send(errorStr)
     return
   }
 
   if (util.empty(req.body.name)) {
-    var errorStr = 'Name is mandatory for a topic!'
+    errorStr = 'Name is mandatory for a topic!'
     res.status(500).send(errorStr)
     return
   }
@@ -1218,7 +1254,7 @@ function save_edit_full (req, res) {
   update_map['description'] = req.body.description || ''
   update_map['body'] = req.body.body || ''
   update_map['order'] = req.body.order ? parseInt(req.body.order) : null
-  update_map['draft_mode'] = (req.body.draft_mode == 'true' ? true : false)
+  update_map['draft_mode'] = (req.body.draft_mode === 'true')
   update_map['startdate'] = req.body.startdate || null
   update_map['enddate'] = req.body.enddate || null
   update_map['discuss_anchor'] = req.body.discuss_anchor || null
@@ -1234,7 +1270,7 @@ function save_edit_full (req, res) {
   } else {
     update_map['tags'] = []
   }
-  if (req.body.privacy_mode && req.body.privacy_mode == 'public') {
+  if (req.body.privacy_mode && req.body.privacy_mode === 'public') {
     update_map['privacy_mode'] = 'public'
   } else {
     update_map['privacy_mode'] = 'private'
@@ -1264,12 +1300,12 @@ function save_edit_full (req, res) {
         if (!err && users.length) {
           users.forEach(function (auser) {
             // Do not include the owner as a collaborator
-            if (auser.emails && auser._id != topic.added_by) {
+            if (auser.emails && auser._id !== topic.added_by) {
               auser.emails.forEach(function (ae) {
                 email_id_map[ae] = auser._id
               })
             }
-            if (auser._id == topic.added_by) {
+            if (auser._id === topic.added_by) {
               ownerEmails = auser.emails || []
             }
           })
@@ -1277,15 +1313,15 @@ function save_edit_full (req, res) {
         cemails.forEach(function (aemail) {
           aemail = aemail.toLowerCase()
           // Do not include the owner
-          if (_.indexOf(ownerEmails, aemail) == -1) {
+          if (_.indexOf(ownerEmails, aemail) === -1) {
             if (!email_id_map[aemail]) {
               var id = util.create_hash(aemail)
               email_id_map[aemail] = id
             }
             clist.push(email_id_map[aemail])
-            if (whom == 'collaborators') {
+            if (whom === 'collaborators') {
               user_lib.invite_collaborator({_id: email_id_map[aemail], email: aemail}, req.user, topic)
-            } else if (whom == 'colearnrs') {
+            } else if (whom === 'colearnrs') {
               user_lib.invite_colearnr({_id: email_id_map[aemail], email: aemail}, req.user, topic)
             }
           }
@@ -1310,17 +1346,17 @@ function save_edit_full (req, res) {
     }
 
     perms_lib.checkTopicEditAccess(user, topic, function (err, result) {
-      if (!result) {
+      if (err || !result) {
         res.status(500).send('Looks like you are not the topic admin. Please contact support!')
         return
       } else {
         // WEB-862, WEB-863 fix
-        if (topic.id != update_map['id']) {
+        if (topic.id !== update_map['id']) {
           idChange = true
           oldId = topic.id
         }
         checkExistingRootTopic(idChange, update_map.id, topic, user, function (err, isAllowed) {
-          if (!isAllowed) {
+          if (err || !isAllowed) {
             res.status(500).send('Topic already exists with the new name ' + req.body.name)
             return
           }
@@ -1334,7 +1370,7 @@ function save_edit_full (req, res) {
               var newCoLearnrs = []
               // Filter colearnrs who are also collaborators
               newTmpCoLearnrs.forEach(function (ncol) {
-                if (_.indexOf(newCollaborators, ncol) == -1) {
+                if (_.indexOf(newCollaborators, ncol) === -1) {
                   newCoLearnrs.push(ncol)
                 }
               })
@@ -1354,9 +1390,9 @@ function save_edit_full (req, res) {
               // Fix the links
               if (!_.isEqual(topic.link_out, link_out)) {
                 query.remove_all_links(user, topic, function (err) {
-                  if (!util.empty(link_out)) {
+                  if (!err && !util.empty(link_out)) {
                     link_out.forEach(function (alink) {
-                      query.add_linked_topic(user, topic, alink, function (err) {})
+                      query.add_linked_topic(user, topic, alink, function () {})
                     })
                   }
                 })
@@ -1414,7 +1450,7 @@ function save_edit_full (req, res) {
                     })
                   }
                   var newPath = at.path
-                  if (idChange && ('' + topic._id != '' + at._id)) {
+                  if (idChange && ('' + topic._id !== '' + at._id)) {
                     newPath = at.path.replace(oldId, update_map['id'])
                     logger.log('debug', 'changed path', at.path, newPath)
                   }
@@ -1470,7 +1506,7 @@ function follow (req, res) {
       return
     }
     perms_lib.checkTopicViewAccess(user, topic, function (err, result) {
-      if (!result) {
+      if (err || !result) {
         res.status(500).send("Looks like you don't have permission to follow this topic. Please contact support!")
         return
       } else {
@@ -1483,7 +1519,7 @@ function follow (req, res) {
             type: 'follow'
           })
           return
-        } else if (_.indexOf(topic.followers, user._id) != -1) {
+        } else if (_.indexOf(topic.followers, user._id) !== -1) {
           db.topics.update({_id: db.ObjectId(oid)}, {
             $pull: {followers: user._id}
           })
@@ -1516,10 +1552,12 @@ function list_users (req, res) {
     res.status(500).send('Invalid topic id')
     return
   }
-  var retObj = {}
   query.get_topic(user, {_id: db.ObjectId(topic_oid)}, function (err, topicObj) {
-    if (topicObj) {
+    if (!err && topicObj) {
       query.expandUsers(topicObj, function (err, etopicObj) {
+        if (err) {
+          logger.error(err)
+        }
         // res.send(JSON.stringify(etopicObj))
         res.render('./topic/user_list.ejs', {topicObj: etopicObj, user: user})
       })
@@ -1554,9 +1592,9 @@ function save_users (req, res) {
   }
   // console.log(added_collab, removed_collab, new_users)
   query.get_topic(user, {_id: db.ObjectId(topic_oid)}, function (err, topicObj) {
-    if (topicObj) {
+    if (!err && topicObj) {
       perms_lib.checkTopicEditAccess(user, topicObj, function (err, result) {
-        if (!result) {
+        if (err || !result) {
           res.status(500).send('Looks like you are not the topic admin. Please contact support!')
           return
         } else {
@@ -1643,10 +1681,10 @@ function save_users (req, res) {
 
 function media_upload (req, res) {
   var fstream
-  var sessionid = req.headers['cl-sessionid']
-  var oid = req.params.oid,
-    user = req.user,
-    userPath = path.join(config.upload_base_dir, user._id, 'media')
+  // var sessionid = req.headers['cl-sessionid']
+  var oid = req.params.oid
+  var user = req.user
+  var userPath = path.join(config.upload_base_dir, user._id, 'media')
   if (util.validOid(oid)) {
     query.get_topic(user, {_id: db.ObjectId(oid)}, function (err, topicObj) {
       if (err || !topicObj) {
@@ -1662,10 +1700,13 @@ function media_upload (req, res) {
           fstream = fs.createWriteStream(fullPath)
           file.pipe(fstream)
           fstream.on('close', function () {
-            var clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
+            // var clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
             logger.debug(filename, 'uploaded successfully to', userPath)
             // Add to GridFS
             GridFS.storeFile(fullPath, {lbit_id: null, added_by: topicObj.added_by, topic_id: topicObj._id}, function (err, fileObj) {
+              if (err) {
+                logger.error(err)
+              }
               logger.info('Stored file ' + filename + ' in grid as ' + fileObj._id)
               res.json({file: fileObj})
             })

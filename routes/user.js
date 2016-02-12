@@ -1,22 +1,21 @@
-var util = require('../common/util'),
-  userlib = require('../lib/user'),
-  permslib = require('../lib/perms'),
-  entitlement = require('../lib/entitlement'),
-  query = require('../common/query'),
-  logger = require('../common/log'),
-  constants = require('../common/constants'),
-  config = require('../lib/config').config,
-  passlib = require('../lib/pass'),
-  db = require('../common/db'),
-  bcrypt = require('bcrypt'),
-  request = require('request'),
-  fs = require('fs'),
-  GridFS = require('../lib/gridfs'),
-  fse = require('fs-extra'),
-  path = require('path'),
-  generatePassword = require('password-generator'),
-  es = require('../common/elasticsearch'),
-  _ = require('lodash')
+var util = require('../common/util')
+var userlib = require('../lib/user')
+var permslib = require('../lib/perms')
+var entitlement = require('../lib/entitlement')
+var query = require('../common/query')
+var logger = require('../common/log')
+var constants = require('../common/constants')
+var config = require('../lib/config').config
+var db = require('../common/db')
+var bcrypt = require('bcrypt')
+var request = require('request')
+var fs = require('fs')
+var GridFS = require('../lib/gridfs')
+var fse = require('fs-extra')
+var path = require('path')
+var generatePassword = require('password-generator')
+var es = require('../common/elasticsearch')
+var _ = require('lodash')
 
 function generateChatEmail (email) {
   if (email) {
@@ -40,6 +39,9 @@ function complete (req, res, registerMode) {
     })
 
     db.topics.find({collaborators: email}, function (err, topics) {
+      if (err) {
+        logger.error(err)
+      }
       logger.log('debug', 'Updating email', email, 'with oid for topics', topics.length)
       db.topics.update({collaborators: email}, {$set: {'collaborators.$': oid}}, {multi: true})
       topics.forEach(function (atopic) {
@@ -53,6 +55,9 @@ function complete (req, res, registerMode) {
 
     // WEB-714 fix
     db.topics.find({colearnrs: email}, function (err, topics) {
+      if (err) {
+        logger.error(err)
+      }
       logger.log('debug', 'Updating email', email, 'with oid for topics', topics.length)
       db.topics.update({colearnrs: email}, {$set: {'colearnrs.$': oid}}, {multi: true})
       topics.forEach(function (atopic) {
@@ -66,20 +71,27 @@ function complete (req, res, registerMode) {
   }
 
   function _doRegister () {
+    var error = ''
     db.users.findOne({emails: email}, function (err, exisUser) {
       if (err) {
         logger.log('error', 'Error while trying to find user by email', err)
       }
-      if (registerMode && req.user && exisUser && !exisUser.acct_auto_created && req.user._id != exisUser._id) {
-        var error = 'That email is assoicated with another account. Do you want to try to login first?'
+      if (registerMode && req.user && exisUser && !exisUser.acct_auto_created && req.user._id !== exisUser._id) {
+        error = 'That email is assoicated with another account. Do you want to try to login first?'
         res.render('complete-profile.ejs', {profileImage: profileImage, oid: oid,
         name: name, email: email, error: [error]})
         return
       }
-      if (!exisUser || exisUser.acct_auto_created || (req.user && req.user._id == exisUser._id)) {
+      if (!exisUser || exisUser.acct_auto_created || (req.user && req.user._id === exisUser._id)) {
         bcrypt.genSalt(constants.SALT_WORK_FACTOR, function (err, salt) {
+          if (err) {
+            logger.error(err)
+          }
           // hash the password along with our new salt
           bcrypt.hash(password, salt, function (err, hash) {
+            if (err) {
+              logger.error(err)
+            }
             // override the cleartext password with the hashed one
             var args = {displayName: name || '', name: userlib._name(name),
               password: hash,
@@ -95,27 +107,25 @@ function complete (req, res, registerMode) {
               args['profileImage'] = config.cdn_prefix + '/images/profile/profile_' + util.random(1, 10) + '.jpg'
             }
             if (oid) {
-              db.users.update({_id: oid}, {$set: args},
-                function (err) {
-                  var url = (req.session && req.session.returnTo && req.session.returnTo != '/undefined'
-                  && req.session.returnTo != constants.LOGIN_PAGE && req.session.returnTo != constants.REGISTER_PAGE) ? req.session.returnTo : constants.DEFAULT_HOME_PAGE
-                  delete req.session.returnTo
-                  if (req.user) {
-                    logger.log('debug', 'Redirecting to', url)
-                    res.redirect(constants.DEFAULT_HOME_PAGE)
-                  } else {
-                    logger.log('debug', 'Logging in the user automatically', email)
-                    // console.log(args)
-                    req.logIn(args, function (err) {
-                      if (err) {
-                        logger.log('error', 'Problem with login', args, err)
-                      }
-                      res.redirect(url)
-                    })
-                    _checkPendingInvites(oid, email)
-                    userlib.welcome_user(args)
-                  }
-                })
+              db.users.update({_id: oid}, {$set: args}, function () {
+                var url = (req.session && req.session.returnTo && req.session.returnTo !== '/undefined' && req.session.returnTo !== constants.LOGIN_PAGE && req.session.returnTo !== constants.REGISTER_PAGE) ? req.session.returnTo : constants.DEFAULT_HOME_PAGE
+                delete req.session.returnTo
+                if (req.user) {
+                  logger.log('debug', 'Redirecting to', url)
+                  res.redirect(constants.DEFAULT_HOME_PAGE)
+                } else {
+                  logger.log('debug', 'Logging in the user automatically', email)
+                  // console.log(args)
+                  req.logIn(args, function (err) {
+                    if (err) {
+                      logger.log('error', 'Problem with login', args, err)
+                    }
+                    res.redirect(url)
+                  })
+                  _checkPendingInvites(oid, email)
+                  userlib.welcome_user(args)
+                }
+              })
             } else if (email) {
               // We manage _id here in order to make it consistent with the _id that gets updated from singly.
               var id = util.create_hash(email)
@@ -127,10 +137,10 @@ function complete (req, res, registerMode) {
               args['join_date'] = new Date()
               args['location'] = null
               args['acct_auto_created'] = false
-              db.users.save(args, function (err) {
+              db.users.save(args, function () {
                 logger.log('debug', 'User', args._id, 'got newly created with verification_code',
                   args['verification_code'])
-                req.logIn(args, function (err) {
+                req.logIn(args, function () {
                   var url = util.getReturnToUrl(req)
                   logger.log('debug', 'Redirecting', id, 'to', url)
                   delete req.session.returnTo
@@ -143,7 +153,7 @@ function complete (req, res, registerMode) {
           })
         })
       } else {
-        var error = 'That email is assoicated with another account. Do you want to try to login first?'
+        error = 'That email is assoicated with another account. Do you want to try to login first?'
         res.render('complete-profile.ejs', {profileImage: profileImage, oid: oid,
         name: name, email: email, error: [error]})
       }
@@ -173,7 +183,7 @@ function complete (req, res, registerMode) {
   if (util.empty(password)) {
     error_list.push('Password is missing')
   }
-  if (!agree_terms || agree_terms != 'agreed') {
+  if (!agree_terms || agree_terms !== 'agreed') {
     error_list.push('You should agree to our terms of use')
   }
   if (config.allowed_domains && config.allowed_domains.length) {
@@ -196,7 +206,7 @@ function complete (req, res, registerMode) {
     entitlement.isSignupAllowed({emails: [email]}, {access_code: access_code}, function (err, allowed) {
       if (err || !allowed) {
         logger.log('warn', 'Signup is not allowed for', email, access_code, err)
-        if (err == constants.INVALID_ACCESS_CODE) {
+        if (err === constants.INVALID_ACCESS_CODE) {
           error_list.push('Invalid access code. Contact support if you need one')
         } else {
           error_list.push('We are not able to signup new users at the moment. Please contact support')
@@ -210,7 +220,6 @@ function complete (req, res, registerMode) {
   } else {
     _doRegister()
   }
-
 }
 
 exports.complete_check = function (req, res) {
@@ -227,8 +236,7 @@ exports.complete_check = function (req, res) {
     return
   }
   if (userlib.isComplete(userObj)) {
-    var url = (req.session && req.session.returnTo && req.session.returnTo != '/undefined'
-    && req.session.returnTo.indexOf(constants.LOGIN_PAGE) == -1 && req.session.returnTo.indexOf(constants.REGISTER_PAGE) == -1 && req.session.returnTo.indexOf(constants.AUTH_PAGE) == -1) ? req.session.returnTo : constants.DEFAULT_HOME_PAGE
+    var url = (req.session && req.session.returnTo && req.session.returnTo !== '/undefined' && req.session.returnTo.indexOf(constants.LOGIN_PAGE) === -1 && req.session.returnTo.indexOf(constants.REGISTER_PAGE) === -1 && req.session.returnTo.indexOf(constants.AUTH_PAGE) === -1) ? req.session.returnTo : constants.DEFAULT_HOME_PAGE
     delete req.session.returnTo
     res.redirect(url)
   } else {
@@ -253,9 +261,8 @@ exports.handle_login = function (req, res) {
     res.status(500).send({error: true, message: 'Invalid email or password'})
     return
   } else {
-    req.logIn(user, function (err) {
-      var url = (req.session && req.session.returnTo && req.session.returnTo != '/undefined'
-      && req.session.returnTo != constants.LOGIN_PAGE && req.session.returnTo != constants.REGISTER_PAGE) ? req.session.returnTo : constants.DEFAULT_HOME_PAGE
+    req.logIn(user, function () {
+      var url = (req.session && req.session.returnTo && req.session.returnTo !== '/undefined' && req.session.returnTo !== constants.LOGIN_PAGE && req.session.returnTo !== constants.REGISTER_PAGE) ? req.session.returnTo : constants.DEFAULT_HOME_PAGE
       if (userlib.isComplete(user)) {
         if (req.session && req.session.returnTo) {
           delete req.session.returnTo
@@ -295,7 +302,7 @@ function do_logout (req, res) {
     req.session.destroy()
     req.session = null
   }
-  res.clearCookie('connect.sid-' + (process.env.ENV_CONFIG || 'dev'), (config.cookieDomain && config.cookieDomain != 'localhost') ? {domain: config.cookieDomain, httpOnly: true} : {httpOnly: true})
+  res.clearCookie('connect.sid-' + (process.env.ENV_CONFIG || 'dev'), (config.cookieDomain && config.cookieDomain !== 'localhost') ? {domain: config.cookieDomain, httpOnly: true} : {httpOnly: true})
   req.logout()
 }
 
@@ -358,17 +365,18 @@ exports.save_profile = function (req, res) {
       description: description,
       profileImage: profileImage,
       img_url: img_url,
-    error: error_list})
+      error: error_list})
     return
   }
 
   db.users.findOne({emails: email}, function (err, exisUser) {
+    var error = ''
     if (err) {
       logger.log('error', 'Error while trying to find user by email', err)
       return
     }
-    if (email != userEmail && exisUser) {
-      var error = 'That email is associated with another account. Do you want to try to login first?'
+    if (email !== userEmail && exisUser) {
+      error = 'That email is associated with another account. Do you want to try to login first?'
       res.render('account/edit-profile.ejs', {
         user: req.user,
         oid: oid,
@@ -378,10 +386,10 @@ exports.save_profile = function (req, res) {
         description: description,
         img_url: img_url,
         profileImage: profileImage,
-      error: [error]})
+        error: [error]})
       return
     }
-    if (!exisUser || (req.user && req.user._id == exisUser._id)) {
+    if (!exisUser || (req.user && req.user._id === exisUser._id)) {
       var args = {displayName: name || '',
         name: userlib._name(name),
         emails: [email],
@@ -393,12 +401,12 @@ exports.save_profile = function (req, res) {
         args['profileImage'] = img_url[0]
       }
       if (oid) {
-        db.users.update({_id: oid}, {$set: args}, function (err) {
+        db.users.update({_id: oid}, {$set: args}, function () {
           res.redirect(constants.DEFAULT_HOME_PAGE)
         })
       }
     } else {
-      var error = 'That email is in use already! Please use a different one.'
+      error = 'That email is in use already! Please use a different one.'
       res.render('account/edit-profile.ejs', {
         user: req.user,
         oid: oid,
@@ -407,16 +415,16 @@ exports.save_profile = function (req, res) {
         chat_id: null,
         description: description,
         profileImage: profileImage,
-      error: [error]})
+        error: [error]})
     }
   })
 }
 
 function search (req, response) {
-  var q = req.query.q,
-    autoComplete = req.query.ac == '1',
-    user = req.user,
-    userEmail = (user && user.emails && user.emails.length ? user.emails[0] : null)
+  var q = req.query.q
+  var autoComplete = req.query.ac === '1'
+  var user = req.user
+  var userEmail = (user && user.emails && user.emails.length ? user.emails[0] : null)
   if (userEmail) {
     userEmail = userEmail.toLowerCase()
   }
@@ -433,7 +441,6 @@ function search (req, response) {
     }
     response.json(data)
   })
-
 }
 
 function quicksearch (req, response, isChatSearch) {
@@ -473,7 +480,6 @@ function quicksearch (req, response, isChatSearch) {
     })
     response.json(userList)
   })
-
 }
 
 function searchCollaborators (req, response) {
@@ -486,9 +492,9 @@ function searchCollaborators (req, response) {
     var tmpuserlist = []
     var userlist = []
     var done = 0
-    var userEmail = (user.emails.length ? user.emails[0] : null)
     /*
-    if (userEmail && q != userEmail) {
+    var userEmail = (user.emails.length ? user.emails[0] : null)
+    if (userEmail && q !== userEmail) {
         userlist.push({id: q, label: q, value: q})
     }
     */
@@ -511,13 +517,13 @@ function searchCollaborators (req, response) {
             var auser = users[j]
             if (auser) {
               var email = (auser.emails.length ? auser.emails[0] : '')
-              if (email.indexOf(q) != -1 || auser.displayName.indexOf(q) != -1) {
+              if (email.indexOf(q) !== -1 || auser.displayName.indexOf(q) !== -1) {
                 var name_email = auser.displayName + (email ? (' <' + email + '>') : '')
                 userlist.push({id: auser._id, label: name_email, value: email})
               }
             }
             done++
-            if (done == users.length) {
+            if (done === users.length) {
               // console.log(JSON.stringify(userlist))
               response.send(JSON.stringify(userlist))
             }
@@ -535,7 +541,7 @@ function searchCollaborators (req, response) {
 function get_profile_image (req, res) {
   var ret = constants.DEFAULT_PROFILE_IMAGE
   var user_oid = req.params['oid']
-  if (!user_oid || user_oid == 'colearnr') {
+  if (!user_oid || user_oid === 'colearnr') {
     request(ret).pipe(res)
   } else {
     db.users.findOne({_id: user_oid}, {profileImage: 1}, function (err, userObj) {
@@ -593,8 +599,14 @@ function reset_password (req, res) {
     } else {
       var tmpPassword = generatePassword(10, false)
       bcrypt.genSalt(constants.SALT_WORK_FACTOR, function (err, salt) {
+        if (err) {
+          logger.error(err)
+        }
         // hash the password along with our new salt
         bcrypt.hash(tmpPassword, salt, function (err, hash) {
+          if (err) {
+            logger.error(err)
+          }
           db.users.findAndModify({
             query: {_id: exisUser._id},
             update: {$set: {password: hash, salt: salt, temporary_password: true, last_updated: new Date()}},
@@ -627,7 +639,7 @@ function change_password (req, res) {
     return
   }
 
-  if (util.trim(curr_password) == util.trim(password)) {
+  if (util.trim(curr_password) === util.trim(password)) {
     error_list.push('New password cannot be the same as the current one!')
     res.render('change-password.ejs', {user: user, oid: user._id, error: error_list, show_nav: true})
     return
@@ -641,11 +653,20 @@ function change_password (req, res) {
       res.redirect('/login')
     } else {
       bcrypt.hash(curr_password, exisUser.salt, function (err, hash) {
-        if (hash == exisUser.password) {
+        if (err) {
+          logger.error(err)
+        }
+        if (hash === exisUser.password) {
           // Current password is valid. Go ahead and change it
           bcrypt.genSalt(constants.SALT_WORK_FACTOR, function (err, salt) {
+            if (err) {
+              logger.error(err)
+            }
             // hash the password along with our new salt
             bcrypt.hash(password, salt, function (err, hash2) {
+              if (err) {
+                logger.error(err)
+              }
               db.users.findAndModify({
                 query: {_id: exisUser._id},
                 update: {$set: {password: hash2, salt: salt, temporary_password: null, last_updated: new Date()}},
@@ -667,7 +688,6 @@ function change_password (req, res) {
           res.render('change-password.ejs', {user: exisUser, oid: exisUser._id, error: error_list, show_nav: true})
         }
       })
-
     }
   })
 }
@@ -680,7 +700,7 @@ function get_chat_image (req, res) {
   var ret = constants.DEFAULT_PROFILE_IMAGE
   var chat_id = req.params['id']
   logger.debug('Getting image for chat_id', chat_id)
-  if (!chat_id || chat_id == 'colearnr') {
+  if (!chat_id || chat_id === 'colearnr') {
     request(ret).pipe(res)
   } else {
     db.users.findOne({chat_id: chat_id}, {profileImage: 1}, function (err, userObj) {
@@ -695,10 +715,9 @@ function get_chat_image (req, res) {
 
 function media_upload (req, res) {
   var fstream
-  var sessionid = req.headers['cl-sessionid']
-  var oid = req.params.oid,
-    user = req.user,
-    userPath = path.join(config.upload_base_dir, user._id, 'media')
+  // var sessionid = req.headers['cl-sessionid']
+  var user = req.user
+  var userPath = path.join(config.upload_base_dir, user._id, 'media')
   req.pipe(req.busboy)
   fse.ensureDirSync(userPath)
   req.busboy.on('file', function (fieldname, file, filename) {
@@ -707,10 +726,13 @@ function media_upload (req, res) {
     fstream = fs.createWriteStream(fullPath)
     file.pipe(fstream)
     fstream.on('close', function () {
-      var clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
+      // var clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
       logger.debug(filename, 'uploaded successfully to', userPath)
       // Add to GridFS
       GridFS.storeFile(fullPath, {lbit_id: null, added_by: user._id, topic_id: null}, function (err, fileObj) {
+        if (err) {
+          logger.error(err)
+        }
         logger.info('Stored file ' + filename + ' in grid as ' + fileObj._id)
         res.json({file: fileObj})
       })
