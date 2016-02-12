@@ -1,19 +1,14 @@
-var util = require('../common/util'),
-  userlib = require('../lib/user'),
-  permslib = require('../lib/perms'),
-  query = require('../common/query'),
-  logger = require('../common/log'),
-  constants = require('../common/constants'),
-  config = require('../lib/config').config,
-  db = require('../common/db'),
-  bcrypt = require('bcrypt'),
-  request = require('request'),
-  _ = require('lodash')
+var util = require('../common/util')
+var userlib = require('../lib/user')
+var logger = require('../common/log')
+var config = require('../lib/config').config
+var bcrypt = require('bcrypt')
+var request = require('request')
 
 function check_password (req, res) {
-  var user = req.query.user,
-    server = req.query.server,
-    password = req.query.pass
+  var user = req.query.user
+  var server = req.query.server
+  var password = req.query.pass
   if (!user || !server || !password) {
     res.status(401).send('Not authorized')
     return
@@ -36,11 +31,14 @@ function check_password (req, res) {
       }
 
       // Purposefully breaking security by supporting api_key based login
-      if (password.indexOf('KEY:') != -1 && (user.api_key && password === ('KEY:' + user.api_key))) {
+      if (password.indexOf('KEY:') !== -1 && (user.api_key && password === ('KEY:' + user.api_key))) {
         logger.debug(email, 'authenticated for talk')
         res.status(200).send('true')
       } else {
         bcrypt.hash(password, user.salt, function (err, hash) {
+          if (err) {
+            logger.error(err)
+          }
           if (hash === user.password) {
             logger.debug(email, 'authenticated for talk')
             res.status(200).send('true')
@@ -63,8 +61,8 @@ function check_password (req, res) {
 }
 
 function user_exists (req, res) {
-  var user = req.query.user,
-    server = req.query.server
+  var user = req.query.user
+  var server = req.query.server
   if (!user || !server) {
     res.status(404).send('Not found')
     return

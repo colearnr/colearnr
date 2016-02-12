@@ -1,32 +1,30 @@
-var util = require('../common/util'),
-  query = require('../common/query'),
-  db = require('../common/db'),
-  constants = require('../common/constants'),
-  topicRoute = require('./topic'),
-  perms = require('../lib/perms'),
-  config = require('../lib/config').config,
-  userLib = require('../lib/user'),
-  extractLib = require('../common/extract'),
-  request = require('request'),
-  createLbit = require('../common/create_learn_bit'),
-  optimiseLib = require('../lib/lbit-optimise'),
-  logger = require('../common/log'),
-  _ = require('lodash'),
-  ejs = require('ejs'),
-  analytics = require('./analytics'),
-  fs = require('fs'),
-  youtubedl = require('youtube-dl'),
-  es = require('../common/elasticsearch'),
-  GridFS = require('../lib/gridfs'),
-  AccessTokens = require('../lib/access-tokens'),
-  fse = require('fs-extra'),
-  path = require('path'),
-  mime = require('mime'),
-  SUCCESS = '0',
-  ERROR = '1',
-  INIT = '2',
-  MIN_WORDS = 50,
-  UPLOAD_SERVER_PREFIX = config.upload_server_prefix
+var util = require('../common/util')
+var query = require('../common/query')
+var db = require('../common/db')
+var constants = require('../common/constants')
+var topicRoute = require('./topic')
+var perms = require('../lib/perms')
+var config = require('../lib/config').config
+var userLib = require('../lib/user')
+var extractLib = require('../common/extract')
+var request = require('request')
+var createLbit = require('../common/create_learn_bit')
+var optimiseLib = require('../lib/lbit-optimise')
+var logger = require('../common/log')
+var _ = require('lodash')
+var ejs = require('ejs')
+var analytics = require('./analytics')
+var fs = require('fs')
+var youtubedl = require('youtube-dl')
+var es = require('../common/elasticsearch')
+var GridFS = require('../lib/gridfs')
+var AccessTokens = require('../lib/access-tokens')
+var fse = require('fs-extra')
+var path = require('path')
+var mime = require('mime')
+var SUCCESS = '0'
+var MIN_WORDS = 50
+var UPLOAD_SERVER_PREFIX = config.upload_server_prefix
 
 function save_edit (req, res) {
   var user = req.user
@@ -35,8 +33,8 @@ function save_edit (req, res) {
   var oldValue = req.body.original_html
   var sessionid = req.body.sessionid
   var idlist = tid.split('-')
-  var id = null,
-    type = null
+  var id = null
+  var type = null
   if (idlist && idlist.length > 1) {
     id = idlist[1]
     type = idlist[2]
@@ -63,7 +61,7 @@ function save_edit (req, res) {
     } else {
       res.send('' + newValue)
       query.get_learnbit(user, {_id: db.ObjectId(id)}, function (err, lbit) {
-        if (global.socket) {
+        if (!err && global.socket) {
           global.socket.emit('send:editlbit', {lbit: lbit, user: user, sessionid: sessionid})
         } else {
           logger.log('warn', 'Unable to push the changes to the clients')
@@ -84,7 +82,7 @@ function _doCreate (sessionid, topic, oid, order, url, content, req, res, callba
     author: req.user._id
   }, function (err, lbit, isUpdate) {
     var user = req.user
-    if (util.empty(lbit)) {
+    if (err || util.empty(lbit)) {
       res.status(500).send('Oops. There is a problem while saving this url. Please try again later.')
     } else if (isUpdate && util.isExternalLink(lbit.type)) {
       logger.warn('Url already exists in topic', oid, url, topic.path)
@@ -93,11 +91,9 @@ function _doCreate (sessionid, topic, oid, order, url, content, req, res, callba
       // Optimise only external learnbits here. Optimisation for files will be taken care of
       // in upload method
       if (lbit.url.indexOf(constants.CL_PROTOCOL) === -1 &&
-        util.isOptimisationSupported(lbit.type, null)
-        && (!lbit.optimised || isUpdate) && !lbit.skip_optimisation) {
+        util.isOptimisationSupported(lbit.type, null) && (!lbit.optimised || isUpdate) && !lbit.skip_optimisation) {
         // Support for automatically optimising external video source
-        if (util.isSupportedVideoSource(lbit.url, lbit.type)
-          && !config.force_all_video_optimisation) {
+        if (util.isSupportedVideoSource(lbit.url, lbit.type) && !config.force_all_video_optimisation) {
           logger.log('debug', 'Not optimising ' + lbit.url)
         } else {
           optimiseLib.processLearnbit(lbit, function (err, lb) {
@@ -129,7 +125,7 @@ function _doCreate (sessionid, topic, oid, order, url, content, req, res, callba
           lbit: lbit, sid_id_map: sid_id_map,
           topicObj: topic
         }, function (err, ldata) {
-          if (ldata) {
+          if (!err && ldata) {
             res.json({status: 'success', message: null, data: ldata})
             // Push this to other users
             _pushLbit(req, topic.id, topic._id, [lbit], user, sessionid)
@@ -157,12 +153,12 @@ function save_lbit_url (req, res) {
   url = decodeURIComponent(url) || ''
   var urls = null
   var order = null
-  if (url.indexOf('\n') != -1) {
+  if (url.indexOf('\n') !== -1) {
     urls = url.split('\n')
     url = decodeURIComponent(urls[0])
   }
 
-  if (url.indexOf(' ') != -1 && url.indexOf('<iframe') == -1 && url.indexOf('<script') == -1) {
+  if (url.indexOf(' ') !== -1 && url.indexOf('<iframe') === -1 && url.indexOf('<script') === -1) {
     var tmp = url.split(' ')
     if (tmp && tmp.length) {
       try {
@@ -172,7 +168,6 @@ function save_lbit_url (req, res) {
       }
       url = tmp[1]
     }
-
   }
 
   var content = util.trim(lbit_info.content) || ''
@@ -189,7 +184,7 @@ function save_lbit_url (req, res) {
   }
 
   // Handle case where the content is just a link
-  if (!util.empty(content) && util.validUrl(content) && content.substring(0, 4) == 'http') {
+  if (!util.empty(content) && util.validUrl(content) && content.substring(0, 4) === 'http') {
     url = content
   }
   if (util.empty(url)) {
@@ -213,7 +208,7 @@ function save_lbit_url (req, res) {
               url = UPLOAD_SERVER_PREFIX + filedata.key
               logger.log('debug', 'Creating new learnbit file', oid, url, content, topic.path)
               var tmpTitle = filedata.filename
-              if (tmpTitle.indexOf('.flv') != -1 || tmpTitle.indexOf('.mp4') != -1) {
+              if (tmpTitle.indexOf('.flv') !== -1 || tmpTitle.indexOf('.mp4') !== -1) {
                 tmpTitle = 'Recording by ' + user.displayName
               }
               var tmpA = tmpTitle.split('.')
@@ -229,7 +224,7 @@ function save_lbit_url (req, res) {
                 title: tmpTitle,
                 size: filedata.size
               }, function (err, lbit, isUpdate) {
-                if (util.empty(lbit)) {
+                if (err || util.empty(lbit)) {
                   res.status(500).send('Oops. There is a problem while saving this url. Please try again later.')
                 } else if (isUpdate) {
                   logger.warn('Url already exists in topic', oid, url, topic.path)
@@ -241,11 +236,14 @@ function save_lbit_url (req, res) {
                   lbit.user_perms = topic.user_perms
                   lbit.userObj = user
                   lbit_list.push(lbit)
-                  if (lbit_list.length == fileUploadData.length) {
+                  if (lbit_list.length === fileUploadData.length) {
                     res.render('lbits/lbits-full.ejs', {
                       lbit_list: lbit_list, sid_id_map: sid_id_map,
                       topicObj: topic
                     }, function (err, ldata) {
+                      if (err) {
+                        logger.error(err)
+                      }
                       res.send(ldata)
                       _pushLbit(req, topic.id, topic._id, lbit_list, user, sessionid)
                     })
@@ -264,7 +262,7 @@ function save_lbit_url (req, res) {
                 }
               })
             })
-          } else if (url != '#' && util.isInternalUrl(url)) {
+          } else if (url !== '#' && util.isInternalUrl(url)) {
             var extractedTopic = util.getTopicFromUrl(url)
             var extractedLbit = util.getLbitFromUrl(url)
             var errorMsg = null
@@ -272,12 +270,12 @@ function save_lbit_url (req, res) {
               var lbit_id = null
               if (extractedLbit && extractedLbit._id) {
                 lbit_id = extractedLbit._id
-              } else if (url.indexOf('lbit=') != -1) {
+              } else if (url.indexOf('lbit=') !== -1) {
                 var lindex = url.indexOf('lbit=')
                 lbit_id = url.substring(lindex + 5).split('/')[0]
               }
               var tidToUse = extractedTopic.oid || oid
-              if (extractedTopic.oid && extractedTopic.oid == oid) {
+              if (extractedTopic.oid && extractedTopic.oid === oid) {
                 if (!lbit_id) {
                   errorMsg = 'Looks like you are trying to link the same topic onto itself!'
                 } else {
@@ -293,7 +291,7 @@ function save_lbit_url (req, res) {
                     if (lbit_id) { // Is this a learnbit share url?
                       logger.log('debug', 'Creating new learnbit', oid, lbit_id)
                       createLbit(topic.id, {_id: lbit_id, topic_oid: oid}, function (err, lbit, isUpdate) {
-                        if (util.empty(lbit)) {
+                        if (err || util.empty(lbit)) {
                           res.status(500).send('Oops. There is a problem while saving this url. Please try again later.')
                         } else if (isUpdate) {
                           logger.warn('Url already exists in topic', oid, url, topic.path)
@@ -309,6 +307,9 @@ function save_lbit_url (req, res) {
                             lbit: lbit, sid_id_map: sid_id_map,
                             topicObj: topic
                           }, function (err, ldata) {
+                            if (err) {
+                              logger.error(err)
+                            }
                             res.send(ldata)
                             _pushLbit(req, topic.id, topic._id, [lbit], user, sessionid)
                           })
@@ -316,7 +317,7 @@ function save_lbit_url (req, res) {
                       })
                     } else { // This should be a topic url
                       // Check if the user has view access
-                      if (etopicObj.user_perms && etopicObj.user_perms[req.user._id] && _.indexOf(etopicObj.user_perms[req.user._id], constants.VIEW_PERMS) != -1) {
+                      if (etopicObj.user_perms && etopicObj.user_perms[req.user._id] && _.indexOf(etopicObj.user_perms[req.user._id], constants.VIEW_PERMS) !== -1) {
                         query.add_linked_topic(user, topic, etopicObj, function (err) {
                           if (err) {
                             errorMsg = err
@@ -396,6 +397,9 @@ function del_lbit (req, res) {
   })
 
   db.learnbits.findOne({_id: db.ObjectId(id)}, function (err, lbit) {
+    if (err) {
+      logger.error(err)
+    }
     if (lbit.url.indexOf(constants.CL_PROTOCOL) === 0) {
       GridFS.remove(id, null, function (err) {
         if (err) {
@@ -481,8 +485,9 @@ function save_edit_full (req, res) {
   var end = req.body.end
   var isNew = util.empty(oid)
   var errorStr = ''
+  var text = ''
   // Support for start and end
-  if (type == 'pdf' || type == 'video' || type == 'youtube' || type == 'vimeo') {
+  if (type === 'pdf' || type === 'video' || type === 'youtube' || type === 'vimeo') {
     update_map.start = start ? parseInt(start, 10) : null
     update_map.end = end ? parseInt(end, 10) : null
     if (update_map.end && update_map.start && update_map.end < update_map.start) {
@@ -502,7 +507,7 @@ function save_edit_full (req, res) {
   }
 
   if (isNew && (util.empty(req.body.title) && util.empty(req.body.description) && util.empty(req.body.body))) {
-    var errorStr = 'We need something to save!'
+    errorStr = 'We need something to save!'
     res.status(500).send(errorStr)
     return
   }
@@ -510,10 +515,10 @@ function save_edit_full (req, res) {
   update_map['title'] = req.body.title || ''
   update_map['topic_oid'] = topic_oid
   update_map['type'] = type
-  if (type == 'html') {
-    update_map['disable_optimisation'] = (req.body.disable_optimisation == 'true' ? true : false)
+  if (type === 'html') {
+    update_map['disable_optimisation'] = (req.body.disable_optimisation === 'true')
   }
-  update_map['draft_mode'] = (req.body.draft_mode == 'true' ? true : false)
+  update_map['draft_mode'] = (req.body.draft_mode === 'true')
   update_map['description'] = req.body.description || null
   update_map['license'] = req.body.license
   if (req.body.topics) {
@@ -537,17 +542,17 @@ function save_edit_full (req, res) {
     update_map['img_url'] = util.parseJson(req.body['img_url'])
   }
   if (!util.empty(req.body.body)) {
-    if (req.body.type == 'poll') {
+    if (req.body.type === 'poll') {
       var body = {body: req.body.body}
       var choices = []
       for (var c = 0; c < parseInt(req.body.total_choices, 10); c++) {
-        var text = req.body['choice_' + (c + 1)]
+        text = req.body['choice_' + (c + 1)]
         if (!util.empty(text)) {
           choices.push({id: c, text: text})
         }
       }
       if (!choices.length) {
-        var errorStr = 'A good poll is as good as its options!'
+        errorStr = 'A good poll is as good as its options!'
         res.status(500).send(errorStr)
         return
       }
@@ -557,17 +562,17 @@ function save_edit_full (req, res) {
       update_map['body'] = req.body.body
     }
   } else {
-    if (req.body.type == 'poll') {
-      var errorStr = 'What question would you like to ask as part of this poll?'
+    if (req.body.type === 'poll') {
+      errorStr = 'What question would you like to ask as part of this poll?'
       res.status(500).send(errorStr)
       return
     }
   }
-  if (req.body.type == 'video' || req.body.type == 'youtube') {
+  if (req.body.type === 'video' || req.body.type === 'youtube') {
     var chapters = []
-    for (var c = 0; c < parseInt(req.body.total_chapters, 10); c++) {
-      var text = req.body['chapter_' + (c + 1)]
-      var time = req.body['time_' + (c + 1)]
+    for (var d = 0; d < parseInt(req.body.total_chapters, 10); d++) {
+      text = req.body['chapter_' + (d + 1)]
+      var time = req.body['time_' + (d + 1)]
       if (time) {
         time = parseInt(time, 10)
       }
@@ -586,7 +591,7 @@ function save_edit_full (req, res) {
     update_map['author'] = req.user._id
   }
 
-  if (req.body.privacy_mode && req.body.privacy_mode == 'public') {
+  if (req.body.privacy_mode && req.body.privacy_mode === 'public') {
     update_map['privacy_mode'] = 'public'
   } else {
     update_map['privacy_mode'] = 'private'
@@ -617,7 +622,7 @@ function save_edit_full (req, res) {
           }
         })
       } else {
-        if (lbit.type == 'quote') {
+        if (lbit.type === 'quote') {
           var quote_author = req.body.quote_author || ''
           var bodyObj = {quote: update_map['body'], author: quote_author}
           update_map['body'] = util.stringify(bodyObj)
@@ -634,7 +639,7 @@ function save_edit_full (req, res) {
           })
 
         query.get_learnbit(user, {_id: db.ObjectId(oid)}, function (err, lbit) {
-          if (global.socket) {
+          if (!err && global.socket) {
             global.socket.emit('send:editlbit', {lbit: lbit, user: user, sessionid: sessionid})
           } else {
             logger.log('warn', 'Unable to push the changes to the clients')
@@ -659,9 +664,9 @@ function _pushLbit (req, topic_id, topic_oid, lbit_list, user, sessionid) {
   })
   topicObj.user_perms = null
   topicObj.user_role = null
-  var LBITS_TPL_NAME = __dirname + '/../views/lbits/lbits-full.ejs'
+  var LBITS_TPL_NAME = path.resolve(__dirname, '/../views/lbits/lbits-full.ejs')
   var template = fs.readFileSync(LBITS_TPL_NAME, 'utf8')
-  var durl = config.socket.address + ( (config.socket.port != 80 && config.socket.port != 443) ? ':' + config.socket.port : '')
+  var durl = config.socket.address + ((config.socket.port !== 80 && config.socket.port !== 443) ? ':' + config.socket.port : '')
   var host_url = config.base_url + (config.use_port ? (':' + config.port) : '')
   var ldata = ejs.render(template, {
     filename: LBITS_TPL_NAME,
@@ -692,8 +697,7 @@ function _pushLbit (req, topic_id, topic_oid, lbit_list, user, sessionid) {
 }
 
 function view_media (req, res) {
-  var oid = req.params.oid,
-    user = req.user || constants.DEMO_USER
+  var oid = req.params.oid
 
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid media id!')
@@ -711,9 +715,8 @@ function view_media (req, res) {
 }
 
 function view_lbit_media (req, res) {
-  var oid = req.params.oid,
-    fname = req.params.fname,
-    user = req.user || constants.DEMO_USER
+  var oid = req.params.oid
+  var fname = req.params.fname
 
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid media id!')
@@ -729,13 +732,12 @@ function view_lbit_media (req, res) {
     logger.debug('About to stream file from Grid', oid)
     filestream.pipe(res)
   })
-
 }
 
 function view (req, res) {
-  var oid = req.params.oid,
-    topicId = req.query.topic_id,
-    user = req.user || constants.DEMO_USER
+  var oid = req.params.oid
+  var topicId = req.query.topic_id
+  var user = req.user || constants.DEMO_USER
 
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid learnbit id!')
@@ -762,8 +764,8 @@ function view (req, res) {
             lbit.user_perms = topic.user_perms
             logger.log('debug', lbit.user_perms, 'got copied to the learnbit', oid)
           }
-          if ((lbit.type == 'html' && lbit.disable_optimisation !== true) || lbit.type == 'inline-html') {
-            if ((lbit.body && lbit.body.split(' ').length > MIN_WORDS) || lbit.url == '#' || lbit.type == 'inline-html') {
+          if ((lbit.type === 'html' && lbit.disable_optimisation !== true) || lbit.type === 'inline-html') {
+            if ((lbit.body && lbit.body.split(' ').length > MIN_WORDS) || lbit.url === '#' || lbit.type === 'inline-html') {
               res.render('lbits/readable.ejs', {lbit: lbit, user: user, topicId: topicId})
             } else if (!util.empty(lbit.url) && util.validUrl(lbit.url)) {
               extractLib.parse(lbit.url, function (data) {
@@ -788,12 +790,21 @@ function view (req, res) {
             }
           } else if (lbit.type === 'pdf') {
             query.get_pdf_last_position(user, lbit._id, topicId, function (err, lastPosition) {
+              if (err) {
+                logger.error(err)
+              }
               AccessTokens.create('' + lbit._id, { added_by: user._id, valid_for_users: [user._id], ttl: 30 * 60, domain: constants.ALLOWED_EMBED_DOMAINS }, function (err, accessToken) {
+                if (err) {
+                  logger.error(err)
+                }
                 res.render('lbits/embedded.ejs', {lbit: lbit, user: user, topicId: topicId, lastPosition: lastPosition, accessToken: accessToken})
               })
             })
           } else if (lbit.type === 'iframe-embed' || lbit.optimised || lbit.type === 'office') {
             AccessTokens.create('' + lbit._id, { added_by: user._id, valid_for_users: [user._id], ttl: 30 * 60, domain: constants.ALLOWED_EMBED_DOMAINS }, function (err, accessToken) {
+              if (err) {
+                logger.error(err)
+              }
               res.render('lbits/embedded.ejs', { lbit: lbit, user: user, topicId: topicId, accessToken: accessToken })
             })
           } else if (lbit.type === 'poll') {
@@ -859,7 +870,7 @@ function download (req, res) {
           } else {
             request.get(url)
               .on('response', function (response) {
-                if (response.statusCode != 200) {
+                if (response.statusCode !== 200) {
                   logger.log('warn', 'Unable to download', url, '. Response code:', response.statusCode)
                 }
               })
@@ -883,6 +894,9 @@ function create_new (req, response) {
   var lbit = {type: 'inline-html'}
   if (util.validOid(topic_oid)) {
     db.topics.findOne({_id: db.ObjectId(topic_oid)}, function (err, topic) {
+      if (err) {
+        logger.error(err)
+      }
       var topiclist = [{id: topic._id, text: topic.name}]
       var dataMap = {topic: topic, lbit: lbit, topiclist: util.stringify(topiclist), newlbit: true}
       response.render('lbits/lbit-creator.ejs', dataMap)
@@ -896,7 +910,6 @@ function create_new (req, response) {
 
 function redirect_url (req, res) {
   var oid = req.params.oid
-  var type = req.params.type
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid learnbit id!')
     return
@@ -907,7 +920,7 @@ function redirect_url (req, res) {
         console.error('Unable to load learnbit', err, oid)
       } else {
         var url = util.encode_s3_url(lbit.url)
-        if (lbit.type == 'pdf') {
+        if (lbit.type === 'pdf') {
           res.set('Content-Type', 'application/pdf')
         } else {
           var contentType = mime.lookup(lbit.url)
@@ -927,7 +940,7 @@ function redirect_url (req, res) {
           logger.log('info', 'Proxying data from', url)
           request.get(url)
             .on('response', function (response) {
-              if (response.statusCode != 200) {
+              if (response.statusCode !== 200) {
                 logger.log('warn', 'Unable to proxy', url, '. Response code:', response.statusCode)
               }
             })
@@ -942,9 +955,9 @@ function redirect_url (req, res) {
 }
 
 function search (req, response, isApi) {
-  var q = req.query.q,
-    autoComplete = req.query.ac == '1',
-    user = req.user
+  var q = req.query.q
+  var autoComplete = req.query.ac === '1'
+  var user = req.user
   if (!q) {
     return response.json({})
   }
@@ -953,7 +966,6 @@ function search (req, response, isApi) {
       logger.error('Error retrieving search results for learnbits', err)
       response.json({})
       return
-
     }
     response.json(data)
   })
@@ -970,9 +982,9 @@ function like (req, response) {
       if (!lbit.likes) {
         lbit.likes = []
       }
-      if (lbit.likes.indexOf(user._id) != -1) {
+      if (lbit.likes.indexOf(user._id) !== -1) {
         lbit.likes = _.filter(lbit.likes, function (id) {
-          return id != '' + user._id
+          return id !== '' + user._id
         })
         liked = false
       } else {
@@ -1018,9 +1030,9 @@ function view_tracks (req, res) {
 }
 
 function optimise (req, res) {
-  var user = req.user,
-    sessionid = req.body.sessionid
-  oid = req.params.oid
+  var user = req.user
+  var sessionid = req.body.sessionid
+  var oid = req.params.oid
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid learnbit id!')
     return
@@ -1056,8 +1068,8 @@ function upload (req, res) {
   var sessionid = req.headers['cl-sessionid'] || ''
   topic_oid = topic_oid.split(',')[0]
   sessionid = sessionid.split(',')[0]
-  var user = req.user,
-    userPath = path.join(config.upload_base_dir, user._id)
+  var user = req.user
+  var userPath = path.join(config.upload_base_dir, user._id)
   if (util.validOid(topic_oid)) {
     query.get_topic(user, { _id: db.ObjectId(topic_oid) }, function (err, topic) {
       if (err || !topic) {
@@ -1080,16 +1092,17 @@ function upload (req, res) {
               logger.debug(filename, 'uploaded successfully to', userPath)
               logger.log('debug', 'Creating new learnbit', topic_oid, topic.path, clUrl)
               _doCreate(sessionid, topic, topic_oid, null, clUrl, null, req, res, function (err, newLbit) {
+                if (err) {
+                  logger.error(err)
+                }
                 // Add to GridFS
                 GridFS.storeFile(fullPath, {_id: newLbit._id, added_by: newLbit.added_by, topic_id: topic._id}, function (err, fileObj) {
                   if (!err) {
                     logger.info('Stored file ' + filename + ' in grid as ' + fileObj._id)
                     newLbit.url = clUrl
-                    if (util.isOptimisationSupported(newLbit.type, null)
-                      && (!newLbit.optimised) && !newLbit.skip_optimisation) {
+                    if (util.isOptimisationSupported(newLbit.type, null) && (!newLbit.optimised) && !newLbit.skip_optimisation) {
                       // Support for automatically optimising external video source
-                      if (util.isSupportedVideoSource(newLbit.url, newLbit.type)
-                        && !config.force_all_video_optimisation) {
+                      if (util.isSupportedVideoSource(newLbit.url, newLbit.type) && !config.force_all_video_optimisation) {
                         logger.log('debug', 'Not optimising ' + newLbit.url)
                         return
                       }
@@ -1122,10 +1135,9 @@ function upload (req, res) {
 function media_upload (req, res) {
   var fstream
   var topic_oid = req.headers['cl-upload-topic']
-  var sessionid = req.headers['cl-sessionid']
-  var oid = req.params.oid,
-    user = req.user,
-    userPath = path.join(config.upload_base_dir, user._id, 'media')
+  var oid = req.params.oid
+  var user = req.user
+  var userPath = path.join(config.upload_base_dir, user._id, 'media')
   if (util.validOid(oid)) {
     query.get_learnbit(user, {_id: db.ObjectId(oid)}, function (err, lbit) {
       if (err || !lbit) {
@@ -1141,10 +1153,13 @@ function media_upload (req, res) {
           fstream = fs.createWriteStream(fullPath)
           file.pipe(fstream)
           fstream.on('close', function () {
-            var clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
+            // var clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
             logger.debug(filename, 'uploaded successfully to', userPath)
             // Add to GridFS
             GridFS.storeFile(fullPath, {lbit_id: lbit._id, added_by: lbit.added_by, topic_id: topic_oid}, function (err, fileObj) {
+              if (err) {
+                logger.error(err)
+              }
               logger.info('Stored file ' + filename + ' in grid as ' + fileObj._id)
               res.json({file: fileObj})
             })
