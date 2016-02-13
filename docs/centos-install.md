@@ -5,7 +5,7 @@
 
 ## Pre-requisites
 
-- Node.js 4 or 5. Tested with 5.5.0 (https://nodejs.org/dist/v5.5.0/node-v5.5.0-linux-x64.tar.gz)
+- Node.js 4 or 5. Tested with 5.6.0 (https://nodejs.org/dist/v5.6.0/node-v5.6.0-linux-x64.tar.xz)
 - Python 2.7 (For node-gyp)
 - MongoDB 3.0 or higher. Tested with 3.2 (Follow instructions in https://docs.mongodb.org/master/tutorial/install-mongodb-on-red-hat/)
 - Redis 3.0 or higher. Tested with 3.0.6 (http://download.redis.io/releases/redis-3.0.6.tar.gz)
@@ -18,8 +18,8 @@ yum install -y gcc gcc-c++ python python-setuptools pam-devel java-1.7.0-openjdk
 
 # Install node 5
 cd /tmp
-wget https://nodejs.org/dist/v5.5.0/node-v5.5.0-linux-x64.tar.gz
-cd /usr && tar --strip-components 1 -xzf /tmp/node-v5.5.0-linux-x64.tar.gz
+wget https://nodejs.org/dist/v5.6.0/node-v5.6.0-linux-x64.tar.xz
+cd /usr && tar --strip-components 1 -xf /tmp/node-v5.6.0-linux-x64.tar.xz
 ```
 
 ### Optional sass support for customisation
@@ -58,7 +58,7 @@ PWD=`pwd`
 npm config set python python2.7
 
 # Install global dependencies
-sudo npm install -g jscs jshint grunt grunt-cli gulp gulp-cli bower nodemon
+sudo npm install -g grunt grunt-cli gulp gulp-cli bower nodemon
 
 # clone and build the main app
 git clone https://github.com/colearnr/colearnr.git

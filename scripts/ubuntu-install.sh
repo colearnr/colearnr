@@ -83,7 +83,7 @@ else
     echo "Begin npm installation"
     npm config set python python2.7
     # Install global dependencies
-    sudo npm install -g jscs grunt grunt-cli gulp gulp-cli bower nodemon
+    sudo npm install -g grunt grunt-cli gulp gulp-cli bower nodemon
     cd $DOWNLOAD_DIR/colearnr-master
     npm install --production --loglevel warn
     gulp css

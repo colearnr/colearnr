@@ -34,7 +34,7 @@ sudo bash ubuntu-install.sh
 The script will install the following:
 
 - Essential build tools and dev libraries
-- Nodejs 5.5.0 from nodesource
+- Nodejs 5.6.0 from nodesource
 - MongoDB
 - Redis
 - Python 2.7 (Required for npm native modules)
