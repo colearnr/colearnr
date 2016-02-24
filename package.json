@@ -30,7 +30,6 @@
     "ejs": "2.3.4",
     "elasticsearch": "10.1.0",
     "emailjs": "1.0.1",
-    "embedly": "1.0.4",
     "express": "4.13.3",
     "express-ejs-layouts": "1.1.0",
     "express-params": "0.0.3",

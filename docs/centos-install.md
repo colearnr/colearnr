@@ -2,6 +2,7 @@
 
 ## Versions tested
 - 6.7
+- RedHat 6.7
 
 ## Pre-requisites
 
@@ -44,13 +45,21 @@ sudo gem update --system
 sudo gem install compass
 ```
 
+In case of RedHat 6.7
+```
+yum install -y devtoolset-4-toolchain ruby193-ruby ruby193-rubygem-sass
+scl enable devtoolset-4 'bash'
+```
+
 ## Build/Download CoLearnr
 
 You can either build CoLearnr from source or download a pre-built version
 
 ### Pre-built packages
-- [Centos 6 - .tar.xz](http://downloads.colearnr.com/centos6/colearnr-community.tar.xz)
+- [Centos 6.7 - .tar.xz](http://downloads.colearnr.com/centos6/colearnr-community.tar.xz)
 - [MD5 hash](http://downloads.colearnr.com/centos6/colearnr-community.tar.xz.md5)
+- [RedHat 6.7 - .tar.xz](http://downloads.colearnr.com/redhat6/colearnr-community.tar.xz)
+- [MD5 hash](http://downloads.colearnr.com/redhat6/colearnr-community.tar.xz.md5)
 
 ### Build
 ```
