@@ -6,10 +6,10 @@
 
 ## Pre-requisites
 
-- Node.js 4 or 5. Tested with 5.6.0 (https://nodejs.org/dist/v5.6.0/node-v5.6.0-linux-x64.tar.xz)
+- Node.js 4 or 5. Tested with 5.7.0 (https://nodejs.org/dist/v5.7.0/node-v5.7.0-linux-x64.tar.xz)
 - Python 2.7 (For node-gyp)
 - MongoDB 3.0 or higher. Tested with 3.2 (Follow instructions in https://docs.mongodb.org/master/tutorial/install-mongodb-on-red-hat/)
-- Redis 3.0 or higher. Tested with 3.0.6 (http://download.redis.io/releases/redis-3.0.6.tar.gz)
+- Redis 3.0 or higher. Tested with 3.0.7 (http://download.redis.io/releases/redis-3.0.7.tar.gz)
 - Elasticsearch. Tested with 1.7.3 (https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.3.noarch.rpm)
 - LibreOffice 4 or 5. (http://download.documentfoundation.org/libreoffice/stable/5.0.4/rpm/x86_64/LibreOffice_5.0.4_Linux_x86-64_rpm.tar.gz)
 
@@ -19,8 +19,8 @@ yum install -y gcc gcc-c++ python python-setuptools pam-devel java-1.7.0-openjdk
 
 # Install node 5
 cd /tmp
-wget https://nodejs.org/dist/v5.6.0/node-v5.6.0-linux-x64.tar.xz
-cd /usr && tar --strip-components 1 -xf /tmp/node-v5.6.0-linux-x64.tar.xz
+wget https://nodejs.org/dist/v5.7.0/node-v5.7.0-linux-x64.tar.xz
+cd /usr && tar --strip-components 1 -xf /tmp/node-v5.7.0-linux-x64.tar.xz
 ```
 
 ### Optional sass support for customisation
