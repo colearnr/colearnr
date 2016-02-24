@@ -15,7 +15,7 @@
 
 ```
 # Install general dependencies
-yum install -y gcc gcc-c++ python python-setuptools pam-devel java-1.7.0-openjdk-devel libX11-devel libXext-devel libgcj libgcj-devel openssh-clients automake dhcp ntp ntpdate telnet git poppler-utils
+yum install -y gcc gcc-c++ python python-setuptools pam-devel java-1.7.0-openjdk-devel libX11-devel libXext-devel libgcj libgcj-devel openssh-clients automake dhcp ntp ntpdate telnet git poppler-utils xz
 
 # Install node 5
 cd /tmp
