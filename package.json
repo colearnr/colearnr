@@ -60,8 +60,6 @@
     "socket.io": "git://github.com/colearnr/socket.io.git#0.9.18",
     "socket.io-client": "0.9.17",
     "step": "0.0.6",
-    "tabletop": "1.4.2",
-    "touch": "^1.0.0",
     "unembed": "^1.0.5",
     "unoconv": "git://github.com/colearnr/node-unoconv.git#0.1.5",
     "wait.for": "~0.6.6",
