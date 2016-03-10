@@ -25,6 +25,11 @@ function _track (req, response, type) {
       db.app_analytics.insert(data)
       break
     case 'pdf':
+      if (data.page) {
+        data.page = parseInt(data.page, 10) || null
+      }
+      db.analytics.insert(data)
+      break
     case 'topic':
     case 'url':
     case 'lbit':
