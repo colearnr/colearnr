@@ -1,40 +1,42 @@
-var util = require('../common/util')
-var query = require('../common/query')
-var db = require('../common/db')
-var constants = require('../common/constants')
-var topicRoute = require('./topic')
-var perms = require('../lib/perms')
-var config = require('../lib/config').config
-var userLib = require('../lib/user')
-var extractLib = require('../common/extract')
-var request = require('request')
-var createLbit = require('../common/create_learn_bit')
-var optimiseLib = require('../lib/lbit-optimise')
-var logger = require('../common/log')
-var _ = require('lodash')
-var ejs = require('ejs')
-var analytics = require('./analytics')
-var fs = require('fs')
-var youtubedl = require('youtube-dl')
-var es = require('../common/elasticsearch')
-var GridFS = require('../lib/gridfs')
-var AccessTokens = require('../lib/access-tokens')
-var fse = require('fs-extra')
-var path = require('path')
-var mime = require('mime')
-var SUCCESS = '0'
-var MIN_WORDS = 50
-var UPLOAD_SERVER_PREFIX = config.upload_server_prefix
+'use strict'
+
+let util = require('../common/util')
+let query = require('../common/query')
+let db = require('../common/db')
+let constants = require('../common/constants')
+let topicRoute = require('./topic')
+let perms = require('../lib/perms')
+let config = require('../lib/config').config
+let userLib = require('../lib/user')
+let extractLib = require('../common/extract')
+let request = require('request')
+let createLbit = require('../common/create_learn_bit')
+let optimiseLib = require('../lib/lbit-optimise')
+let logger = require('../common/log')
+let _ = require('lodash')
+let ejs = require('ejs')
+let analytics = require('./analytics')
+let fs = require('fs')
+let youtubedl = require('youtube-dl')
+let es = require('../common/elasticsearch')
+let GridFS = require('../lib/gridfs')
+let AccessTokens = require('../lib/access-tokens')
+let fse = require('fs-extra')
+let path = require('path')
+let mime = require('mime')
+let SUCCESS = '0'
+let MIN_WORDS = 50
+let UPLOAD_SERVER_PREFIX = config.upload_server_prefix
 
 function save_edit (req, res) {
-  var user = req.user
-  var newValue = req.body.update_value
-  var tid = req.body.element_id
-  var oldValue = req.body.original_html
-  var sessionid = req.body.sessionid
-  var idlist = tid.split('-')
-  var id = null
-  var type = null
+  let user = req.user
+  let newValue = req.body.update_value
+  let tid = req.body.element_id
+  let oldValue = req.body.original_html
+  let sessionid = req.body.sessionid
+  let idlist = tid.split('-')
+  let id = null
+  let type = null
   if (idlist && idlist.length > 1) {
     id = idlist[1]
     type = idlist[2]
@@ -81,7 +83,7 @@ function _doCreate (sessionid, topic, oid, order, url, content, req, res, callba
     path: topic.path,
     author: req.user._id
   }, function (err, lbit, isUpdate) {
-    var user = req.user
+    let user = req.user
     if (err || util.empty(lbit)) {
       res.status(500).send('Oops. There is a problem while saving this url. Please try again later.')
     } else if (isUpdate && util.isExternalLink(lbit.type)) {
@@ -116,7 +118,7 @@ function _doCreate (sessionid, topic, oid, order, url, content, req, res, callba
           logger.log('warn', 'Unable to push the changes to the clients')
         }
       } else { // Send the full learnbit block
-        var sid_id_map = {}
+        let sid_id_map = {}
         sid_id_map[oid] = topic.id
         topicRoute.formDiscussUrl(req, topic, user)
         lbit.user_perms = topic.user_perms
@@ -140,26 +142,26 @@ function _doCreate (sessionid, topic, oid, order, url, content, req, res, callba
 }
 
 function save_lbit_url (req, res) {
-  var lbit_info = req.body
+  let lbit_info = req.body
   // console.log(lbit_info)
-  var oid = lbit_info.tid
+  let oid = lbit_info.tid
   if (!oid) {
     res.status(500).send('Oops. There is a problem while saving this url. Please try again later.')
     return
   }
-  var sessionid = lbit_info.sessionid
+  let sessionid = lbit_info.sessionid
   logger.log('debug', 'Id is', oid, 'sessionid', sessionid)
-  var url = util.trim(lbit_info.url) || ''
+  let url = util.trim(lbit_info.url) || ''
   url = decodeURIComponent(url) || ''
-  var urls = null
-  var order = null
+  let urls = null
+  let order = null
   if (url.indexOf('\n') !== -1) {
     urls = url.split('\n')
     url = decodeURIComponent(urls[0])
   }
 
   if (url.indexOf(' ') !== -1 && url.indexOf('<iframe') === -1 && url.indexOf('<script') === -1) {
-    var tmp = url.split(' ')
+    let tmp = url.split(' ')
     if (tmp && tmp.length) {
       try {
         order = parseInt(tmp[0], 10)
@@ -170,8 +172,8 @@ function save_lbit_url (req, res) {
     }
   }
 
-  var content = util.trim(lbit_info.content) || ''
-  var fileUploadData = util.parseJson(lbit_info.fileUploadData) || null
+  let content = util.trim(lbit_info.content) || ''
+  let fileUploadData = util.parseJson(lbit_info.fileUploadData) || null
   if (util.empty(url) && util.empty(content) && util.empty(fileUploadData)) {
     res.status(500).send('Looks like the link or embed code is invalid!')
     return
@@ -190,7 +192,7 @@ function save_lbit_url (req, res) {
   if (util.empty(url)) {
     url = '#'
   }
-  var user = req.user
+  let user = req.user
   if (util.validOid(oid)) {
     query.get_topic(user, {_id: db.ObjectId(oid)}, function (err, topic) {
       if (err || !topic) {
@@ -202,16 +204,16 @@ function save_lbit_url (req, res) {
         if (user.hasAddPermission) {
           // logger.log('debug', 'Allowing', user._id, 'to access', oid, id, url)
           if (fileUploadData) {
-            var sid_id_map = {}
-            var lbit_list = []
+            let sid_id_map = {}
+            let lbit_list = []
             fileUploadData.forEach(function (filedata, index) {
               url = UPLOAD_SERVER_PREFIX + filedata.key
               logger.log('debug', 'Creating new learnbit file', oid, url, content, topic.path)
-              var tmpTitle = filedata.filename
+              let tmpTitle = filedata.filename
               if (tmpTitle.indexOf('.flv') !== -1 || tmpTitle.indexOf('.mp4') !== -1) {
                 tmpTitle = 'Recording by ' + user.displayName
               }
-              var tmpA = tmpTitle.split('.')
+              let tmpA = tmpTitle.split('.')
               tmpTitle = (tmpA && tmpA.length) ? tmpA[0] : tmpTitle
 
               createLbit(topic.id, {
@@ -263,18 +265,18 @@ function save_lbit_url (req, res) {
               })
             })
           } else if (url !== '#' && util.isInternalUrl(url)) {
-            var extractedTopic = util.getTopicFromUrl(url)
-            var extractedLbit = util.getLbitFromUrl(url)
-            var errorMsg = null
+            let extractedTopic = util.getTopicFromUrl(url)
+            let extractedLbit = util.getLbitFromUrl(url)
+            let errorMsg = null
             if (!util.empty(extractedTopic) || !util.empty(extractedLbit)) {
-              var lbit_id = null
+              let lbit_id = null
               if (extractedLbit && extractedLbit._id) {
                 lbit_id = extractedLbit._id
               } else if (url.indexOf('lbit=') !== -1) {
-                var lindex = url.indexOf('lbit=')
+                let lindex = url.indexOf('lbit=')
                 lbit_id = url.substring(lindex + 5).split('/')[0]
               }
-              var tidToUse = extractedTopic.oid || oid
+              let tidToUse = extractedTopic.oid || oid
               if (extractedTopic.oid && extractedTopic.oid === oid) {
                 if (!lbit_id) {
                   errorMsg = 'Looks like you are trying to link the same topic onto itself!'
@@ -298,7 +300,7 @@ function save_lbit_url (req, res) {
                           res.status(500).send('That learnbit already exists in this topic!')
                         } else {
                           // console.log(JSON.stringify(lbit))
-                          var sid_id_map = {}
+                          let sid_id_map = {}
                           sid_id_map[oid] = topic.id
                           topicRoute.formDiscussUrl(req, topic, user)
                           lbit.user_perms = topic.user_perms
@@ -363,13 +365,13 @@ function save_lbit_url (req, res) {
 }
 
 function del_lbit (req, res) {
-  var user = req.user
-  var lbit_info = req.body
-  var sessionid = req.body.sessionid
-  var tmpid = lbit_info.id
-  var tmpA = tmpid.split('-')
-  var id = null
-  var topicid = lbit_info.topicId
+  let user = req.user
+  let lbit_info = req.body
+  let sessionid = req.body.sessionid
+  let tmpid = lbit_info.id
+  let tmpA = tmpid.split('-')
+  let id = null
+  let topicid = lbit_info.topicId
   if (!tmpA || tmpA.length > 1) {
     if (!topicid) {
       topicid = tmpA[0]
@@ -420,8 +422,8 @@ function del_lbit (req, res) {
 }
 
 function edit_form (req, res) {
-  var oid = req.params.oid
-  var user = req.user
+  let oid = req.params.oid
+  let user = req.user
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid learnbit id!')
     return
@@ -436,15 +438,15 @@ function edit_form (req, res) {
       return
     }
 
-    var topics = lbit.topics
-    var tags = lbit.tags
+    let topics = lbit.topics
+    let tags = lbit.tags
     if (topics) {
-      var topicids = []
+      let topicids = []
       lbit.topics.forEach(function (atopic) {
         topicids.push(atopic._id)
       })
       query.get_topics(user, {_id: {$in: topicids}}, false, function (err, tmptopiclist) {
-        var topiclist = []
+        let topiclist = []
         if (err) {
           logger.log('error', 'Error retrieving topiclist', err)
         }
@@ -474,18 +476,18 @@ function edit_form (req, res) {
 
 function save_edit_full (req, res) {
   // console.log(req.body)
-  var user = req.user
-  var update_map = {'last_updated': new Date()}
-  var oid = req.body.oid
-  var type = req.body.type
-  var sessionid = req.body.sessionid
-  var topic_id = req.body.topic_id
-  var topic_oid = req.body.topic_oid
-  var start = req.body.start
-  var end = req.body.end
-  var isNew = util.empty(oid)
-  var errorStr = ''
-  var text = ''
+  let user = req.user
+  let update_map = {'last_updated': new Date()}
+  let oid = req.body.oid
+  let type = req.body.type
+  let sessionid = req.body.sessionid
+  let topic_id = req.body.topic_id
+  let topic_oid = req.body.topic_oid
+  let start = req.body.start
+  let end = req.body.end
+  let isNew = util.empty(oid)
+  let errorStr = ''
+  let text = ''
   // Support for start and end
   if (type === 'pdf' || type === 'video' || type === 'youtube' || type === 'vimeo') {
     update_map.start = start ? parseInt(start, 10) : null
@@ -522,8 +524,8 @@ function save_edit_full (req, res) {
   update_map['description'] = req.body.description || null
   update_map['license'] = req.body.license
   if (req.body.topics) {
-    var tmpA = req.body.topics.split(',')
-    var topiclist = []
+    let tmpA = req.body.topics.split(',')
+    let topiclist = []
     tmpA.forEach(function (str) {
       topiclist.push({_id: db.ObjectId(str)})
     })
@@ -543,9 +545,9 @@ function save_edit_full (req, res) {
   }
   if (!util.empty(req.body.body)) {
     if (req.body.type === 'poll') {
-      var body = {body: req.body.body}
-      var choices = []
-      for (var c = 0; c < parseInt(req.body.total_choices, 10); c++) {
+      let body = {body: req.body.body}
+      let choices = []
+      for (let c = 0; c < parseInt(req.body.total_choices, 10); c++) {
         text = req.body['choice_' + (c + 1)]
         if (!util.empty(text)) {
           choices.push({id: c, text: text})
@@ -569,10 +571,10 @@ function save_edit_full (req, res) {
     }
   }
   if (req.body.type === 'video' || req.body.type === 'youtube') {
-    var chapters = []
-    for (var d = 0; d < parseInt(req.body.total_chapters, 10); d++) {
+    let chapters = []
+    for (let d = 0; d < parseInt(req.body.total_chapters, 10); d++) {
       text = req.body['chapter_' + (d + 1)]
-      var time = req.body['time_' + (d + 1)]
+      let time = req.body['time_' + (d + 1)]
       if (time) {
         time = parseInt(time, 10)
       }
@@ -623,8 +625,8 @@ function save_edit_full (req, res) {
         })
       } else {
         if (lbit.type === 'quote') {
-          var quote_author = req.body.quote_author || ''
-          var bodyObj = {quote: update_map['body'], author: quote_author}
+          let quote_author = req.body.quote_author || ''
+          let bodyObj = {quote: update_map['body'], author: quote_author}
           update_map['body'] = util.stringify(bodyObj)
         // console.log('Body', update_map['body'])
         }
@@ -652,9 +654,9 @@ function save_edit_full (req, res) {
 
 function _pushLbit (req, topic_id, topic_oid, lbit_list, user, sessionid) {
   // console.log('push lbit', topic_id, topic_oid, lbit, user, sessionid)
-  var sid_id_map = {}
+  let sid_id_map = {}
   sid_id_map[topic_oid] = topic_id
-  var topicObj = {_id: topic_oid, id: topic_id}
+  let topicObj = {_id: topic_oid, id: topic_id}
   topicRoute.formDiscussUrl(req, topicObj, user)
   lbit_list.forEach(function (albit) {
     if (albit) {
@@ -664,11 +666,11 @@ function _pushLbit (req, topic_id, topic_oid, lbit_list, user, sessionid) {
   })
   topicObj.user_perms = null
   topicObj.user_role = null
-  var LBITS_TPL_NAME = path.resolve(__dirname, '/../views/lbits/lbits-full.ejs')
-  var template = fs.readFileSync(LBITS_TPL_NAME, 'utf8')
-  var durl = config.socket.address + ((config.socket.port !== 80 && config.socket.port !== 443) ? ':' + config.socket.port : '')
-  var host_url = config.base_url + (config.use_port ? (':' + config.port) : '')
-  var ldata = ejs.render(template, {
+  let LBITS_TPL_NAME = path.resolve(__dirname, '/../views/lbits/lbits-full.ejs')
+  let template = fs.readFileSync(LBITS_TPL_NAME, 'utf8')
+  let durl = config.socket.address + ((config.socket.port !== 80 && config.socket.port !== 443) ? ':' + config.socket.port : '')
+  let host_url = config.base_url + (config.use_port ? (':' + config.port) : '')
+  let ldata = ejs.render(template, {
     filename: LBITS_TPL_NAME,
     lbit_list: lbit_list,
     sid_id_map: sid_id_map,
@@ -697,7 +699,7 @@ function _pushLbit (req, topic_id, topic_oid, lbit_list, user, sessionid) {
 }
 
 function view_media (req, res) {
-  var oid = req.params.oid
+  let oid = req.params.oid
 
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid media id!')
@@ -715,8 +717,8 @@ function view_media (req, res) {
 }
 
 function view_lbit_media (req, res) {
-  var oid = req.params.oid
-  var fname = req.params.fname
+  let oid = req.params.oid
+  let fname = req.params.fname
 
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid media id!')
@@ -727,7 +729,7 @@ function view_lbit_media (req, res) {
       res.status(500).send('Problem fetching your media!')
       return
     }
-    var contentType = mime.lookup(fname)
+    let contentType = mime.lookup(fname)
     res.set('Content-Type', contentType)
     logger.debug('About to stream file from Grid', oid)
     filestream.pipe(res)
@@ -735,9 +737,9 @@ function view_lbit_media (req, res) {
 }
 
 function view (req, res) {
-  var oid = req.params.oid
-  var topicId = req.query.topic_id
-  var user = req.user || constants.DEMO_USER
+  let oid = req.params.oid
+  let topicId = req.query.topic_id
+  let user = req.user || constants.DEMO_USER
 
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid learnbit id!')
@@ -819,8 +821,8 @@ function view (req, res) {
 }
 
 function download (req, res) {
-  var user = req.user
-  var oid = req.params['oid']
+  let user = req.user
+  let oid = req.params['oid']
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid learnbit id!')
     return
@@ -832,13 +834,13 @@ function download (req, res) {
       logger.log('error', 'Unable to load learnbit. Please try after some time.', err, oid)
       return
     } else {
-      var url = lbit.url
+      let url = lbit.url
       if (util.isCloudUrl(url)) {
         url = util.encode_s3_url(url)
       }
       if (util.isDownloadSupported(lbit.type, null)) {
         if (util.isSupportedVideoSource(lbit.url, lbit.type)) {
-          var video = youtubedl(lbit.url,
+          let video = youtubedl(lbit.url,
             ['--max-filesize', constants.MAX_DOWNLOAD_SIZE, '--format', 'mp4'],
             { cwd: '/tmp' })
           video.on('info', function (info) {
@@ -854,7 +856,7 @@ function download (req, res) {
             }
           })
         } else {
-          var extension = util.getExtension(lbit.url)
+          let extension = util.getExtension(lbit.url)
           logger.debug('Downloading ', lbit.url)
           res.set('Content-disposition', 'attachment; filename="' + lbit.title + extension + '"')
           // Check if the file exists in the Grid by checking the url for CL protocol
@@ -890,26 +892,26 @@ function download (req, res) {
 }
 
 function create_new (req, response) {
-  var topic_oid = req.query.topic_id
-  var lbit = {type: 'inline-html'}
+  let topic_oid = req.query.topic_id
+  let lbit = {type: 'inline-html'}
   if (util.validOid(topic_oid)) {
     db.topics.findOne({_id: db.ObjectId(topic_oid)}, function (err, topic) {
       if (err) {
         logger.error(err)
       }
-      var topiclist = [{id: topic._id, text: topic.name}]
-      var dataMap = {topic: topic, lbit: lbit, topiclist: util.stringify(topiclist), newlbit: true}
+      let topiclist = [{id: topic._id, text: topic.name}]
+      let dataMap = {topic: topic, lbit: lbit, topiclist: util.stringify(topiclist), newlbit: true}
       response.render('lbits/lbit-creator.ejs', dataMap)
     })
   } else {
     logger.warn('Unable to find the topic for the new learnbit')
-    var dataMap = {topic: null, lbit: lbit, topiclist: null, newlbit: true}
+    let dataMap = {topic: null, lbit: lbit, topiclist: null, newlbit: true}
     response.render('lbits/lbit-creator.ejs', dataMap)
   }
 }
 
 function redirect_url (req, res) {
-  var oid = req.params.oid
+  let oid = req.params.oid
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid learnbit id!')
     return
@@ -919,11 +921,11 @@ function redirect_url (req, res) {
         res.status(500).send('Unable to load learnbit. Please try after some time.')
         console.error('Unable to load learnbit', err, oid)
       } else {
-        var url = util.encode_s3_url(lbit.url)
+        let url = util.encode_s3_url(lbit.url)
         if (lbit.type === 'pdf') {
           res.set('Content-Type', 'application/pdf')
         } else {
-          var contentType = mime.lookup(lbit.url)
+          let contentType = mime.lookup(lbit.url)
           res.set('Content-Type', contentType)
         }
         // Check if the file exists in the Grid by checking the url for CL protocol
@@ -955,9 +957,9 @@ function redirect_url (req, res) {
 }
 
 function search (req, response, isApi) {
-  var q = req.query.q
-  var autoComplete = req.query.ac === '1'
-  var user = req.user
+  let q = req.query.q
+  let autoComplete = req.query.ac === '1'
+  let user = req.user
   if (!q) {
     return response.json({})
   }
@@ -972,9 +974,9 @@ function search (req, response, isApi) {
 }
 
 function like (req, response) {
-  var lbit_id = req.query.lbit_id
-  var liked = true
-  var user = req.user
+  let lbit_id = req.query.lbit_id
+  let liked = true
+  let user = req.user
   db.learnbits.findOne({_id: db.ObjectId('' + lbit_id)}, function (err, lbit) {
     if (err || !lbit) {
       response.send(500, 'Invalid learnbit!')
@@ -1004,9 +1006,9 @@ function like (req, response) {
 }
 
 function view_tracks (req, res) {
-  var oid = req.params['oid']
-  var type = req.params['type']
-  var user = req.user
+  let oid = req.params['oid']
+  let type = req.params['type']
+  let user = req.user
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid learnbit id!')
     return
@@ -1022,17 +1024,17 @@ function view_tracks (req, res) {
       logger.log('error', 'Unable to load learnbit. Please try after some time.', err, oid)
       return
     } else {
-      var track_list = lbit['track_' + type] || ''
-      var vttData = util.createWebVTT(track_list, lbit.video_duration || null)
+      let track_list = lbit['track_' + type] || ''
+      let vttData = util.createWebVTT(track_list, lbit.video_duration || null)
       res.send(vttData)
     }
   })
 }
 
 function optimise (req, res) {
-  var user = req.user
-  var sessionid = req.body.sessionid
-  var oid = req.params.oid
+  let user = req.user
+  let sessionid = req.body.sessionid
+  let oid = req.params.oid
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid learnbit id!')
     return
@@ -1063,13 +1065,13 @@ function optimise (req, res) {
 }
 
 function upload (req, res) {
-  var fstream
-  var topic_oid = req.headers['cl-upload-topic'] || ''
-  var sessionid = req.headers['cl-sessionid'] || ''
+  let fstream
+  let topic_oid = req.headers['cl-upload-topic'] || ''
+  let sessionid = req.headers['cl-sessionid'] || ''
   topic_oid = topic_oid.split(',')[0]
   sessionid = sessionid.split(',')[0]
-  var user = req.user
-  var userPath = path.join(config.upload_base_dir, user._id)
+  let user = req.user
+  let userPath = path.join(config.upload_base_dir, user._id)
   if (util.validOid(topic_oid)) {
     query.get_topic(user, { _id: db.ObjectId(topic_oid) }, function (err, topic) {
       if (err || !topic) {
@@ -1082,13 +1084,13 @@ function upload (req, res) {
           req.pipe(req.busboy)
           fse.ensureDirSync(userPath)
           req.busboy.on('file', function (fieldname, file, filename) {
-            var fullPath = userPath + '/' + filename
+            let fullPath = userPath + '/' + filename
             logger.log('info', 'Receiving: ' + filename + ' from user ' + user._id, 'for topic', topic_oid)
             fstream = fs.createWriteStream(fullPath)
             file.pipe(fstream)
             fstream.on('close', function () {
               // res.json({ filename: filename, status: 'success' })
-              var clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
+              let clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
               logger.debug(filename, 'uploaded successfully to', userPath)
               logger.log('debug', 'Creating new learnbit', topic_oid, topic.path, clUrl)
               _doCreate(sessionid, topic, topic_oid, null, clUrl, null, req, res, function (err, newLbit) {
@@ -1133,11 +1135,11 @@ function upload (req, res) {
 }
 
 function media_upload (req, res) {
-  var fstream
-  var topic_oid = req.headers['cl-upload-topic']
-  var oid = req.params.oid
-  var user = req.user
-  var userPath = path.join(config.upload_base_dir, user._id, 'media')
+  let fstream
+  let topic_oid = req.headers['cl-upload-topic']
+  let oid = req.params.oid
+  let user = req.user
+  let userPath = path.join(config.upload_base_dir, user._id, 'media')
   if (util.validOid(oid)) {
     query.get_learnbit(user, {_id: db.ObjectId(oid)}, function (err, lbit) {
       if (err || !lbit) {
@@ -1148,12 +1150,12 @@ function media_upload (req, res) {
         req.pipe(req.busboy)
         fse.ensureDirSync(userPath)
         req.busboy.on('file', function (fieldname, file, filename) {
-          var fullPath = userPath + '/' + filename
+          let fullPath = userPath + '/' + filename
           logger.log('info', 'Receiving: ' + filename + ' from user ' + user._id, 'for topic', topic_oid)
           fstream = fs.createWriteStream(fullPath)
           file.pipe(fstream)
           fstream.on('close', function () {
-            // var clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
+            // let clUrl = constants.CL_PROTOCOL + user._id + '/' + encodeURIComponent(filename)
             logger.debug(filename, 'uploaded successfully to', userPath)
             // Add to GridFS
             GridFS.storeFile(fullPath, {lbit_id: lbit._id, added_by: lbit.added_by, topic_id: topic_oid}, function (err, fileObj) {

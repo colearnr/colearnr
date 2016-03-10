@@ -1,24 +1,26 @@
-var db = require('../common/db')
-var _ = require('lodash')
-var permlib = require('../lib/perms')
-var logger = require('../common/log')
-var util = require('../common/util')
+'use strict'
+
+let db = require('../common/db')
+let _ = require('lodash')
+let permlib = require('../lib/perms')
+let logger = require('../common/log')
+let util = require('../common/util')
 
 exports.list_annotations = function (req, res) {
-  var lbit_oid = req.params['lbit_oid']
-  var user = req.user
-  var userList = [req.user._id]
-  var topicId = req.query.topic_id
-  var topicObj = null
-  var type = req.query.type
+  let lbit_oid = req.params['lbit_oid']
+  let user = req.user
+  let userList = [req.user._id]
+  let topicId = req.query.topic_id
+  let topicObj = null
+  let type = req.query.type
   if (type && type === 'pdf') {
     // find the lbit
     db.learnbits.find({_id: db.ObjectId(lbit_oid)}, function (err, lbits) {
       if (!err && lbits.length) {
-        var lbit_topics = lbits[0].topics
-        var topics = []
+        let lbit_topics = lbits[0].topics
+        let topics = []
         // get all the topics under this lbit
-        for (var i = 0; i < lbit_topics.length; i++) {
+        for (let i = 0; i < lbit_topics.length; i++) {
           topics.push(lbit_topics[i]._id)
         }
 
@@ -28,14 +30,14 @@ exports.list_annotations = function (req, res) {
             if (err) {
               logger.error(err)
             }
-            for (var i = 0; i < topics.length; i++) {
+            for (let i = 0; i < topics.length; i++) {
               if ('' + topics[i]._id === topicId) {
                 topicObj = topics[i]
               }
               userList.push(topics[i].added_by)
-              var collaborators = topics[i].collaborators
+              let collaborators = topics[i].collaborators
               if (collaborators) {
-                for (var j = 0; j < collaborators.length; j++) {
+                for (let j = 0; j < collaborators.length; j++) {
                   userList.push(collaborators[j])
                 }
               }
@@ -63,10 +65,10 @@ exports.list_annotations = function (req, res) {
         if (err) {
           logger.error(err)
         }
-        var annotations = []
+        let annotations = []
         if (annotationList && annotationList.length) {
-          for (var i = 0; i < annotationList.length; i++) {
-            var obj = annotationList[i].annotationData
+          for (let i = 0; i < annotationList.length; i++) {
+            let obj = annotationList[i].annotationData
             obj.id = '' + annotationList[i]._id
             if (type === 'pdf') {
               obj.readonly = !isAllowed || (annotationList[i].user !== user._id)
@@ -83,13 +85,13 @@ exports.list_annotations = function (req, res) {
 }
 
 exports.save_annotations = function (req, res) {
-  var lbit_oid = req.params['lbit_oid']
-  var user = req.user
-  var annotationData = req.body.annotationData ? req.body.annotationData : req.body
+  let lbit_oid = req.params['lbit_oid']
+  let user = req.user
+  let annotationData = req.body.annotationData ? req.body.annotationData : req.body
   annotationData.readonly = null
   annotationData.isUpdate = null
-  var topicId = req.body.topicId
-  var sessionid = req.body.sessionid
+  let topicId = req.body.topicId
+  let sessionid = req.body.sessionid
 
   logger.log('debug', 'save_annotations lbit_oid', lbit_oid, topicId, sessionid)
   db.userdata.save({lbit_oid: lbit_oid, user: req.user._id, annotationData: annotationData}, function (err, data) {
@@ -151,12 +153,12 @@ exports.save_annotations = function (req, res) {
 }
 
 exports.delete_annotations = function (req, res) {
-  var lbit_oid = req.params['lbit_oid']
-  var user = req.user
-  var annotationData = req.body.annotationData ? req.body.annotationData : req.body
-  var id = annotationData.annotationId || req.params.id
-  var topicId = req.body.topicId
-  var sessionid = req.body.sessionid
+  let lbit_oid = req.params['lbit_oid']
+  let user = req.user
+  let annotationData = req.body.annotationData ? req.body.annotationData : req.body
+  let id = annotationData.annotationId || req.params.id
+  let topicId = req.body.topicId
+  let sessionid = req.body.sessionid
   logger.log('debug', 'delete_annotations lbit_oid', lbit_oid, topicId, sessionid)
   db.topics.findOne({_id: db.ObjectId(topicId)}, function (err, topicObj) {
     if (!err && req.body.annotationData) {
@@ -200,15 +202,15 @@ exports.delete_annotations = function (req, res) {
 }
 
 exports.update_annotations = function (req, res) {
-  var lbit_oid = req.params['lbit_oid']
-  var user = req.user
-  var id = req.params['id']
-  var annotationData = req.body.annotationData ? req.body.annotationData : req.body
+  let lbit_oid = req.params['lbit_oid']
+  let user = req.user
+  let id = req.params['id']
+  let annotationData = req.body.annotationData ? req.body.annotationData : req.body
   annotationData.readonly = null
   annotationData.isUpdate = null
   annotationData.annotationId = id
-  var topicId = req.body.topicId
-  var sessionid = req.body.sessionid
+  let topicId = req.body.topicId
+  let sessionid = req.body.sessionid
   logger.log('debug', 'update_annotations lbit_oid', lbit_oid, topicId, sessionid)
   db.topics.findOne({_id: db.ObjectId(topicId)}, function (err, topicObj) {
     if (!err && req.body.annotationData) {
@@ -252,13 +254,13 @@ exports.update_annotations = function (req, res) {
 }
 
 exports.search_annotations = function (req, res) {
-  var lbit_oid = req.params['lbit_oid']
+  let lbit_oid = req.params['lbit_oid']
   logger.log('debug', 'search lbit_oid', lbit_oid)
   db.userdata.find({lbit_oid: lbit_oid, type: {$ne: 'notes'}, user: req.user._id}, {annotationData: 1}, function (err, annotationList) {
-    var annotations = []
+    let annotations = []
     if (!err && annotationList && annotationList.length) {
-      for (var i = 0; i < annotationList.length; i++) {
-        var obj = annotationList[i]['annotationData']
+      for (let i = 0; i < annotationList.length; i++) {
+        let obj = annotationList[i]['annotationData']
         obj['id'] = '' + annotationList[i]['_id']
         annotations.push(obj)
       }
@@ -269,9 +271,9 @@ exports.search_annotations = function (req, res) {
 }
 
 exports.list_notes = function (req, res) {
-  var lbit_oid = req.params.lbit_oid
-  var user = req.user
-  var topic_oid = req.query.topic_id
+  let lbit_oid = req.params.lbit_oid
+  let user = req.user
+  let topic_oid = req.query.topic_id
   db.userdata.findOne({lbit_oid: lbit_oid, user: user._id, type: 'notes'}, function (err, currNoteObj) {
     if (!err && !currNoteObj) {
       // Create an empty note and send it
@@ -287,7 +289,7 @@ exports.list_notes = function (req, res) {
   })
 }
 
-var saveNotes = function (lbit_oid, topic_oid, user, data, callback) {
+let saveNotes = function (lbit_oid, topic_oid, user, data, callback) {
   if (data && data._id) {
     // logger.log('debug', 'Updated notes', lbit_oid, topic_oid, user._id)
     db.userdata.save({_id: db.ObjectId(data._id), lbit_oid: lbit_oid, user: user._id, type: 'notes', data: data}, callback)
@@ -308,15 +310,15 @@ var saveNotes = function (lbit_oid, topic_oid, user, data, callback) {
 }
 
 exports.save_notes = function (req, res) {
-  var lbit_oid = req.params.lbit_oid
-  var user = req.user
-  var topic_oid = req.query.topic_id
-  var data = req.body.data
+  let lbit_oid = req.params.lbit_oid
+  let user = req.user
+  let topic_oid = req.query.topic_id
+  let data = req.body.data
   res.send('1')
   saveNotes(lbit_oid, topic_oid, user, data, function (err, noteObj) {
     if (err) {
       logger.error(err)
     }
-    // logger.log('debug', 'Saved notes', noteObj)
+  // logger.log('debug', 'Saved notes', noteObj)
   })
 }

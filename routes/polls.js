@@ -1,16 +1,18 @@
-var util = require('../common/util')
-var db = require('../common/db')
-var constants = require('../common/constants')
-var logger = require('../common/log')
-var _ = require('lodash')
+'use strict'
+
+let util = require('../common/util')
+let db = require('../common/db')
+let constants = require('../common/constants')
+let logger = require('../common/log')
+let _ = require('lodash')
 
 function view (req, res) {
 }
 
 function vote (req, response) {
-  var oid = req.body.oid
-  var choice = req.body.choice
-  var user = req.user || constants.DEMO_USER
+  let oid = req.body.oid
+  let choice = req.body.choice
+  let user = req.user || constants.DEMO_USER
   if (util.validOid(oid)) {
     db.learnbits.findOne({_id: db.ObjectId('' + oid)}, function (err, lbit) {
       if (err || !lbit || lbit.type !== 'poll') {
@@ -18,7 +20,7 @@ function vote (req, response) {
       } else if (lbit.votes && _.indexOf(lbit.votes, user._id) !== -1) {
         response.send(500, 'Looks like you have already voted for this poll!')
       } else {
-        var body = lbit.body
+        let body = lbit.body
         try {
           body = util.parseJson(body)
         } catch (e) {}
@@ -54,19 +56,19 @@ function vote (req, response) {
 }
 
 function create_new (req, response) {
-  var topic_oid = req.query.topic_id
-  var lbit = {type: 'poll'}
+  let topic_oid = req.query.topic_id
+  let lbit = {type: 'poll'}
   if (util.validOid(topic_oid)) {
     db.topics.findOne({_id: db.ObjectId(topic_oid)}, function (err, topic) {
       if (err) {
         logger.error(err)
       }
-      var topiclist = [{id: topic._id, text: topic.name}]
-      var dataMap = {topic: topic, lbit: lbit, topiclist: util.stringify(topiclist)}
+      let topiclist = [{id: topic._id, text: topic.name}]
+      let dataMap = {topic: topic, lbit: lbit, topiclist: util.stringify(topiclist)}
       response.render('polls/poll-creator.ejs', dataMap)
     })
   } else {
-    var dataMap = {topic: null, lbit: lbit, topiclist: null}
+    let dataMap = {topic: null, lbit: lbit, topiclist: null}
     response.render('polls/poll-creator.ejs', dataMap)
   }
 }

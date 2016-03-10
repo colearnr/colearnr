@@ -1,8 +1,10 @@
-var config = require('../lib/config').config
-var constants = require('../common/constants')
+'use strict'
+
+let config = require('../lib/config').config
+let constants = require('../common/constants')
 
 exports.index = function (req, res) {
-  var user = req.user
+  let user = req.user
   if (req.session && user && !user.guestMode) {
     res.redirect(constants.DEFAULT_HOME_PAGE)
   } else {

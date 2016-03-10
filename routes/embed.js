@@ -1,23 +1,25 @@
-var util = require('../common/util')
-var query = require('../common/query')
-var db = require('../common/db')
-var constants = require('../common/constants')
-var AccessTokens = require('../lib/access-tokens')
-var logger = require('../common/log')
-var request = require('request')
-var create_lbit = require('../common/create_learn_bit')
-var url_utils = require('url')
-var _ = require('lodash')
+'use strict'
+
+let util = require('../common/util')
+let query = require('../common/query')
+let db = require('../common/db')
+let constants = require('../common/constants')
+let AccessTokens = require('../lib/access-tokens')
+let logger = require('../common/log')
+let request = require('request')
+let create_lbit = require('../common/create_learn_bit')
+let url_utils = require('url')
+let _ = require('lodash')
 
 function doRender (res, lbit, topic, user, url, embedSize, info, extOptions) {
   logger.debug('Before embed', lbit._id, topic, url, embedSize)
-  var urlType = (lbit ? lbit.type : util.getUrlType(url, null))
-  var options = _getUrlOptions(url)
+  let urlType = (lbit ? lbit.type : util.getUrlType(url, null))
+  let options = _getUrlOptions(url)
   if (!util.empty(extOptions)) {
     _.merge(options, extOptions)
   }
-  var extn = util.getExtension(url)
-  var topicId = (topic) ? topic._id : null
+  let extn = util.getExtension(url)
+  let topicId = (topic) ? topic._id : null
   switch (urlType) {
     case 'flash':
     case 'flash-video':
@@ -68,29 +70,29 @@ function doRender (res, lbit, topic, user, url, embedSize, info, extOptions) {
 }
 
 function embed_url (req, res) {
-  var url = req.query.url
+  let url = req.query.url
   if (!url) {
     res.status(500).send('Unable to embed this url')
     return
   }
-  var embedSize = req.query.embedSize || 'large'
-  var info = !(req.query.info === 'false')
-  var topicOid = req.query.topicId || null
-  var user = req.user || constants.DEMO_USER
-  var extOptions = _getUrlOptions(req.url)
+  let embedSize = req.query.embedSize || 'large'
+  let info = !(req.query.info === 'false')
+  let topicOid = req.query.topicId || null
+  let user = req.user || constants.DEMO_USER
+  let extOptions = _getUrlOptions(req.url)
   function _render () {
     query.get_learnbit(user, {url: url}, function (err, lbit) {
       if (err) {
         logger.error(err)
       }
       if (lbit) {
-        var topic = (lbit.topics && lbit.topics.length) ? lbit.topics[0] : null
+        let topic = (lbit.topics && lbit.topics.length) ? lbit.topics[0] : null
         doRender(res, lbit, topic, user, url, embedSize, info, extOptions)
       } else {
-        var topicPath = util.list_to_path([constants.DISCUSSED, topicOid, user._id])
-        var tmpTitle = null
-        var tmpId = util.idify(url)
-        var tmpName = url
+        let topicPath = util.list_to_path([constants.DISCUSSED, topicOid, user._id])
+        let tmpTitle = null
+        let tmpId = util.idify(url)
+        let tmpName = url
         if (url.indexOf('.flv') !== -1 || url.indexOf('.mp4') !== -1) {
           tmpTitle = 'Recording'
           tmpId = util.idify(tmpTitle)
@@ -121,13 +123,13 @@ function embed_url (req, res) {
   }
   logger.log('debug', 'Trying to embed', url, topicOid, info)
   if (util.isInternalUrl(url)) {
-    var extractedTopic = util.getTopicFromUrl(url)
-    var extractedLbit = util.getLbitFromUrl(url)
-    var lbit_id = null
+    let extractedTopic = util.getTopicFromUrl(url)
+    let extractedLbit = util.getLbitFromUrl(url)
+    let lbit_id = null
     if (extractedLbit && extractedLbit._id) {
       lbit_id = extractedLbit._id
     } else if (url.indexOf('lbit=') !== -1) {
-      var lindex = url.indexOf('lbit=')
+      let lindex = url.indexOf('lbit=')
       lbit_id = url.substring(lindex + 5)
     }
     // console.log(extractedTopic, extractedLbit, lbit_id)
@@ -137,7 +139,7 @@ function embed_url (req, res) {
           logger.error(err)
         }
         if (lbit) {
-          var topic = (lbit.topics && lbit.topics.length) ? lbit.topics[0] : null
+          let topic = (lbit.topics && lbit.topics.length) ? lbit.topics[0] : null
           doRender(res, lbit, topic, user, url, embedSize, info, extOptions)
         } else {
           logger.log('warn', 'No learnbit found for id', lbit_id, '. Redirecting to', url)
@@ -145,8 +147,8 @@ function embed_url (req, res) {
         }
       })
     } else if (!util.empty(extractedTopic) && extractedTopic.oid) {
-      var tidToUse = extractedTopic.oid
-      var options = _getUrlOptions(url)
+      let tidToUse = extractedTopic.oid
+      let options = _getUrlOptions(url)
       if (!util.empty(extOptions)) {
         _.merge(options, extOptions)
       }
@@ -161,8 +163,8 @@ function embed_url (req, res) {
 }
 
 function _getUrlOptions (url) {
-  var urlObj = url_utils.parse(url)
-  var options = {}
+  let urlObj = url_utils.parse(url)
+  let options = {}
   if (urlObj.query) {
     options = util.query_to_json(urlObj.query)
     options.query = encodeURIComponent(urlObj.query)
@@ -171,17 +173,17 @@ function _getUrlOptions (url) {
 }
 
 function embed_lbit (req, res) {
-  var oid = req.params.oid
-  var embedSize = req.query.embedSize || 'large'
-  var info = req.query.info !== 'false'
-  var topicId = req.query.topicId || null
-  var user = req.user || constants.DEMO_USER
-  var topic = topicId ? {_id: topicId} : null
+  let oid = req.params.oid
+  let embedSize = req.query.embedSize || 'large'
+  let info = req.query.info !== 'false'
+  let topicId = req.query.topicId || null
+  let user = req.user || constants.DEMO_USER
+  let topic = topicId ? {_id: topicId} : null
 
   /**
    * We need extract the options specified in the original url
    */
-  var extOptions = _getUrlOptions(req.url)
+  let extOptions = _getUrlOptions(req.url)
   query.get_learnbit(user, {_id: db.ObjectId(oid)}, function (err, lbit) {
     if (!err && lbit) {
       if (!topic && lbit.topics) {
@@ -195,7 +197,7 @@ function embed_lbit (req, res) {
 }
 
 function proxy_url (req, res) {
-  var url = req.query.url
+  let url = req.query.url
   // If this is a relative url simply redirect
   if (url.indexOf('/') === 0) {
     // logger.log('debug', 'Redirecting to local url', url)
@@ -220,7 +222,7 @@ function proxy_url (req, res) {
 }
 
 function embed_topic (req, res) {
-  // var oid = req.params.oid
+  // let oid = req.params.oid
 }
 
 exports.embed_url = function (req, response) {

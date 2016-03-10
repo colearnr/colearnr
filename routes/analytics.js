@@ -1,10 +1,12 @@
-var db = require('../common/db')
-var query = require('../common/query')
-var _ = require('lodash')
+'use strict'
+
+let db = require('../common/db')
+let query = require('../common/query')
+let _ = require('lodash')
 
 function _getHeaders (req, type) {
-  var user = req.user || {_id: 'guest'}
-  var data = {
+  let user = req.user || {_id: 'guest'}
+  let data = {
     user: user._id,
     url: req.url,
     type: type,
@@ -18,7 +20,7 @@ function _getHeaders (req, type) {
 }
 
 function _track (req, response, type) {
-  var data = _getHeaders(req, type)
+  let data = _getHeaders(req, type)
   // console.log(data)
   switch (type) {
     case 'app':
@@ -47,8 +49,8 @@ function _track (req, response, type) {
 }
 
 function get_video_last_position (req, response) {
-  var user = req.user || {_id: 'guest'}
-  var data = _getHeaders(req, 'video')
+  let user = req.user || {_id: 'guest'}
+  let data = _getHeaders(req, 'video')
   query.get_video_last_position(user, data.lbit_id, data.topic_id, function (err, value) {
     if (!err) {
       response.send({lastPosition: value})
@@ -57,8 +59,8 @@ function get_video_last_position (req, response) {
 }
 
 function get_pdf_last_position (req, response) {
-  var user = req.user || {_id: 'guest'}
-  var data = _getHeaders(req, 'pdf')
+  let user = req.user || {_id: 'guest'}
+  let data = _getHeaders(req, 'pdf')
   query.get_pdf_last_position(user, data.lbit_id, data.topic_id, function (err, value) {
     if (!err) {
       response.send({lastPosition: value})

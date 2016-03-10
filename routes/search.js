@@ -1,23 +1,25 @@
-var db = require('../common/db')
-var query = require('../common/query')
-var elasticsearch = require('../common/elasticsearch')
-var constants = require('../common/constants')
-var _ = require('lodash')
-var logger = require('../common/log')
+'use strict'
+
+let db = require('../common/db')
+let query = require('../common/query')
+let elasticsearch = require('../common/elasticsearch')
+let constants = require('../common/constants')
+let _ = require('lodash')
+let logger = require('../common/log')
 
 function get_discuss_host (req) {
-  var config_lib = require('../lib/config')
-  var hostname = req.headers['host'] ? req.headers['host'].split(':')[0] : '127.0.0.1'
-  var config = config_lib.config.use_client_host ? config_lib.configure(hostname) : config_lib.config
+  let config_lib = require('../lib/config')
+  let hostname = req.headers['host'] ? req.headers['host'].split(':')[0] : '127.0.0.1'
+  let config = config_lib.config.use_client_host ? config_lib.configure(hostname) : config_lib.config
   return config.socket.address + ((config.socket.port !== 80 && config.socket.port !== 443) ? ':' + config.socket.port : '')
 }
 
 exports.search_all = function (req, res) {
-  var q = req.query.q
-  var pg = req.query.pg || 1
-  var pgSize = req.query.pgSize || constants.DEFAULT_SEARCH_PAGE_SIZE
-  var type = req.query.type || 'learnbits'
-  var user = req.user
+  let q = req.query.q
+  let pg = req.query.pg || 1
+  let pgSize = req.query.pgSize || constants.DEFAULT_SEARCH_PAGE_SIZE
+  let type = req.query.type || 'learnbits'
+  let user = req.user
 
   if (!q) {
     return res.json({})
@@ -63,20 +65,20 @@ exports.search_all = function (req, res) {
       default:
         elasticsearch.findLearnbits({query: q, pg: pg, pgSize: pgSize, user: user, autoComplete: false}, pgSize, function (err, results) {
           if (results && results.hits && results.hits.hits) {
-            var lbits = results.hits.hits
-            var topicIds = []
+            let lbits = results.hits.hits
+            let topicIds = []
             lbits.forEach(function (albit) {
               topicIds = _.union(topicIds, albit._source.topics)
             })
             if (topicIds.length) {
-              var ftopicIds = topicIds.map(function (aid) {
+              let ftopicIds = topicIds.map(function (aid) {
                 return db.ObjectId(aid._id)
               })
               db.topics.find({_id: {$in: ftopicIds}}, function (err, topics) {
                 if (err || !topics.length) {
                   _render(err, {total: results.hits.total, suggest: results.suggest, data: lbits, topicIdMap: null, stopic: stopic})
                 } else {
-                  var topicIdMap = {}
+                  let topicIdMap = {}
                   topics.forEach(function (atopic) {
                     topicIdMap['' + atopic._id] = atopic
                   })
@@ -96,8 +98,8 @@ exports.search_all = function (req, res) {
 }
 
 exports.save_search = function (req, res) {
-  var params = req.body
-  var user = req.user
+  let params = req.body
+  let user = req.user
   if (!params || !params.q) {
     res.status(500).send('0')
   } else {

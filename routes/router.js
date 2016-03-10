@@ -1,36 +1,38 @@
-var sm = require('sitemap')
-var routes = require('./')
-var fs = require('fs')
-var userlib = require('../lib/user')
-var sitemaplib = require('../lib/sitemap')
-var topic = require('./topic')
-var analytics = require('./analytics')
-var lbits = require('./lbits')
-var polls = require('./polls')
-var embed = require('./embed')
-var user = require('./user')
-var helper = require('./helper')
-var pages = require('./pages')
-var config = require('../lib/config').config
-var constants = require('../common/constants')
-var passlib = require('../lib/pass')
-var userdatalib = require('./userdata')
-var perms = require('../lib/perms')
-var router_common = require('./router-common')
-var appsRouter = require('./apps-router')
-var search = require('./search')
-var busboy = require('connect-busboy')
-var sitemap = null
-var pathlib = require('path')
+'use strict'
+
+let sm = require('sitemap')
+let routes = require('./')
+let fs = require('fs')
+let userlib = require('../lib/user')
+let sitemaplib = require('../lib/sitemap')
+let topic = require('./topic')
+let analytics = require('./analytics')
+let lbits = require('./lbits')
+let polls = require('./polls')
+let embed = require('./embed')
+let user = require('./user')
+let helper = require('./helper')
+let pages = require('./pages')
+let config = require('../lib/config').config
+let constants = require('../common/constants')
+let passlib = require('../lib/pass')
+let userdatalib = require('./userdata')
+let perms = require('../lib/perms')
+let router_common = require('./router-common')
+let appsRouter = require('./apps-router')
+let search = require('./search')
+let busboy = require('connect-busboy')
+let sitemap = null
+let pathlib = require('path')
 
 module.exports = function (app) {
-  var pageOptionsSetter = router_common.pageOptionsSetter
-  var sessionOptionsSetter = router_common.sessionOptionsSetter
+  let pageOptionsSetter = router_common.pageOptionsSetter
+  let sessionOptionsSetter = router_common.sessionOptionsSetter
 
   app.get('/', pageOptionsSetter, sessionOptionsSetter, routes.index)
 
   app.get('/ejs/:template', pageOptionsSetter, sessionOptionsSetter, function (req, res) {
-    var path = pathlib.resolve(__dirname, '/../views/', req.params['template'])
+    let path = pathlib.resolve(__dirname, '/../views/', req.params['template'])
     if (fs.existsSync(path)) {
       res.send(fs.readFileSync(path))
     } else {
@@ -39,7 +41,7 @@ module.exports = function (app) {
   })
 
   app.get('/ejs/:path/:template', pageOptionsSetter, sessionOptionsSetter, function (req, res) {
-    var path = pathlib.resolve(__dirname, '/../views/', req.params['path'], req.params['template'])
+    let path = pathlib.resolve(__dirname, '/../views/', req.params['path'], req.params['template'])
     if (fs.existsSync(path)) {
       res.send(fs.readFileSync(path))
     } else {
@@ -91,7 +93,7 @@ module.exports = function (app) {
   })
 
   app.get('/loginErrorJson', pageOptionsSetter, sessionOptionsSetter, function (req, res) {
-    var message = req.flash('error')
+    let message = req.flash('error')
     res.status(403).send({message: message})
   })
 

@@ -1,14 +1,16 @@
-var util = require('../common/util')
-var userlib = require('../lib/user')
-var logger = require('../common/log')
-var config = require('../lib/config').config
-var bcrypt = require('bcrypt')
-var request = require('request')
+'use strict'
+
+let util = require('../common/util')
+let userlib = require('../lib/user')
+let logger = require('../common/log')
+let config = require('../lib/config').config
+let bcrypt = require('bcrypt')
+let request = require('request')
 
 function check_password (req, res) {
-  var user = req.query.user
-  var server = req.query.server
-  var password = req.query.pass
+  let user = req.query.user
+  let server = req.query.server
+  let password = req.query.pass
   if (!user || !server || !password) {
     res.status(401).send('Not authorized')
     return
@@ -17,7 +19,7 @@ function check_password (req, res) {
   // Only authenticate if this server is servicing this chat domain.
   // Otherwise forward the request to a different server
   if (server === config.chat_domain) {
-    var email = user + '@' + server
+    let email = user + '@' + server
     userlib.findByEmail(email, function (err, user) {
       if (err || !user) {
         logger.info(email, 'failed authentication for talk')
@@ -51,7 +53,7 @@ function check_password (req, res) {
   } else {
     if (config.route_chat_auth) {
       logger.debug('Forwarding talk authentication to server', server)
-      var fwdServer = 'https://' + server + '/api/user/auth/check_password?user=' + user + '&pass=' + password + '&server=' + server
+      let fwdServer = 'https://' + server + '/api/user/auth/check_password?user=' + user + '&pass=' + password + '&server=' + server
       request(fwdServer).pipe(res)
     } else {
       logger.warn(email, 'cannot be authenticated by this server!')
@@ -61,15 +63,15 @@ function check_password (req, res) {
 }
 
 function user_exists (req, res) {
-  var user = req.query.user
-  var server = req.query.server
+  let user = req.query.user
+  let server = req.query.server
   if (!user || !server) {
     res.status(404).send('Not found')
     return
   }
 
   if (server === config.chat_domain) {
-    var email = user + '@' + server
+    let email = user + '@' + server
     userlib.findByEmail(email, function (err, user) {
       if (err || !user) {
         res.status(404).send('Not found')
@@ -84,7 +86,7 @@ function user_exists (req, res) {
   } else {
     if (config.route_chat_auth) {
       logger.debug('Forwarding user check to server', server)
-      var fwdServer = 'https://' + server + '/api/user/auth/user_exists?user=' + user + '&server=' + server
+      let fwdServer = 'https://' + server + '/api/user/auth/user_exists?user=' + user + '&server=' + server
       request(fwdServer).pipe(res)
     } else {
       logger.warn(email, 'cannot be verified by this server!')

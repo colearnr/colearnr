@@ -1,21 +1,23 @@
-var config_lib = require('../lib/config')
-var query = require('../common/query')
-var version = require('../version')
-var constants = require('../common/constants')
-var util = require('../common/util')
-var _ = require('lodash')
-var learnApps = require('../lib/apps')
-var urlUtils = require('url')
-var MobileDetect = require('mobile-detect')
-var perms = require('../lib/perms')
+'use strict'
+
+let config_lib = require('../lib/config')
+let query = require('../common/query')
+let version = require('../version')
+let constants = require('../common/constants')
+let util = require('../common/util')
+let _ = require('lodash')
+let learnApps = require('../lib/apps')
+let urlUtils = require('url')
+let MobileDetect = require('mobile-detect')
+let perms = require('../lib/perms')
 
 function pageOptionsSetter (req, res, next) {
   // logger.log('debug', 'page options set')
-  var page_options = {}
-  var url = req.url
-  var origUrl = req.headers.referer || req.originalUrl
-  var embedMode = false
-  var urlObj = urlUtils.parse(origUrl)
+  let page_options = {}
+  let url = req.url
+  let origUrl = req.headers.referer || req.originalUrl
+  let embedMode = false
+  let urlObj = urlUtils.parse(origUrl)
   if (req.headers && req.headers['accept-encoding'] && req.headers['accept-encoding'].indexOf('gzip') !== -1) {
     page_options.gzip_enabled = true
   }
@@ -24,8 +26,8 @@ function pageOptionsSetter (req, res, next) {
   } else if (url.indexOf('embedMode=true') !== -1 || url.indexOf('embedMode=1') !== -1 || origUrl.indexOf('embedMode=true') !== -1 || origUrl.indexOf('embedMode=1') !== -1 || origUrl.indexOf('embedSize=') !== -1) {
     embedMode = true
   }
-  var hostname = req.headers['host'] ? req.headers['host'].split(':')[0] : '127.0.0.1'
-  var config = config_lib.config.use_client_host ? config_lib.configure(hostname) : config_lib.config
+  let hostname = req.headers['host'] ? req.headers['host'].split(':')[0] : '127.0.0.1'
+  let config = config_lib.config.use_client_host ? config_lib.configure(hostname) : config_lib.config
   page_options.cdn_prefix = config.cdn_prefix
   page_options.version = version
   page_options.env = process.env
@@ -38,11 +40,11 @@ function pageOptionsSetter (req, res, next) {
   res.locals.config = config
   res.locals.constants = constants
   res.locals._ = _
-  var durl = config.socket.address + ((config.socket.port !== 80 && config.socket.port !== 443) ? ':' + config.socket.port : '')
-  var host_url = config.base_url + (config.use_port ? (':' + config.port) : '')
+  let durl = config.socket.address + ((config.socket.port !== 80 && config.socket.port !== 443) ? ':' + config.socket.port : '')
+  let host_url = config.base_url + (config.use_port ? (':' + config.port) : '')
   res.locals.durl = durl
   res.locals.host_url = host_url
-  var md = new MobileDetect(req.headers['user-agent'])
+  let md = new MobileDetect(req.headers['user-agent'])
   res.locals.isMobile = md.mobile()
   res.locals.isPhone = md.phone()
   res.locals.isTablet = md.tablet()
@@ -58,11 +60,11 @@ function sessionOptionsSetter (req, res, next) {
   res.locals.user = req.user
   if (req.isAuthenticated && req.isAuthenticated() && req.session) {
     res.locals.session = req.session
-    var returnTo = util.getReturnToUrl(req)
+    let returnTo = util.getReturnToUrl(req)
     res.locals.returnTo = req.session.returnTo = returnTo
     req.session.push = function (data) {
-      var array = req.session.recently_visited_topics || []
-      for (var i in array) {
+      let array = req.session.recently_visited_topics || []
+      for (let i in array) {
         if (array[i]._id === data._id) {
           array.splice(i, 1)
           break

@@ -1,13 +1,15 @@
-var config = require('../lib/config')
-var query = require('../common/apps-query')
-var constants = require('../common/constants')
-var log = require('../common/log')
-var logger = require('../common/log')
-var util = require('../common/util')
-var analytics = require('./analytics')
-var entitlement = require('../lib/entitlement')
-var learnApps = require('../lib/apps')
-var perms = require('../lib/perms')
+'use strict'
+
+let config = require('../lib/config')
+let query = require('../common/apps-query')
+let constants = require('../common/constants')
+let log = require('../common/log')
+let logger = require('../common/log')
+let util = require('../common/util')
+let analytics = require('./analytics')
+let entitlement = require('../lib/entitlement')
+let learnApps = require('../lib/apps')
+let perms = require('../lib/perms')
 
 function addAppRoutes (app, prefix, middlewares, preCallback, postCallback) {
   // logger.debug('Adding routes for apps')
@@ -26,15 +28,15 @@ function addAppRoutes (app, prefix, middlewares, preCallback, postCallback) {
     }
   }
 
-  var appModules = learnApps.getAll()
+  let appModules = learnApps.getAll()
   if (!util.empty(appModules)) {
-    for (var key in appModules) {
-      var amodule = appModules[key]
-      var info = learnApps.getInfo(key)
+    for (let key in appModules) {
+      let amodule = appModules[key]
+      let info = learnApps.getInfo(key)
       if (amodule && amodule.routes) {
         logger.debug('Adding routes for', key)
         middlewares = middlewares || []
-        var routes = amodule.routes
+        let routes = amodule.routes
         app.get((prefix || '') + '/' + info.learnbitType + '/new', middlewares, function (req, res) {
           _injectLibs(req, res, routes.create)
         })

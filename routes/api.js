@@ -1,10 +1,12 @@
-var topic = require('./topic')
-var lbits = require('./lbits')
-var user = require('./user')
-var talk = require('./talk')
-var config = require('../lib/config').config
-var request = require('request')
-var passlib = require('../lib/pass')
+'use strict'
+
+let topic = require('./topic')
+let lbits = require('./lbits')
+let user = require('./user')
+let talk = require('./talk')
+let config = require('../lib/config').config
+let request = require('request')
+let passlib = require('../lib/pass')
 
 module.exports = function (app) {
   // Topic api
@@ -28,7 +30,7 @@ module.exports = function (app) {
 
   if (config.chat_enabled) {
     app.all('/chat/http-bind', function (req, res) {
-      var url = config.chat_bosh_server
+      let url = config.chat_bosh_server
       if (req.method === 'GET') {
         request.get(url).pipe(res)
       } else {
