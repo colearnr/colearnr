@@ -1,15 +1,17 @@
-var util = require('./util')
-var log = require('./log')
-// var http = require('http')
-// var https = require('https')
-// var db = require('./db')
-// var unembed = require('unembed')
+'use strict'
+
+let util = require('./util')
+let log = require('./log')
+// let http = require('http')
+// let https = require('https')
+// let db = require('./db')
+// let unembed = require('unembed')
 
 /*
 function httpsGet (opts, callback) {
   // console.log(opts)
   https.request(opts, function (res) {
-    var data = ''
+    let data = ''
     res.on('data', function (chunk) {
       data += chunk
     })
@@ -22,16 +24,16 @@ function httpsGet (opts, callback) {
 }
 */
 
-var extract = function (url, body, callback) {
+let extract = function (url, body, callback) {
   if (util.empty(url)) {
     log.log('debug', 'Url is empty! Nothing to extract.')
     callback({})
     return
   }
-  var type = null
+  let type = null
   /*
   if (url == '#' && !util.empty(body)) {
-    var parsedBody = unembed.parse(body)
+    let parsedBody = unembed.parse(body)
     if (parsedBody.direct_url) {
       url = parsedBody.direct_url
       type = parsedBody.type
@@ -56,7 +58,7 @@ var extract = function (url, body, callback) {
   }
 }
 
-var parse = function (url, callback) {
+let parse = function (url, callback) {
   callback({})
 }
 

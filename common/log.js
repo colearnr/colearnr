@@ -1,6 +1,8 @@
-var winston = require('winston')
+'use strict'
 
-var log = new (winston.Logger)({
+let winston = require('winston')
+
+let log = new (winston.Logger)({
   exitOnError: false,
   transports: [
     new (winston.transports.Console)({

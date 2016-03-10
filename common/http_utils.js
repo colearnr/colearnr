@@ -1,11 +1,13 @@
-var http = require('http')
-var https = require('https')
-// var log = require('./log')
-var util = require('./util')
-var url_utils = require('url')
-var config = require('../lib/config').config
+'use strict'
 
-var HttpUtils = function () {}
+let http = require('http')
+let https = require('https')
+// let log = require('./log')
+let util = require('./util')
+let url_utils = require('url')
+let config = require('../lib/config').config
+
+let HttpUtils = function () {}
 
 HttpUtils.HTTP_TIMEOUT = 20000
 
@@ -15,8 +17,8 @@ HttpUtils.httpsAgent = new https.Agent()
 HttpUtils.DEFAULT_USER_AGENT = config.cl_user_agent || 'CoLearnr Bot'
 
 HttpUtils.httpHeadRequest = function (opts, url, index, data, callback) {
-  var req
-  var serviceToUse = http
+  let req
+  let serviceToUse = http
   opts.agent = this.httpAgent
   if (url.indexOf('https') >= 0) {
     opts.agent = HttpUtils.httpsAgent
@@ -51,11 +53,11 @@ HttpUtils.httpHeadRequest = function (opts, url, index, data, callback) {
 }
 
 HttpUtils.getHeaders = function (urlstr, callback) {
-  var url = url_utils.parse(urlstr)
-  var host = url.host
-  var path = url.pathname + (url.search ? url.search : '')
+  let url = url_utils.parse(urlstr)
+  let host = url.host
+  let path = url.pathname + (url.search ? url.search : '')
 
-  var opts = {
+  let opts = {
     method: 'HEAD',
     hostname: host,
     path: path,
@@ -69,10 +71,10 @@ HttpUtils.isFrameRestricted = function (urlstr, callback) {
     callback(null, false)
     return
   }
-  var urlType = util.getUrlType(urlstr, null)
+  let urlType = util.getUrlType(urlstr, null)
   if (urlType === 'html') {
     HttpUtils.getHeaders(urlstr, function (res, err, data, index) {
-      var ret = false
+      let ret = false
       if (res && res.headers && res.headers['x-frame-options']) {
         ret = true
       }

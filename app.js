@@ -18,25 +18,27 @@
 /**
  * Module dependencies.
  */
-var express = require('express')
-var params = require('express-params')
-var http = require('http')
-var passlib = require('./lib/pass')
-var config = require('./lib/config').config
-var flash = require('connect-flash')
-var compression = require('compression')
-var session = require('express-session')
-var bodyParser = require('body-parser')
-var RedisStore = require('connect-redis')(session)
-var cookieParser = require('cookie-parser')
-var serveStatic = require('serve-static')
-var RDB = require('./common/redis')
-var logger = require('./common/log')
-var socketIOclient = require('socket.io-client')
-var learnApps = require('./lib/apps')
-var path = require('path')
-var cluster = require('cluster')
-var numCPUs = require('os').cpus().length
+'use strict'
+
+let express = require('express')
+let params = require('express-params')
+let http = require('http')
+let passlib = require('./lib/pass')
+let config = require('./lib/config').config
+let flash = require('connect-flash')
+let compression = require('compression')
+let session = require('express-session')
+let bodyParser = require('body-parser')
+let RedisStore = require('connect-redis')(session)
+let cookieParser = require('cookie-parser')
+let serveStatic = require('serve-static')
+let RDB = require('./common/redis')
+let logger = require('./common/log')
+let socketIOclient = require('socket.io-client')
+let learnApps = require('./lib/apps')
+let path = require('path')
+let cluster = require('cluster')
+let numCPUs = require('os').cpus().length
 
 function logErrors (err, req, res, next) {
   logger.log('error', 'logError', {stack: err.stack, user: req.user})
@@ -67,7 +69,7 @@ function errorHandler (err, req, res, next) {
 if (config.use_cluster && cluster.isMaster) {
   logger.log('debug', 'Forking', numCPUs, 'workers')
   // Fork workers.
-  for (var i = 0; i < numCPUs; i++) {
+  for (let i = 0; i < numCPUs; i++) {
     cluster.fork()
   }
 
@@ -75,7 +77,7 @@ if (config.use_cluster && cluster.isMaster) {
     logger.log('debug', 'worker ' + worker.pid + ' died')
   })
 } else {
-  var app = express()
+  let app = express()
   params.extend(app)
   app.set('views', path.resolve(__dirname, '/views'))
   app.set('view engine', 'ejs')
@@ -98,13 +100,13 @@ if (config.use_cluster && cluster.isMaster) {
     type: 'application/xml',
     limit: '5mb'
   }))
-  var maxAge = 28800
+  let maxAge = 28800
   if (process.env.NODE_ENV === 'development') {
     maxAge = 0
     app.locals.pretty = true
   }
 
-  var allowCrossDomain = function (req, res, next) {
+  let allowCrossDomain = function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
@@ -117,14 +119,14 @@ if (config.use_cluster && cluster.isMaster) {
   app.use(allowCrossDomain)
 
   app.use(serveStatic(path.resolve(__dirname, 'public'), {maxAge: maxAge}))
-  var appsMap = learnApps.list()
-  for (var key in appsMap) {
+  let appsMap = learnApps.list()
+  for (let key in appsMap) {
     app.use('/apps/' + key + '-static', serveStatic(path.resolve(__dirname, 'apps', key, 'src', 'public'), {maxAge: maxAge}))
     logger.debug('Static', '/apps/' + key + '-static')
   }
 
   app.use(cookieParser())
-  var sessionArgs = {
+  let sessionArgs = {
     store: new RedisStore({
       client: RDB,
       ttl: 60 * 60 * 24 * 14
@@ -134,7 +136,7 @@ if (config.use_cluster && cluster.isMaster) {
     secret: config.secret,
     key: 'connect.sid-' + (process.env.ENV_CONFIG || 'dev')
   }
-  var cookieArgs = {
+  let cookieArgs = {
     path: '/',
     maxAge: 1000 * 60 * 60 * 24 * 14,
     httpOnly: true
@@ -170,13 +172,13 @@ if (config.use_cluster && cluster.isMaster) {
   require('./routes/api')(app)
   require('./routes/router')(app)
 
-  var server = http.createServer(app).listen(config.port, function () {
+  let server = http.createServer(app).listen(config.port, function () {
     console.log('Express server listening on port ' + config.port)
   })
 
-  var socketClient = socketIOclient.connect(config.local_socket_server)
+  let socketClient = socketIOclient.connect(config.local_socket_server)
 
-  var tryReconnect = function () {
+  let tryReconnect = function () {
     if (socketClient.socket.connected === false &&
       socketClient.socket.connecting === false) {
       socketClient.socket.connect()

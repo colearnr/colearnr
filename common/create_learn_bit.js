@@ -1,28 +1,30 @@
-var db = require('./db')
-var log = require('./log')
-var util = require('./util')
-var cloud_lib = require('../lib/cloud')
-var http_utils = require('./http_utils')
-var extract_lib = require('./extract')
-var _ = require('lodash')
-var YT_URL_PREFIX = 'https://youtu.be/'
-var YT_URL_PARSER = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(feature\=player_embedded&))\??v?=?([^#\&\?]*).*/
+'use strict'
+
+let db = require('./db')
+let log = require('./log')
+let util = require('./util')
+let cloud_lib = require('../lib/cloud')
+let http_utils = require('./http_utils')
+let extract_lib = require('./extract')
+let _ = require('lodash')
+let YT_URL_PREFIX = 'https://youtu.be/'
+let YT_URL_PARSER = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(feature\=player_embedded&))\??v?=?([^#\&\?]*).*/
 
 function getParam (param, url) {
   param = param.replace(/[\[]/g, '\\\[').replace(/[\]]/g, '\\\]')
-  var regexS = '[\\?&]' + param + '=([^&#]*)'
-  var regex = new RegExp(regexS)
-  var results = regex.exec(url)
+  let regexS = '[\\?&]' + param + '=([^&#]*)'
+  let regex = new RegExp(regexS)
+  let results = regex.exec(url)
   return (results == null) ? '' : results[1].replace(/ /g, '')
 }
 
 function create_learn_bit (main_topic, bare_element, callback) {
-  var self = this
-  var topicAdd = false
-  var topicFound = false
+  let self = this
+  let topicAdd = false
+  let topicFound = false
 
   self._val = function (value, default_value) {
-    var ret = (!value || value === '') ? default_value : value
+    let ret = (!value || value === '') ? default_value : value
     if (!ret) {
       ret = ''
     }
@@ -30,7 +32,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
   }
 
   self._images = function (be, value) {
-    var ilist = []
+    let ilist = []
     if (be) {
       return [be]
     }
@@ -44,7 +46,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
   }
 
   self._url = function (url, canUrl) {
-    var ret = url
+    let ret = url
     if (!util.empty(canUrl) && canUrl !== url) {
       ret = canUrl
     }
@@ -55,15 +57,15 @@ function create_learn_bit (main_topic, bare_element, callback) {
     if (!topic && !subtopic) {
       return null
     }
-    var topicToUse = topic || ''
+    let topicToUse = topic || ''
     if (subtopic) {
       topicToUse = (topicToUse ? '' : (topicToUse + '/')) + subtopic
     }
-    var tlist = topicToUse.split('/')
-    var name = tlist[tlist.length - 1]
-    var order = null
+    let tlist = topicToUse.split('/')
+    let name = tlist[tlist.length - 1]
+    let order = null
     if (name.indexOf(':') !== -1) {
-      var tmpArr = name.split(':')
+      let tmpArr = name.split(':')
       name = tmpArr[1]
       order = tmpArr[0]
     }
@@ -74,14 +76,14 @@ function create_learn_bit (main_topic, bare_element, callback) {
     //    log.log('debug', 'URL INPUT TO FUNCTION : ' , url)
     //    log.log('debug', 'BODYSTRING INPUT TO FUNCTION : ' , bodystr)
 
-    var ret = ''
+    let ret = ''
     if (bodystr) {
-      var body = util.parseJson(bodystr)
+      let body = util.parseJson(bodystr)
       // log.log('debug', 'body : ', body)
       ret = YT_URL_PREFIX + body.embed
     }
     if (url) {
-      var match_content = url.match(YT_URL_PARSER)
+      let match_content = url.match(YT_URL_PARSER)
       if (match_content && match_content[match_content.length - 1].length === 11) {
         ret = YT_URL_PREFIX + match_content[match_content.length - 1]
       } else {
@@ -100,12 +102,12 @@ function create_learn_bit (main_topic, bare_element, callback) {
     if (url.indexOf('.flv') !== -1 || url.indexOf('.mp4') !== -1) {
       return 'Recording'
     }
-    var ret = ''
-    var tmpA = url.split('/')
+    let ret = ''
+    let tmpA = url.split('/')
     if (tmpA && tmpA.length) {
       ret = tmpA[tmpA.length - 1]
     }
-    var extn = util.getExtension(ret)
+    let extn = util.getExtension(ret)
     if (extn) {
       ret = ret.replace(new RegExp(extn + '$', 'ig'), '')
     }
@@ -129,8 +131,8 @@ function create_learn_bit (main_topic, bare_element, callback) {
         callback(null, bare_element.order)
       } else if (util.validOid(bare_element.topic_oid)) {
         db.learnbits.find({topics: {_id: db.ObjectId('' + bare_element.topic_oid)}, hidden: {$ne: true}}, {order: 1}).sort({order: -1}).limit(1, function (err, rows) {
-          var row = (rows && rows.length) ? rows[0] : null
-          var order = null
+          let row = (rows && rows.length) ? rows[0] : null
+          let order = null
           if (err || !row) {
             callback(err, null)
           } else {
@@ -147,15 +149,15 @@ function create_learn_bit (main_topic, bare_element, callback) {
   }
 
   self._db_update = function (exis_obj, ele, callback) {
-    var update_map = {}
+    let update_map = {}
     if (exis_obj.topics && ele.topic_oid) {
-      for (var i in exis_obj.topics) {
+      for (let i in exis_obj.topics) {
         if ('' + exis_obj.topics[i]._id === ele.topic_oid) {
           topicFound = true
         }
       }
       if (!topicFound) {
-        var tmptopics = exis_obj['topics']
+        let tmptopics = exis_obj['topics']
         tmptopics.push({_id: db.ObjectId(ele.topic_oid)})
         update_map['topics'] = tmptopics
         update_map['order'] = null
@@ -193,7 +195,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
     }
   }
 
-  var args = null
+  let args = null
   if (bare_element._id) {
     args = {_id: db.ObjectId('' + bare_element._id)}
   } else {
@@ -233,11 +235,11 @@ function create_learn_bit (main_topic, bare_element, callback) {
             if (err) {
               return callback(err, null)
             }
-            var urlToUse = self._url(bare_element.url, url_data.url)
-            var body_val = self._body(urlToUse, bare_element, url_data)
-            var lbit_type = bare_element.type || util.getUrlType(urlToUse, body_val)
+            let urlToUse = self._url(bare_element.url, url_data.url)
+            let body_val = self._body(urlToUse, bare_element, url_data)
+            let lbit_type = bare_element.type || util.getUrlType(urlToUse, body_val)
             log.log('debug', 'lbit to create', bare_element, order, lbit_type)
-            var lb = {
+            let lb = {
               title: self._val(bare_element.title, url_data.title),
               description: self._val(bare_element.description, url_data.description),
               type: lbit_type,
@@ -274,18 +276,18 @@ function create_learn_bit (main_topic, bare_element, callback) {
             }
 
             // log.info(lb)
-            var path = bare_element['path'] ? bare_element['path'] : (',' + util.idify(main_topic) + ',' + (bare_element['topic'] ? util.idify(bare_element['topic']) + ',' : ''))
+            let path = bare_element['path'] ? bare_element['path'] : (',' + util.idify(main_topic) + ',' + (bare_element['topic'] ? util.idify(bare_element['topic']) + ',' : ''))
             // log.info("Creating learnbit for " + bare_element.url + " " + path)
-            var tlist = bare_element['topic_oid'] ? bare_element['topic_oid'] : (bare_element['sub-topic'] ? bare_element['sub-topic'].split('/') : [])
-            var name = tlist[tlist.length - 1]
+            let tlist = bare_element['topic_oid'] ? bare_element['topic_oid'] : (bare_element['sub-topic'] ? bare_element['sub-topic'].split('/') : [])
+            let name = tlist[tlist.length - 1]
             if (name.indexOf(':') !== -1) {
-              var tmpA = name.split(':')
+              let tmpA = name.split(':')
               name = tmpA[1]
             }
-            var add_path = ''
+            let add_path = ''
             if (tlist.length > 1) {
-              for (var i = 0; i < tlist.length - 1; i++) {
-                var tmpTopic = tlist[i]
+              for (let i = 0; i < tlist.length - 1; i++) {
+                let tmpTopic = tlist[i]
                 add_path = add_path + util.idify(tmpTopic) + ','
               }
             }
@@ -303,7 +305,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
                   }
                   // Check if this is a stream url. Then sign the url and send it
                   if (util.isStreamUrl(lb.url)) {
-                    var surl = cloud_lib.getSignedUrl(lb.url, null)
+                    let surl = cloud_lib.getSignedUrl(lb.url, null)
                     if (surl) {
                       lb.url = surl
                     }
@@ -322,27 +324,27 @@ function create_learn_bit (main_topic, bare_element, callback) {
   })
 
   self._body = function (urlToUse, ele, url_data) {
-    var url = urlToUse || ele.url
-    var body = ele.body
+    let url = urlToUse || ele.url
+    let body = ele.body
     if (!url || url === '#') {
       return body
     }
-    var ret = ''
-    var content = url_data.content
-    var retMap = {}
-    var regExp = null
-    var match = false
+    let ret = ''
+    let content = url_data.content
+    let retMap = {}
+    let regExp = null
+    let match = false
     switch (util.getUrlType(url, body)) {
       case 'youtube':
-        var v = ''
-        var match_content = url.match(YT_URL_PARSER)
+        let v = ''
+        let match_content = url.match(YT_URL_PARSER)
         if (match_content && match_content.length && match_content[match_content.length - 1] && match_content[match_content.length - 1].length === 11) {
           v = match_content[match_content.length - 1]
         } else {
           log.log('debug', 'create_learn_bit.js ', 'Youtube parse error : ' + url)
         }
-        var start = getParam('start', url)
-        var end = getParam('end', url)
+        let start = getParam('start', url)
+        let end = getParam('end', url)
         if (!v) {
           log.warn('Unable to find the embed code for youtube video. Please check the url')
           ret = url
@@ -368,7 +370,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
         // log.info(ret)
         break
       case 'slideshare':
-        var iframe_html = unescape(url_data.media.html)
+        let iframe_html = unescape(url_data.media.html)
         if (!iframe_html) {
           return ''
         }

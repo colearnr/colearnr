@@ -1,15 +1,17 @@
-var db = require('./db')
-var _ = require('lodash')
-var RDB = require('./redis')
-var logger = require('./log')
-var constants = require('./constants')
-var cloud_lib = require('../lib/cloud')
-var Step = require('step')
-var perms = require('../lib/perms')
-var async = require('async')
-var util = require('./util')
+'use strict'
 
-var query = {
+let db = require('./db')
+let _ = require('lodash')
+let RDB = require('./redis')
+let logger = require('./log')
+let constants = require('./constants')
+let cloud_lib = require('../lib/cloud')
+let Step = require('step')
+let perms = require('../lib/perms')
+let async = require('async')
+let util = require('./util')
+
+let query = {
   _checkDeleteAccess: function (obj, user) {
     if (!obj.hidden || (obj.hidden && (obj.added_by === user._id || (obj.user_role && obj.user_role[user._id] && (obj.user_role[user._id] === constants.TOPIC_ADMIN_ROLE || obj.user_role[user._id] === constants.ADMIN_ROLE))))) {
       return true
@@ -19,15 +21,15 @@ var query = {
   },
 
   _handleSmartTopics: function (user, topic, callback) {
-    var self = this
+    let self = this
     if (topic && topic.smart && topic.linked_topics && topic.linked_topics.length) {
       logger.log('warn', 'Linked topic feature is getting deprecated', topic.id, topic.path)
-      var args = {}
-      var etopiclist = []
+      let args = {}
+      let etopiclist = []
       topic.linked_topics.forEach(function (atopic_id) {
         etopiclist.push(db.ObjectId('' + atopic_id))
       })
-      var tmpA = {}
+      let tmpA = {}
       tmpA['$in'] = etopiclist
       args['_id'] = tmpA
       // console.log('debug', 'Handle smart topics with args', args)
@@ -38,8 +40,8 @@ var query = {
   },
 
   getCommentCountForIds: function (objids, callback) {
-    var retMap = {}
-    var done = 0
+    let retMap = {}
+    let done = 0
     if (!objids) {
       callback(null, retMap)
     }
@@ -66,8 +68,8 @@ var query = {
   },
 
   getCommentCount: function (objid, callback) {
-    var tid = null
-    var count = null
+    let tid = null
+    let count = null
     if (!objid) {
       callback(null, tid, count)
     } else {
@@ -88,7 +90,7 @@ var query = {
 
   getIdForTopic: function (topic, callback) {
     // console.log(topic)
-    var args = "getIdForTopic('" + topic + "')"
+    let args = "getIdForTopic('" + topic + "')"
     db.eval(args, callback)
   },
 
@@ -97,19 +99,19 @@ var query = {
     if (!path) {
       path = ''
     }
-    var args = "getIdForTopicPath('" + path + "', '" + topic + "')"
+    let args = "getIdForTopicPath('" + path + "', '" + topic + "')"
     db.eval(args, callback)
   },
 
   getIdForTopics: function (topics, callback) {
     // console.log(topics)
-    var args = "getIdForTopics('" + util.stringify(topics) + "')"
+    let args = "getIdForTopics('" + util.stringify(topics) + "')"
     db.eval(args, callback)
   },
 
   _streamUrlCheck: function (lbit, callback) {
     if (util.isStreamUrl(lbit.url)) {
-      var surl = cloud_lib.getSignedUrl(lbit.url, null)
+      let surl = cloud_lib.getSignedUrl(lbit.url, null)
       if (surl) {
         lbit.url = surl
       }
@@ -118,11 +120,11 @@ var query = {
   },
 
   setLearnbitMetadata: function (user, topics, lbits, callback) {
-    var count = lbits.length
-    var done = 0
-    var self = this
-    var topicPerms = {}
-    var userIdCache = {}
+    let count = lbits.length
+    let done = 0
+    let self = this
+    let topicPerms = {}
+    let userIdCache = {}
 
     function _setCommentCount (self, lbit, cb) {
       // console.log(lbit.title, lbit.user_perms)
@@ -175,7 +177,7 @@ var query = {
           return callback(err)
         }
         if (!lbit.user_perms) {
-          var uid = user ? user._id : null
+          let uid = user ? user._id : null
           lbit.user_perms = {}
           lbit.user_perms[uid] = []
           lbit.topics.forEach(function (at) {
@@ -202,7 +204,7 @@ var query = {
   },
 
   get_learnbit: function (user, args, callback) {
-    var self = this
+    let self = this
     db.learnbits.findOne(args, function (err, lbit) {
       if (err || !lbit) {
         callback(err, lbit)
@@ -211,7 +213,7 @@ var query = {
           lbit.discuss_topic_id = tid
           lbit.comments_count = comments_count
           if (util.isStreamUrl(lbit.url)) {
-            var surl = cloud_lib.getSignedUrl(lbit.url, null)
+            let surl = cloud_lib.getSignedUrl(lbit.url, null)
             if (surl) {
               lbit.url = surl
             }
@@ -224,8 +226,8 @@ var query = {
 
   get_topic: function (user, args, callback) {
     // args['hidden'] = {$ne: true}
-    var self = this
-    var uid = user._id
+    let self = this
+    let uid = user._id
     db.topics.findOne(args, function (err, atopic) {
       if (err || !atopic || !user) {
         callback(err, atopic)
@@ -255,14 +257,14 @@ var query = {
 
   get_topics: function (user, args, includeDeleted, callback) {
     // args['hidden'] = {$ne: true}
-    var self = this
-    var uid = user ? user._id : null
+    let self = this
+    let uid = user ? user._id : null
     db.topics.find(args).sort({path: 1, order: 1, hidden: 1, name: 1}, function (err, topics) {
       if (err || !topics.length || !user) {
         callback(err, topics)
       } else {
-        var updatedTopics = new Array(topics.length)
-        var done = 0
+        let updatedTopics = new Array(topics.length)
+        let done = 0
         topics.forEach(function (atopic, index) {
           self.is_topic_empty(user, atopic, function (err, isEmpty) {
             if (err || isEmpty) {
@@ -302,7 +304,7 @@ var query = {
   },
 
   get_topic_and_parents: function (user, args, callback) {
-    var self = this
+    let self = this
     this.get_topic(user, args, function (err, topic) {
       if (err) {
         return callback(err)
@@ -319,13 +321,13 @@ var query = {
           if (etopiclist.length > 1) {
             logger.log('warn', 'Topic', topic.id, topic.path, 'is linked to multiple topics. This is not supported yet.')
           }
-          var etopic = etopiclist[0]
+          let etopic = etopiclist[0]
 
           if (etopic && ('' + etopic._id) !== ('' + topic._id)) {
             etopic.is_expanded = true
             etopic.expanded_for = topic._id
           }
-          var path = (topic) ? topic.path : null
+          let path = (topic) ? topic.path : null
           if (!path) {
             callback(err, {
               topic: etopic,
@@ -333,10 +335,10 @@ var query = {
             })
           } else {
             // Use the original topic to identify the parents and not the expanded topic.
-            var parents = util.getParents(topic.id, path)
-            var done = 0
+            let parents = util.getParents(topic.id, path)
+            let done = 0
             if (parents && parents.length) {
-              var parentlist = new Array(parents.length)
+              let parentlist = new Array(parents.length)
               parents.forEach(function (aparent, index) {
                 self.get_topic(user, {
                   id: aparent.id,
@@ -366,7 +368,7 @@ var query = {
 
   get_topics_by_name_id: function (user, parent_category, name, oid, callback) {
     logger.log('debug', parent_category, name, oid)
-    var oidObj = null
+    let oidObj = null
     if (oid && util.validOid(oid)) {
       oidObj = db.ObjectId('' + oid)
       return this.get_topic_and_parents(user, {_id: oidObj}, callback)
@@ -374,8 +376,8 @@ var query = {
     if (parent_category == null && name == null) {
       callback(null, null)
     }
-    var pathRegex = parent_category ? new RegExp(',' + util.idify(parent_category) + ',') : null
-    var args = {
+    let pathRegex = parent_category ? new RegExp(',' + util.idify(parent_category) + ',') : null
+    let args = {
       path: pathRegex,
       $or: [{
         name: util.capitalise(name)
@@ -394,10 +396,10 @@ var query = {
     }
     // Fetch the sub-topics that directly falls under this topic's path. Also fetch sub-topics if this topic is a base level topic
     // like leadership or education
-    var in_clause_list = []
+    let in_clause_list = []
     in_clause_list.push(new RegExp('^' + util.pathify(parent_path + parent_topic_id)))
     // in_clause_list.push(new RegExp('^' + util.pathify(parent_topic_id)))
-    var query = {
+    let query = {
       path: {
         $in: in_clause_list
       }
@@ -420,12 +422,12 @@ var query = {
     }
     // Fetch the sub-topics that directly falls under this topic's path. Also fetch sub-topics if this topic is a base level topic
     // like leadership or education
-    var in_clause_list = []
+    let in_clause_list = []
     in_clause_list.push(new RegExp(util.pathify(parent_path + parent_topic_id)))
     if (includeRoot) {
       in_clause_list.push(new RegExp('^,' + util.idify(parent_topic_id) + ','))
     }
-    var query = {
+    let query = {
       path: {
         $in: in_clause_list
       }
@@ -446,7 +448,7 @@ var query = {
   },
 
   get_virtual_learnbits: function (user, callback) {
-    var self = this
+    let self = this
     async.parallel({
       liked: function (cb) {
         self.get_learn_bits_arged(user, {likes: '' + user._id}, cb)
@@ -461,7 +463,7 @@ var query = {
   },
 
   get_user_search_topics: function (user, callback) {
-    var args = {type: 'search', path: new RegExp('^,' + user._id + ',search,')}
+    let args = {type: 'search', path: new RegExp('^,' + user._id + ',search,')}
     this.get_topics(user, args, false, callback)
   },
 
@@ -470,14 +472,14 @@ var query = {
       callback(null, false)
       return
     }
-    var args = {name: searchText.toLowerCase(), type: 'search', path: new RegExp('^,' + user._id + ',search,')}
+    let args = {name: searchText.toLowerCase(), type: 'search', path: new RegExp('^,' + user._id + ',search,')}
     db.topics.findOne(args, function (err, topicObj) {
       callback(err, topicObj)
     })
   },
 
   get_user_topics: function (user, callback) {
-    var self = this
+    let self = this
     async.parallel({
       own_topics: function (cb) {
         self.get_topics(user, {$or: [{$and: [{added_by: user._id, path: null}]}]}, false, cb)
@@ -500,7 +502,7 @@ var query = {
   },
 
   get_user_all_topics: function (user, callback) {
-    var self = this
+    let self = this
     async.parallel({
       own_topics: function (cb) {
         self.get_topics(user, {added_by: user._id}, false, cb)
@@ -520,18 +522,18 @@ var query = {
   },
 
   convert_to_tree: function (topics, callback) {
-    var tplTopicMap = {}
-    var tplTopicList = []
-    var path_id_map = {}
+    let tplTopicMap = {}
+    let tplTopicList = []
+    let path_id_map = {}
 
-    var addToMap = function (currentNode) {
-      var curr_topics = tplTopicMap[currentNode.path] || []
+    let addToMap = function (currentNode) {
+      let curr_topics = tplTopicMap[currentNode.path] || []
       curr_topics.push(currentNode)
       tplTopicMap[util.pathify(currentNode.path)] = curr_topics
     }
 
-    for (var k in topics) {
-      var full_path = util.get_full_path(topics[k])
+    for (let k in topics) {
+      let full_path = util.get_full_path(topics[k])
       path_id_map[full_path] = topics[k]._id
       topics[k].full_path = full_path
       topics[k].level = topics[k].path ? topics[k].path.split(',').length - 1 : 1
@@ -539,7 +541,7 @@ var query = {
     }
 
     topics.forEach(function (atopic) {
-      var full_path = util.get_full_path(atopic)
+      let full_path = util.get_full_path(atopic)
       // console.log(full_path)
       if (tplTopicMap[full_path]) {
         atopic.topics = tplTopicMap[full_path]
@@ -548,8 +550,8 @@ var query = {
     })
 
     // console.log(JSON.stringify(tplTopicMap))
-    for (var i in tplTopicMap) {
-      for (var l in tplTopicMap[i]) {
+    for (let i in tplTopicMap) {
+      for (let l in tplTopicMap[i]) {
         tplTopicList.push(tplTopicMap[i][l])
       }
     }
@@ -559,7 +561,7 @@ var query = {
   },
 
   get_topic_tree: function (user, args, callback) {
-    var self = this
+    let self = this
     this.get_topics(user, args, false, function (err, topics) {
       if (err || !topics.length) {
         callback(err, null)
@@ -590,14 +592,14 @@ var query = {
   },
 
   get_two_level_childs: function (parent_path, parent_topic_id, callback) {
-    var topiclist = []
-    var self = this
+    let topiclist = []
+    let self = this
     this.get_user_first_childs(null, parent_path, parent_topic_id, function (err, topics) {
       topiclist = topiclist.concat(topics)
       if (!topics.length) {
         callback(err, topiclist)
       }
-      var tdone = 0
+      let tdone = 0
       topics.forEach(function (atopic) {
         self.get_user_first_childs(null, atopic.path, atopic.id, function (err, ts) {
           topiclist = topiclist.concat(ts)
@@ -614,7 +616,7 @@ var query = {
     if (!parent_path) {
       parent_path = ','
     }
-    var query = {
+    let query = {
       path: {
         $in: [new RegExp(util.pathify(parent_path + parent_topic_id) + '$')]
       }
@@ -635,8 +637,8 @@ var query = {
       publicOnly = false
     }
     // Handle case where the topic is base level topic such as education, leadership
-    // var query = {path: {$in: [new RegExp(util.pathify(parent_path + parent_topic_id) + '$'), new RegExp('^,' + util.idify(parent_topic_id) + ',$')]} }
-    var query = {
+    // let query = {path: {$in: [new RegExp(util.pathify(parent_path + parent_topic_id) + '$'), new RegExp('^,' + util.idify(parent_topic_id) + ',$')]} }
+    let query = {
       path: {
         $in: [new RegExp('^' + util.pathify(parent_path + parent_topic_id) + '$')]
       }
@@ -653,8 +655,8 @@ var query = {
       parent_path = ','
     }
     // Handle case where the topic is base level topic such as education, leadership
-    // var query = {path: {$in: [new RegExp(util.pathify(parent_path + parent_topic_id) + ',$'), new RegExp('^,' + util.idify(parent_topic_id) + ',$')]} }
-    var query = {
+    // let query = {path: {$in: [new RegExp(util.pathify(parent_path + parent_topic_id) + ',$'), new RegExp('^,' + util.idify(parent_topic_id) + ',$')]} }
+    let query = {
       path: {
         $in: [new RegExp(util.pathify(parent_path + parent_topic_id) + '$')]
       }
@@ -669,16 +671,16 @@ var query = {
   },
 
   get_few_learn_bits: function (user, tmptopic, limit, callback) {
-    var sortArgs = {path: 1, order: 1}
+    let sortArgs = {path: 1, order: 1}
     this.get_recent_learn_bits(user, tmptopic, limit, sortArgs, callback)
   },
 
   is_topic_empty: function (user, topic, callback) {
     if (topic) {
-      var hasNoBody = util.empty(topic.body)
-      var hasLearnbits = false
-      var hasSubTopics = false
-      var self = this
+      let hasNoBody = util.empty(topic.body)
+      let hasLearnbits = false
+      let hasSubTopics = false
+      let self = this
       if (topic.type === 'search') {
         callback(null, false)
       } else {
@@ -704,8 +706,8 @@ var query = {
   },
 
   get_recent_learn_bits: function (user, tmptopic, limit, sortArgs, callback) {
-    var self = this
-    var sobjids = []
+    let self = this
+    let sobjids = []
     if (!sortArgs) {
       sortArgs = {path: 1, last_updated: -1}
     }
@@ -713,13 +715,13 @@ var query = {
       if (err) {
         return callback(err)
       }
-      var regexlist = []
+      let regexlist = []
       etopiclist.forEach(function (etopic) {
         sobjids.push({_id: etopic._id})
         regexlist.push(new RegExp(util.pathify((etopic.path || '') + etopic.id) + ''))
       })
-      // var args = {path: {$in: [new RegExp(util.pathify(topic.path + topic.id)), new RegExp('^,' + util.idify(topic.id) + ',$')]} }
-      var args = {
+      // let args = {path: {$in: [new RegExp(util.pathify(topic.path + topic.id)), new RegExp('^,' + util.idify(topic.id) + ',$')]} }
+      let args = {
         path: {
           $in: regexlist
         },
@@ -767,20 +769,20 @@ var query = {
   },
 
   get_user_recent_learn_bits: function (user, tmptopic, limit, callback) {
-    var self = this
-    var sobjids = []
+    let self = this
+    let sobjids = []
     self._handleSmartTopics(user, tmptopic, function (err, etopiclist) {
       if (err) {
         return callback(err)
       }
-      var regexlist = []
+      let regexlist = []
       etopiclist.forEach(function (etopic) {
         sobjids.push({_id: etopic._id})
         regexlist.push(new RegExp('^' + util.pathify((etopic.path || '') + etopic.id)))
         regexlist.push(new RegExp('^,' + util.idify(etopic.id) + ',$'))
       })
-      // var args = {path: {$in: [new RegExp(util.pathify(topic.path + topic.id) + ',$'), new RegExp('^,' + util.idify(topic.id) + ',$')]} }
-      var args = {
+      // let args = {path: {$in: [new RegExp(util.pathify(topic.path + topic.id) + ',$'), new RegExp('^,' + util.idify(topic.id) + ',$')]} }
+      let args = {
         path: {
           $in: regexlist
         },
@@ -833,7 +835,7 @@ var query = {
   },
 
   get_learn_bits_arged: function (user, args, callback) {
-    var self = this
+    let self = this
     db.learnbits.find(args).sort({last_updated: -1}, function (err, lbits) {
       if (err || !lbits || !lbits.length) {
         callback(err, lbits)
@@ -844,8 +846,8 @@ var query = {
   },
 
   get_learn_bits: function (user, topics, callback) {
-    var self = this
-    var topicListToUse = []
+    let self = this
+    let topicListToUse = []
     topics.forEach(function (at) {
       if (at.smart && at.linked_topics && at.linked_topics.length) {
         at.linked_topics.forEach(function (et) {
@@ -857,7 +859,7 @@ var query = {
         topicListToUse.push(at)
       }
     })
-    var args = {
+    let args = {
       topics: {$in: topicListToUse},
       safe: true,
       moderation_required: {$ne: true},
@@ -875,8 +877,8 @@ var query = {
   },
 
   delete_topic: function (user, oid, reallyDelete, callback) {
-    var self = this
-    var fullyDeleted = false
+    let self = this
+    let fullyDeleted = false
     logger.log('debug', 'Deleting topic', oid, user._id)
     db.topics.findAndModify({
       query: {_id: db.ObjectId('' + oid)},
@@ -942,7 +944,7 @@ var query = {
   },
 
   undelete_topic: function (user, oid, callback) {
-    var self = this
+    let self = this
     logger.log('debug', 'UnDeleting topic', oid, user._id)
     db.topics.findAndModify({
       query: {_id: db.ObjectId('' + oid)},
@@ -988,9 +990,9 @@ var query = {
     if (link_out) {
       link_out = _.uniq(link_out)
     }
-    var _doRename = function (atopic) {
+    let _doRename = function (atopic) {
       logger.log('info', 'Renaming :', atopic.name, 'to', name, 'id', id)
-      var newTopic = _.clone(atopic)
+      let newTopic = _.clone(atopic)
       newTopic['id'] = id
       newTopic['name'] = name
       newTopic['safe'] = true
@@ -1018,13 +1020,13 @@ var query = {
               callback(null, atopic)
               return
             }
-            var oldpath = '^' + (atopic.path ? atopic.path : ',') + atopic.id + ','
-            var newpath = (atopic.path ? atopic.path : ',') + id + ','
-            var total_topics = stopics.length
-            var done = 0
+            let oldpath = '^' + (atopic.path ? atopic.path : ',') + atopic.id + ','
+            let newpath = (atopic.path ? atopic.path : ',') + id + ','
+            let total_topics = stopics.length
+            let done = 0
             logger.log('info', stopics.length, 'topics will get renamed too!')
             stopics.forEach(function (stop) {
-              var changedPath = stop.path.replace(new RegExp(util.pathify(oldpath)), newpath)
+              let changedPath = stop.path.replace(new RegExp(util.pathify(oldpath)), newpath)
               logger.log('debug', 'rename', oldpath, changedPath, newpath)
               stop['path'] = changedPath
               stop['last_updated'] = new Date()
@@ -1042,8 +1044,8 @@ var query = {
         })
     } // _doRename
 
-    var _doReshift = function (atopic) {
-      var curr_path = atopic.path
+    let _doReshift = function (atopic) {
+      let curr_path = atopic.path
       logger.log('info', 'Reshifting :', atopic.name, 'from', curr_path, 'to', path)
       atopic['path'] = path
       atopic['name'] = name
@@ -1068,14 +1070,14 @@ var query = {
               callback(err, atopic)
               return
             }
-            var oldpath = '^' + (curr_path || ',') + atopic.id + ','
-            var newpath = path + atopic.id + ','
-            var total_topics = stopics.length
-            var done = 0
+            let oldpath = '^' + (curr_path || ',') + atopic.id + ','
+            let newpath = path + atopic.id + ','
+            let total_topics = stopics.length
+            let done = 0
             logger.log('info', stopics.length, 'topics will get reshifted too!')
 
             stopics.forEach(function (stop) {
-              var changedPath = stop.path.replace(new RegExp(util.pathify(oldpath)), newpath)
+              let changedPath = stop.path.replace(new RegExp(util.pathify(oldpath)), newpath)
               logger.log('debug', 'Reshift', oldpath, changedPath, newpath)
               stop['path'] = changedPath
               stop['last_updated'] = new Date()
@@ -1094,10 +1096,10 @@ var query = {
         })
     } // _doReshift
 
-    var added_by = user._id
-    var self = this
+    let added_by = user._id
+    let self = this
     // Handle new topics and rename
-    var dbargs = {
+    let dbargs = {
       id: id,
       path: path
     }
@@ -1126,7 +1128,7 @@ var query = {
               return
             } else {
               // Is there an existing main topic with the new name. If yes, does the user have edit access
-              var newTopicCheckArgs = {
+              let newTopicCheckArgs = {
                 id: id,
                 path: path
               }
@@ -1165,7 +1167,7 @@ var query = {
               callback('NO_PERMISSION', atopic)
               return
             } else {
-              var newTopicCheckArgs = util.split_path(path)
+              let newTopicCheckArgs = util.split_path(path)
               logger.log('debug', 'Fetching existing topic', newTopicCheckArgs, path)
               db.topics.findOne(newTopicCheckArgs, function (err, exisPathTopic) {
                 if (err) {
@@ -1224,7 +1226,7 @@ var query = {
         }
       } else {
         if (util.empty(oid)) { // Topic is new
-          var newTopic = {
+          let newTopic = {
             id: id,
             name: name,
             path: path,
@@ -1242,17 +1244,17 @@ var query = {
           logger.log('debug', 'Creating new topic', newTopic.id, newTopic.path)
           Step(
             function findDiscussId () {
-              var paths = null
-              var self = this
+              let paths = null
+              let self = this
               if (path) {
                 paths = path.split(',')
               }
               if (!path) { // This is the parent
                 db.topics.findOne({id: id, path: null}, self)
               } else if (paths && paths.length > 1 && paths[1]) {
-                var parentList = util.getParents(id, path)
+                let parentList = util.getParents(id, path)
                 if (parentList && parentList.length) {
-                  var immParent = parentList[parentList.length - 1]
+                  let immParent = parentList[parentList.length - 1]
                   db.topics.findOne({id: immParent.id, path: immParent.path}, self)
                 } else {
                   db.topics.findOne({id: paths[1], path: null}, self)
@@ -1265,7 +1267,7 @@ var query = {
               if (err) {
                 return callback(err)
               }
-              var self = this
+              let self = this
               if (parentTopic) {
                 // logger.debug('parentTopic is', parentTopic.name, parentTopic.discuss_id, parentTopic.permission_key)
                 if (parentTopic.discuss_id) {
@@ -1289,7 +1291,7 @@ var query = {
                   // if collaborator is adding a new topic under the parent topic,
                   // the collaborator who is the owner of the new topic, is added as collaborator to the new topic.
                   // Fix: remove the owner from the collaborator list. See Bug#385
-                  var collaboratorList = []
+                  let collaboratorList = []
                   newTopic.collaborators.forEach(function (collaborator) {
                     if (collaborator !== newTopic.added_by) {
                       collaboratorList.push(collaborator)
@@ -1301,7 +1303,7 @@ var query = {
                 if (parentTopic.colearnrs) {
                   newTopic.colearnrs = parentTopic.colearnrs || []
                   // Fix: remove the owner from the collaborator list. See Bug#385
-                  var colearnrList = []
+                  let colearnrList = []
                   newTopic.colearnrs.forEach(function (acolearnr) {
                     if (acolearnr !== newTopic.added_by) {
                       colearnrList.push(acolearnr)
@@ -1375,10 +1377,10 @@ var query = {
   },
 
   update_learn_bit: function (id, oldValue, newValue, type, callback) {
-    var set_map = {
+    let set_map = {
       'last_updated': new Date()
     }
-    var self = this
+    let self = this
     if (type === 'topics') {
       self.getIdForTopic(newValue, function (err, atopic) {
         if (err) {
@@ -1396,8 +1398,8 @@ var query = {
   },
 
   update_topic_quick: function (id, oldValue, newValue, type, callback) {
-    var self = this
-    var set_map = {
+    let self = this
+    let set_map = {
       'last_updated': new Date()
     }
     set_map[type] = newValue
@@ -1407,12 +1409,12 @@ var query = {
       db.topics.findOne({_id: db.ObjectId('' + id)}, function (err, parentTopic) {
         if (!err && parentTopic) {
           db.topics.update({_id: db.ObjectId('' + id)}, {$set: set_map})
-          var oldId = parentTopic.id
+          let oldId = parentTopic.id
           self.get_sub_topics(null, parentTopic.path, parentTopic.id, false, function (err, stopics) {
             if (!err && stopics) {
               stopics.forEach(function (atopic) {
-                var oldPath = atopic.path
-                var newPath = oldPath.replace(oldId, set_map['id'])
+                let oldPath = atopic.path
+                let newPath = oldPath.replace(oldId, set_map['id'])
                 logger.log('debug', 'Re-shifting topic', atopic.id, 'from', oldPath, 'to', newPath)
                 db.topics.update({_id: db.ObjectId('' + atopic._id)}, {$set: {path: newPath}})
               })
@@ -1430,7 +1432,7 @@ var query = {
   },
 
   create_topic_from_search: function (q, user, callback) {
-    var args = {
+    let args = {
       name: q,
       id: util.idify(q),
       path: ',' + user._id + ',search,',
@@ -1447,7 +1449,7 @@ var query = {
   },
 
   create_topic: function (path, name, id, order, author, discuss_id, permission_key, callback) {
-    var args = {
+    let args = {
       id: id,
       name: name,
       path: path,
@@ -1465,13 +1467,13 @@ var query = {
   },
 
   find_or_create_topic: function (path, name, id, order, author, discuss_id, permission_key, callback) {
-    var user = {_id: author}
+    let user = {_id: author}
     db.topics.findOne({path: path, id: id, added_by: author}, {id: 1}, function (err, topicObj) {
       if (!topicObj) {
         // console.log("Create Topic", path, id, order, name)
         Step(
           function findDiscussId () {
-            var paths = null
+            let paths = null
             if (path) {
               paths = path.split(',')
             }
@@ -1491,7 +1493,7 @@ var query = {
             }
 
             // console.log('Create topic', id, discuss_id, name, path, 'pt:', parentTopic)
-            var updateArgs = {
+            let updateArgs = {
               id: id,
               name: name,
               path: path,
@@ -1574,7 +1576,7 @@ var query = {
   },
 
   get_video_last_position: function (user, lbit_oid, topic_oid, callback) {
-    var MIN_SECONDS = 10
+    let MIN_SECONDS = 10
     if (!user || user._id === 'guest') {
       callback(null, null)
       return
@@ -1587,11 +1589,11 @@ var query = {
     }).sort({
       timestamp: -1
     }).limit(1, function (err, rows) {
-      var row = (rows && rows.length) ? rows[0] : null
+      let row = (rows && rows.length) ? rows[0] : null
       if (err || !row) {
         callback(err, null)
       } else {
-        var value = null
+        let value = null
         if (row.e && row.e !== 'end') {
           value = parseInt(row.t, 10)
         }
@@ -1609,11 +1611,11 @@ var query = {
       id: '' + lbit_oid, topic_id: '' + topic_oid, user: '' + user._id, type: 'pdf',
       e: 'scroll'
     }, {id: 1, page: 1, e: 1}).sort({timestamp: -1}).limit(1, function (err, rows) {
-      var row = (rows && rows.length) ? rows[0] : null
+      let row = (rows && rows.length) ? rows[0] : null
       if (err || !row) {
         callback(err, null)
       } else {
-        var value = null
+        let value = null
         if (row.e && row.e !== 'error' && row.e !== 'docloadError') {
           value = parseInt(row.page, 10)
         }
@@ -1627,18 +1629,18 @@ var query = {
       callback(null, null)
       return
     }
-    var self = this
-    var MIN_PERCENT = 0.1
+    let self = this
+    let MIN_PERCENT = 0.1
     duration = (duration) ? parseInt(duration) : null
     db.vanalytics.find({
       lbit_id: lbit_oid, topic_id: topic_oid, user: '' + user._id, e: 'end'
     }, {t: 1, timestamp: 1, e: 1}).sort({
       timestamp: -1
     }).limit(1, function (err, rows) {
-      var row = (rows && rows.length) ? rows[0] : null
+      let row = (rows && rows.length) ? rows[0] : null
       if (err || !row) {
         self.get_video_last_position(user, lbit_oid, topic_oid, function (err, value) {
-          var ret = false
+          let ret = false
           if (!err && value && duration && value > MIN_PERCENT * duration) {
             ret = true
           }
@@ -1651,15 +1653,15 @@ var query = {
   },
 
   create_path_tree: function (name, path, discuss_id, permission_key, callback) {
-    var paths = path.split(',')
-    var tmpPath = null
-    var self = this
-    var done = 0
-    var order = null
+    let paths = path.split(',')
+    let tmpPath = null
+    let self = this
+    let done = 0
+    let order = null
     paths.forEach(function (apath, index) {
       if (apath) {
         if (apath.indexOf(':') !== -1) {
-          var tmpA = apath.split(':')
+          let tmpA = apath.split(':')
           apath = tmpA[1]
           order = tmpA[0]
         }
@@ -1715,7 +1717,7 @@ var query = {
 
   remove_all_links: function (user, parent_topic, callback) {
     if (parent_topic && parent_topic._id) {
-      var oid = '' + parent_topic._id
+      let oid = '' + parent_topic._id
       db.topics.update({_id: db.ObjectId(oid)}, {
         $set: {
           'link_out': [],
@@ -1741,9 +1743,9 @@ var query = {
 
   add_sub_topic: function (user, parent_topic, sub_topic, linkTopic, callback) {
     // Reset all topic specific values
-    var self = this
-    var stopicid = '' + sub_topic._id
-    var newTopicCopy = sub_topic
+    let self = this
+    let stopicid = '' + sub_topic._id
+    let newTopicCopy = sub_topic
     newTopicCopy = self.virginify_topic(user, newTopicCopy)
     // Is this topic linked with something else.
     if (linkTopic) {
@@ -1798,7 +1800,7 @@ var query = {
 
   is_subtopic_collaborator: function (user, topic, callback) {
     if (user && !user.guestMode && topic) {
-      var path = topic.path ? topic.path : ','
+      let path = topic.path ? topic.path : ','
       path = path + topic.id + ','
       db.topics.find({path: new RegExp('^' + path), collaborators: user._id}, function (err, topics) {
         if (err || !topics || !topics.length) {
@@ -1816,7 +1818,7 @@ var query = {
     if (err || !resultObj) {
       callback(err, null)
     } else {
-      var ret = null
+      let ret = null
       if (resultObj && resultObj.length && resultObj[0] && resultObj[0].count) {
         ret = resultObj[0].count
       }
@@ -1825,7 +1827,7 @@ var query = {
   },
 
   get_total_active_users: function (callback) {
-    var self = this
+    let self = this
     db.users.aggregate([
       {$match: {emails: {$not: /colearnr/}, hidden: {$ne: true}}},
       {$group: {_id: null, count: {$sum: 1}}}
@@ -1835,7 +1837,7 @@ var query = {
   },
 
   get_user_topics_count: function (user, callback) {
-    var self = this
+    let self = this
     db.topics.aggregate([
       {$match: {added_by: user._id, id: {$not: /^new-topic/}}},
       {$group: {_id: null, count: {$sum: 1}}}
@@ -1845,8 +1847,8 @@ var query = {
   },
 
   get_random_topics: function (user, count, callback) {
-    var self = this
-    var orList = []
+    let self = this
+    let orList = []
     if (user && user._id && !user.guestMode) {
       orList.push({added_by: user._id})
       orList.push({collaborators: user._id})
@@ -1868,8 +1870,8 @@ var query = {
   },
 
   expandUsers: function (topicObj, callback) {
-    var users = []
-    var userObjMap = {}
+    let users = []
+    let userObjMap = {}
     if (!topicObj) {
       return topicObj
     }
@@ -1881,7 +1883,7 @@ var query = {
       if (allusers && allusers.length) {
         allusers.forEach(function (auser) {
           if (util.validEmail(auser)) {
-            var id = util.create_hash(auser)
+            let id = util.create_hash(auser)
             users.push(id)
           } else {
             users.push(auser)
@@ -1891,7 +1893,7 @@ var query = {
     }
 
     function _expand (allusers) {
-      var usersList = []
+      let usersList = []
       if (allusers && allusers.length) {
         allusers.forEach(function (auser) {
           if (userObjMap[auser]) {
@@ -1923,12 +1925,12 @@ var query = {
   },
 
   _processRandomTopics: function (user, count, topics, callback) {
-    var self = this
-    var random_topics = []
+    let self = this
+    let random_topics = []
     if (!topics || !topics.length) {
       callback(null, null)
     }
-    var done = 0
+    let done = 0
     topics.forEach(function (topic, index) {
       self.get_first_childs(user, topic.path, topic.id, true, function (err, child) {
         if (err) {

@@ -1,17 +1,19 @@
-var config = require('../lib/config').config
-var perms = require('../lib/perms')
-var query = require('../common/query')
-var constants = require('../common/constants')
-var _ = require('lodash')
-// var logger = require('../common/log')
-var LRU = require('lru-cache')
-var options = {
+'use strict'
+
+let config = require('../lib/config').config
+let perms = require('../lib/perms')
+let query = require('../common/query')
+let constants = require('../common/constants')
+let _ = require('lodash')
+// let logger = require('../common/log')
+let LRU = require('lru-cache')
+let options = {
   max: 50, maxAge: 1000 * 10
 }
-var cache = LRU(options)
-var elasticsearchHosts = config.es || 'localhost'
-var elasticsearch = require('elasticsearch')
-var client = new elasticsearch.Client({
+let cache = LRU(options)
+let elasticsearchHosts = config.es || 'localhost'
+let elasticsearch = require('elasticsearch')
+let client = new elasticsearch.Client({
   hosts: elasticsearchHosts,
   sniffOnStart: true,
   sniffInterval: 60000,
@@ -26,7 +28,7 @@ function getClientSuffix () {
 }
 
 client.countLearnbits = function (data, callback) {
-  var cparams = {
+  let cparams = {
     index: 'learnbitsindex' + getClientSuffix(),
     type: 'learnbits'
   }
@@ -48,11 +50,11 @@ client.findLearnbits = function (data, count, callback) {
   if (data.autoComplete) {
     count = constants.AUTO_COMPLETE_COUNT
   }
-  var fromIndex = 0
+  let fromIndex = 0
   if (data.pg && data.pgSize) {
     fromIndex = (data.pg - 1) * data.pgSize
   }
-  var searchParams = {
+  let searchParams = {
     index: 'learnbitsindex' + getClientSuffix(),
     type: 'learnbits',
     from: fromIndex,
@@ -87,11 +89,11 @@ client.findTopics = function (data, count, callback) {
   if (data.autoComplete) {
     count = constants.AUTO_COMPLETE_COUNT
   }
-  var fromIndex = 0
+  let fromIndex = 0
   if (data.pg && data.pgSize) {
     fromIndex = (data.pg - 1) * data.pgSize
   }
-  var searchParams = {
+  let searchParams = {
     index: 'topicsindex' + getClientSuffix(),
     type: 'topics',
     from: fromIndex,
@@ -126,11 +128,11 @@ client.findUsers = function (data, count, callback) {
   if (data.autoComplete) {
     count = constants.AUTO_COMPLETE_COUNT
   }
-  var fromIndex = 0
+  let fromIndex = 0
   if (data.pg && data.pgSize) {
     fromIndex = (data.pg - 1) * data.pgSize
   }
-  var searchParams = {
+  let searchParams = {
     body: getUsersQueryObject(data),
     index: 'usersindex' + getClientSuffix(),
     type: 'users',
@@ -156,7 +158,7 @@ client.findUsers = function (data, count, callback) {
 }
 
 function getTopicList (data, prefix, callback) {
-  var user = data.user
+  let user = data.user
   perms.isAllTopicAdmin(user, function (err, isAdmin) {
     if (err) {
       return callback(err)
@@ -165,7 +167,7 @@ function getTopicList (data, prefix, callback) {
       callback(null, {user: user, isAdmin: isAdmin, topicList: null})
       return
     }
-    var topicList = cache.get('topicList-' + prefix + user._id)
+    let topicList = cache.get('topicList-' + prefix + user._id)
     if (topicList && topicList.length) {
       callback(null, {user: user, isAdmin: isAdmin, topicList: topicList})
     } else {
@@ -176,28 +178,28 @@ function getTopicList (data, prefix, callback) {
           callback(err, {user: user, isAdmin: isAdmin, topicList: topicList})
         }
         else {
-          var topics = topicsMap['own_topics'] || [],
+          let topics = topicsMap['own_topics'] || [],
             collab_topics = topicsMap['collab_topics'] || [],
             colearnr_topics = topicsMap['colearnr_topics'] || [],
             followed_topics = topicsMap['followed_topics'] || [],
             termKey = prefix + '_id'
           collab_topics.forEach(function(atopic) {
             if (atopic && atopic._id) {
-              var tmap = {}
+              let tmap = {}
               tmap[termKey] = atopic._id
               topicList.push({'term': tmap})
             }
           })
           colearnr_topics.forEach(function(atopic) {
             if (atopic && atopic._id) {
-              var tmap = {}
+              let tmap = {}
               tmap[termKey] = atopic._id
               topicList.push({'term': tmap})
             }
           })
           followed_topics.forEach(function(atopic) {
             if (atopic && atopic._id) {
-              var tmap = {}
+              let tmap = {}
               tmap[termKey] = atopic._id
               topicList.push({'term': tmap})
             }
@@ -215,10 +217,10 @@ function getTopicList (data, prefix, callback) {
         if (err || !topics) {
           callback(err, { user: user, isAdmin: isAdmin, topicList: topicList })
         } else {
-          var termKey = prefix + '_id'
+          let termKey = prefix + '_id'
           topics.forEach(function (atopic) {
             if (atopic && atopic._id) {
-              var tmap = {}
+              let tmap = {}
               tmap[termKey] = atopic._id
               topicList.push({'term': tmap})
             }
@@ -232,8 +234,8 @@ function getTopicList (data, prefix, callback) {
 }
 
 function getLearnbitsQueryObject (data, dataMap) {
-  var topicList = dataMap.topicList
-  var shouldList = null
+  let topicList = dataMap.topicList
+  let shouldList = null
   if (!dataMap.isAdmin) {
     shouldList = []
     if (data.user && !data.user.guestMode) {
@@ -245,7 +247,7 @@ function getLearnbitsQueryObject (data, dataMap) {
     }
   }
 
-  var boolMap = {
+  let boolMap = {
     'must_not': [
       {'missing': {'field': 'topics'}}
     ]
@@ -253,19 +255,19 @@ function getLearnbitsQueryObject (data, dataMap) {
   if (shouldList) {
     boolMap['should'] = shouldList
   }
-  var fieldsList = ['title^4']
+  let fieldsList = ['title^4']
   if (!data.autoComplete) {
     fieldsList = _.union(fieldsList, ['description', 'tags^2', 'body'])
   }
   if (data.query.indexOf(':') !== -1 && !data.fieldsFilter) {
-    var tmpA = data.query.split(':')
+    let tmpA = data.query.split(':')
     data.fieldsFilter = tmpA[0].split('|')
     data.query = tmpA[1]
   }
   if (data.fieldsFilter && data.fieldsFilter.length) {
     fieldsList = data.fieldsFilter
   }
-  var queryObj = {
+  let queryObj = {
     'query': {
       'filtered': {
         'query': {
@@ -292,8 +294,8 @@ function getLearnbitsQueryObject (data, dataMap) {
 }
 
 function getTopicsQueryObject (data, dataMap) {
-  var topicList = dataMap.topicList
-  var shouldList = []
+  let topicList = dataMap.topicList
+  let shouldList = []
   if (!dataMap.isAdmin) {
     shouldList.push({'term': {'privacy_mode': 'public'}})
     if (data.user && !data.user.guestMode) {
@@ -304,24 +306,24 @@ function getTopicsQueryObject (data, dataMap) {
     }
   }
 
-  var boolMap = {
+  let boolMap = {
   }
   if (shouldList && shouldList.length) {
     boolMap['should'] = shouldList
   }
-  var fieldsList = ['name^4']
+  let fieldsList = ['name^4']
   if (!data.autoComplete) {
     fieldsList = _.union(fieldsList, ['description', 'tags^2', 'body'])
   }
   if (data.query.indexOf(':') !== -1 && !data.fieldsFilter) {
-    var tmpA = data.query.split(':')
+    let tmpA = data.query.split(':')
     data.fieldsFilter = tmpA[0].split('|')
     data.query = tmpA[1]
   }
   if (data.fieldsFilter && data.fieldsFilter.length) {
     fieldsList = data.fieldsFilter
   }
-  var queryObj = {
+  let queryObj = {
     'query': {
       'filtered': {
         'query': {
@@ -349,16 +351,16 @@ function getTopicsQueryObject (data, dataMap) {
 }
 
 function getUsersQueryObject (data) {
-  var fieldsList = ['name.first', 'name.middle', 'name.last', 'displayName', 'emails']
+  let fieldsList = ['name.first', 'name.middle', 'name.last', 'displayName', 'emails']
   if (data.query.indexOf(':') !== -1 && !data.fieldsFilter) {
-    var tmpA = data.query.split(':')
+    let tmpA = data.query.split(':')
     data.fieldsFilter = tmpA[0].split('|')
     data.query = tmpA[1]
   }
   if (data.fieldsFilter && data.fieldsFilter.length) {
     fieldsList = data.fieldsFilter
   }
-  var queryObj = {
+  let queryObj = {
     'query': {
       'filtered': {
         'query': {

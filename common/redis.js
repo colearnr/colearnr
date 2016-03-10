@@ -1,12 +1,12 @@
-;(function (module) {
-  'use strict'
+'use strict'
 
-  var RedisDB = null
-  var redis = require('redis')
-  var util = require('./util')
-  var logger = require('./log')
-  var config = require('../lib/config').config
-  var redis_socket_or_host = config.redis.host
+;(function (module) {
+  let RedisDB = null
+  let redis = require('redis')
+  let util = require('./util')
+  let logger = require('./log')
+  let config = require('../lib/config').config
+  let redis_socket_or_host = config.redis.host
 
   if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
     /* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */
@@ -32,7 +32,7 @@
     logger.error('Redis connection closed ' + err)
   })
 
-  var db = parseInt(config.redis.database, 10)
+  let db = parseInt(config.redis.database, 10)
   if (db) {
     RedisDB.select(db, function (error) {
       if (error !== null) {
@@ -51,7 +51,7 @@
    * A possibly more efficient way of doing multiple sismember calls
    */
   RedisDB.sismembers = function (key, needles, callback) {
-    var tempkey = key + ':temp:' + util.generateUUID()
+    let tempkey = key + ':temp:' + util.generateUUID()
     RedisDB.sadd(tempkey, needles, function () {
       RedisDB.sinter(key, tempkey, function (err, data) {
         RedisDB.del(tempkey)
@@ -66,9 +66,9 @@
   RedisDB.hmgetObject = function (key, fields, callback) {
     RedisDB.hmget(key, fields, function (err, data) {
       if (err === null) {
-        var returnData = {}
+        let returnData = {}
 
-        for (var i = 0, ii = fields.length; i < ii; ++i) {
+        for (let i = 0, ii = fields.length; i < ii; ++i) {
           returnData[fields[i]] = data[i]
         }
 
