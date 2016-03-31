@@ -33,7 +33,7 @@ We have auto installation script for [Ubuntu 15.10](docs/ubuntu-install.md) and 
 CoLearnr is a node.js/express.js application
 
 - Ubuntu/Debian/Centos/RHEL
-- Node 5.5.0
+- Node 5.9.1
 - Express 4.13.3
 - MongoDB 3.2
 - Redis 3.0.6
