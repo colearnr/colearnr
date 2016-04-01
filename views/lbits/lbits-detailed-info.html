@@ -11,9 +11,9 @@ var beingOptimised = !lbit.optimised && lbit.optimisation_started;
 <div class="detailed_info hidden-xs">
     <div class="item-user-info">
     <% if (lbit.userObj) { %>
-    <a href="<% if (lbit.userObj) { %><%- durl %>/user/<%- lbit.userObj._id %>/<%- lbit.userObj.slug || 'user' %><% } else { %>#<% } %>"><img src="<%- lbit.userObj.profileImage %>" class="lbit-by img-circle" alt="<%- lbit.userObj.displayName %>" /></a><span> By <a href="<% if (lbit.userObj) { %><%- durl %>/user/<%- lbit.userObj._id %>/<%- lbit.userObj.slug || 'user' %><% } else { %>#<% } %>"><%- lbit.userObj.displayName %></a></span>
+    <a href="<% if (lbit.userObj) { %><%- durl %>/user/<%- lbit.userObj._id %>/<%- lbit.userObj.slug || 'user' %><% } else { %>#<% } %>"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-original="<%- lbit.userObj.profileImage %>" class="lbit-by img-circle lazy" alt="<%- lbit.userObj.displayName %>" /></a><span> By <a href="<% if (lbit.userObj) { %><%- durl %>/user/<%- lbit.userObj._id %>/<%- lbit.userObj.slug || 'user' %><% } else { %>#<% } %>"><%- lbit.userObj.displayName %></a></span>
     <% } else { %>
-    <a href="#"><img src="<%- constants.DEFAULT_PROFILE_IMAGE %>" class="lbit-by img-circle" alt="Added by CoLearnr" /></a><span> By <a href="#">Team CoLearnr</a></span>
+    <a href="#"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-original="<%- constants.DEFAULT_PROFILE_IMAGE %>" class="lbit-by img-circle lazy" alt="Added by CoLearnr" /></a><span> By <a href="#">Team CoLearnr</a></span>
     <% } %>
     <% if (lbit.topics && lbit.topics.length) { %>
     <%

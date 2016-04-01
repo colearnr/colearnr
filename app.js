@@ -79,7 +79,7 @@ if (config.use_cluster && cluster.isMaster) {
 } else {
   let app = express()
   params.extend(app)
-  app.set('views', path.resolve(__dirname, '/views'))
+  app.set('views', path.resolve(__dirname, 'views'))
   app.set('view engine', 'ejs')
   app.set('view options', {layout: false})
   app.use(compression({

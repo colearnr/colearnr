@@ -60,6 +60,7 @@ function process (req, response) {
   let retMap = {}
   let user = req.user
   let noChildMode = req.query && (req.query.noChild === 'true' || req.query.noChild === '1')
+  let topicname = req.params['topicname'] || req.params['id'] || null
   function addData (key, data) {
     if (key) {
       let d = {}
@@ -103,7 +104,6 @@ function process (req, response) {
     }
     if (!topicParentMap || !topicParentMap['topic']) {
       // console.log("No such topic")
-      let topicname = req.params['topicname'] || req.params['id'] || null
       response.render('404.ejs', {topicname: topicname})
       return
     }
