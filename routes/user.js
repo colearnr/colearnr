@@ -358,16 +358,18 @@ exports.save_profile = function (req, res) {
     }
   }
   if (error_list.length) {
-    res.render('account/edit-profile.ejs', {
-      user: req.user,
-      oid: oid,
-      name: name,
-      email: email,
-      chat_id: null,
-      description: description,
-      profileImage: profileImage,
-      img_url: img_url,
-    error: error_list})
+    res.render('account/edit-profile.ejs',
+      {
+        user: req.user,
+        oid: oid,
+        name: name,
+        email: email,
+        chat_id: null,
+        description: description,
+        profileImage: profileImage,
+        img_url: img_url,
+        error: error_list
+      })
     return
   }
 
@@ -379,16 +381,18 @@ exports.save_profile = function (req, res) {
     }
     if (email !== userEmail && exisUser) {
       error = 'That email is associated with another account. Do you want to try to login first?'
-      res.render('account/edit-profile.ejs', {
-        user: req.user,
-        oid: oid,
-        name: name,
-        email: email,
-        chat_id: null,
-        description: description,
-        img_url: img_url,
-        profileImage: profileImage,
-      error: [error]})
+      res.render('account/edit-profile.ejs',
+        {
+          user: req.user,
+          oid: oid,
+          name: name,
+          email: email,
+          chat_id: null,
+          description: description,
+          img_url: img_url,
+          profileImage: profileImage,
+          error: [error]
+        })
       return
     }
     if (!exisUser || (req.user && req.user._id === exisUser._id)) {
@@ -409,15 +413,17 @@ exports.save_profile = function (req, res) {
       }
     } else {
       error = 'That email is in use already! Please use a different one.'
-      res.render('account/edit-profile.ejs', {
-        user: req.user,
-        oid: oid,
-        name: name,
-        email: email,
-        chat_id: null,
-        description: description,
-        profileImage: profileImage,
-      error: [error]})
+      res.render('account/edit-profile.ejs',
+        {
+          user: req.user,
+          oid: oid,
+          name: name,
+          email: email,
+          chat_id: null,
+          description: description,
+          profileImage: profileImage,
+          error: [error]
+        })
     }
   })
 }

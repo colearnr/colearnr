@@ -11,6 +11,7 @@ function check_password (req, res) {
   let user = req.query.user
   let server = req.query.server
   let password = req.query.pass
+  let email = user + '@' + server
   if (!user || !server || !password) {
     res.status(401).send('Not authorized')
     return
@@ -19,7 +20,6 @@ function check_password (req, res) {
   // Only authenticate if this server is servicing this chat domain.
   // Otherwise forward the request to a different server
   if (server === config.chat_domain) {
-    let email = user + '@' + server
     userlib.findByEmail(email, function (err, user) {
       if (err || !user) {
         logger.info(email, 'failed authentication for talk')
@@ -65,6 +65,7 @@ function check_password (req, res) {
 function user_exists (req, res) {
   let user = req.query.user
   let server = req.query.server
+  let email = user + '@' + server
   if (!user || !server) {
     res.status(404).send('Not found')
     return
