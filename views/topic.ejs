@@ -79,7 +79,7 @@ var isAdmin = user.roles && _.indexOf(user.roles, constants.ALL_TOPIC_ADMIN_ROLE
 <% } %>
 
 <!-- start: <%- topicObj.name %> -->
-<div id="wall" class="" <% if (user && user.hasAddPermission) { %>data-id="<%- topicObj._id %>"<% } %>>
+<div id="wall" <% if (user && user.hasAddPermission) { %>data-id="<%- topicObj._id %>"<% } %>>
     <% var ss_count = 1 %>
     <% var lbitIds = [] %>
     <% include includes/topic-alerts.html %>

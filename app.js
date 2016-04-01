@@ -87,27 +87,28 @@ if (config.use_cluster && cluster.isMaster) {
   }))
   app.use(bodyParser.urlencoded({
     extended: false,
-    limit: '5mb'
+    limit: '2mb'
   }))
   app.use(bodyParser.json({
-    limit: '5mb'
+    limit: '2mb'
   }))
   app.use(bodyParser.text({
     type: 'text/plain',
-    limit: '5mb'
+    limit: '2mb'
   }))
   app.use(bodyParser.text({
     type: 'application/xml',
-    limit: '5mb'
+    limit: '2mb'
   }))
   let maxAge = 28800
+  /*
   if (process.env.NODE_ENV === 'development') {
     maxAge = 0
     app.locals.pretty = true
   }
-
+  */
   let allowCrossDomain = function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Origin', config.corsUrl || '*')
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
     if (req.method === 'OPTIONS') {
@@ -139,7 +140,8 @@ if (config.use_cluster && cluster.isMaster) {
   let cookieArgs = {
     path: '/',
     maxAge: 1000 * 60 * 60 * 24 * 14,
-    httpOnly: true
+    httpOnly: true,
+    secure: config.port === 443
   }
 
   if (config.cookieDomain && config.cookieDomain !== 'localhost') {

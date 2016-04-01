@@ -155,6 +155,7 @@
             var dinfo = item.find('.detailed_info');
             var titleBar = item.find('.grid-title');
             var topicBtn = item.find('.lbit-topic-btn');
+            var profileImg = item.find('.lbit-by');
             item.removeClass('selectedLbit animated bounce');
             if (!item.hasClass("expanded")) { // deactivate click handler when showing expanded view (-> close button!)
                 added_date.show();
@@ -163,6 +164,10 @@
                 topicBtn.hide();
                 titleBar.removeClass('hide');
                 item.addClass("expanded");
+                if (profileImg.attr('src') && profileImg.attr('src') != profileImg.attr('data-original')) {
+                  profileImg.attr('src', profileImg.attr('data-original'));
+                }
+
                 flipcard.flippy({
                     direction: "LEFT",
                     duration: 100,
