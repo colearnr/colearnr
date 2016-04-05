@@ -101,7 +101,7 @@
         source: function(request, response) {
             var results = [];
             $.ajax({
-                url: '/api/lbit/search',
+                url: '/api/v1/lbit/search',
                 dataType: 'json',
                 data: {
                     q: request.term,
@@ -132,7 +132,7 @@
                 }
             });
             $.ajax({
-                url: '/api/topic/search',
+                url: '/api/v1/topic/search',
                 dataType: 'json',
                 data: {
                     q: request.term,
@@ -164,7 +164,7 @@
                 }
             });
             $.ajax({
-                url: '/api/user/search',
+                url: '/api/v1/user/search',
                 dataType: 'json',
                 data: {
                     q: request.term,
@@ -197,5 +197,5 @@
                 window.location = ui.item.link;
             }
         }
-    });    
+    });
 </script>

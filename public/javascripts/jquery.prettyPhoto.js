@@ -950,6 +950,7 @@
         settings.changepicturecallback(lbit_comments_count); // Callback!
 
         pp_open = true;
+        $.ajax({url: '/lbit_track?e=view&lbit_id=' + lbit_id + '&topic_id=' + topic_id});
       });
       _insert_gallery();
       pp_settings.ajaxcallback();

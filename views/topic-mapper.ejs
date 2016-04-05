@@ -214,7 +214,7 @@
             if (!oid) {
                 return;
             }
-            $.get('/api/topic/map/' + oid).done(function (tree_data) {
+            $.get('/api/v1/topic/map/' + oid).done(function (tree_data) {
                 if (tree_data && tree_data['category_map']) {
                     var idea = MAPJS.content(tree_data['category_map'], new Date().getTime());
                     mapModel.setIdea(idea, false);

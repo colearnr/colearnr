@@ -93,6 +93,11 @@ function process (req, response) {
       }
     }
     response.render('topic.ejs', data)
+    req.query = {
+      topic_id: data.topicObj._id,
+      e: 'view'
+    }
+    analytics.topic_track(req)
   }
 
   // let id = req.params['id']
@@ -355,7 +360,7 @@ function save_map (req, response) {
         logger.log('warn', 'Unable to push the new topic tree to the clients')
       }
       req.query = {
-        id: dbargs['_id'] || dbargs['id'],
+        topic_id: dbargs['_id'] || dbargs['id'],
         e: 'save_map'
       }
       analytics.topic_track(req)
@@ -642,7 +647,7 @@ function load_map (req, response, readOnly, pageView, isApi) {
   })
 
   req.query = {
-    id: dbargs['_id'] || dbargs['id'],
+    topic_id: dbargs['_id'] || dbargs['id'],
     e: 'load_map'
   }
   analytics.topic_track(req)
@@ -1017,7 +1022,7 @@ function edit_form (req, res) {
             }
           }
         )
-        req.query = {id: topic._id, e: 'edit_topic'}
+        req.query = {topic_id: topic._id, e: 'edit_topic'}
         analytics.topic_track(req)
       }
     })
@@ -1066,7 +1071,7 @@ function delete_topic (req, res, reallyDelete) {
         } else {
           res.redirect(redirectUrl)
         }
-        req.query = {id: topic._id, e: reallyDelete ? 'fulldelete' : 'delete'}
+        req.query = {topic_id: topic._id, e: reallyDelete ? 'fulldelete' : 'delete'}
         analytics.topic_track(req)
       } else {
         redirectUrl = '/topic/' + topic._id + '/' + topic.id
@@ -1102,7 +1107,7 @@ function delete_topic (req, res, reallyDelete) {
           } else {
             res.redirect(redirectUrl)
           }
-          req.query = {id: topic._id, e: reallyDelete ? 'fulldelete' : 'delete'}
+          req.query = {topic_id: topic._id, e: reallyDelete ? 'fulldelete' : 'delete'}
           analytics.topic_track(req)
         })
       }
@@ -1154,7 +1159,7 @@ function undelete_topic (req, res) {
         } else {
           res.redirect(redirectUrl)
         }
-        req.query = {id: topic._id, e: 'restore'}
+        req.query = {topic_id: topic._id, e: 'restore'}
         analytics.topic_track(req)
       }
     })

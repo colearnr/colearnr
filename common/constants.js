@@ -60,16 +60,16 @@ define('DELETE_PERMS', 'delete')
 // OTHERS
 define('PUBLIC', 'public')
 define('PRIVATE', 'private')
-define('SAFE_URL_LIST', ['/help', '/api/lbit/search', '/api/topic/search'])
+define('SAFE_URL_LIST', ['/help', '/api/v1/lbit/search', '/api/v1/topic/search'])
 
 // PROFILE IMAGES
-define('DEFAULT_PROFILE_IMAGE', 'https://d3k9jv14qr36q1.cloudfront.net/images/profile-icon.png')
+define('DEFAULT_PROFILE_IMAGE', '/images/profile-icon.png')
 
 // EMAILS
-define('FROM_ADDRESS', 'hello@colearnr.com')
+define('FROM_ADDRESS', 'hello@' + config.cookieDomain)
 define('FROM_NAME', 'Team CoLearnr')
 
-define('COLEARNR_COM', 'colearnr.com')
+define('COLEARNR_COM', config.cookieDomain)
 
 define('LEARN_TOPICS_COUNT', 10)
 define('POLL_CHOICES_COUNT', 3)
@@ -90,10 +90,10 @@ define('CL_PROTOCOL', 'cl://')
 
 define('MAX_DOWNLOAD_SIZE', 250000000)
 
-define('CLOUD_SERVERS', ['stream.colearnr.com', 'contrib.colearnr.com', config.upload_server_prefix])
-define('STREAM_SERVERS', ['stream.colearnr.com'])
+define('CLOUD_SERVERS', [config.upload_server_prefix])
+define('STREAM_SERVERS', [config.upload_server_prefix])
 
-define('ALLOWED_EMBED_DOMAINS', ['colearnr.com', 'drive.google.com', 'view.officeapps.live.com'])
+define('ALLOWED_EMBED_DOMAINS', [config.cookieDomain, 'drive.google.com', 'view.officeapps.live.com'])
 
 // STRINGS
 define('LIKED', 'Liked')

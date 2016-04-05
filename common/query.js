@@ -39,32 +39,33 @@ let query = {
     }
   },
 
-  getCommentCountForIds: function (objids, callback) {
-    let retMap = {}
-    let done = 0
-    if (!objids) {
-      callback(null, retMap)
-    }
-    objids.forEach(function (objid) {
-      RDB.get('topic:objid:' + objid + ':tid', function (err, tid) {
-        if (err || !tid) {
-          callback(err, retMap)
+  getViewCount: function (lbitId, topicId, userId, e, callback) {
+    e = e || 'view'
+    if (!lbitId && !topicId && !userId) {
+      callback(null, null)
+    } else {
+      let args = {}
+      // Fetch learnbit views
+      if (lbitId) {
+        args = {lbit_id: '' + lbitId, e: e, type: 'lbit'}
+        if (topicId) {
+          args['topic_id'] = topicId
         }
-        RDB.hget('topic:' + tid, 'postcount', function (err, count) {
-          if (count > 1000) {
-            count = '1k'
-          }
-          retMap[objid] = {
-            tid: tid,
-            count: count > 0 ? count - 1 : 0
-          }
-          done++
-          if (done === objids.length) {
-            callback(err, retMap)
-          }
-        })
-      })
-    })
+        if (userId) {
+          args['user'] = userId
+        }
+        return db.analytics.count(args, callback)
+      }
+      // Fetch just topic views
+      if (!lbitId && topicId) {
+        args = {topic_id: topicId, e: e, type: 'topic'}
+        if (userId) {
+          args['user'] = userId
+        }
+        return db.analytics.count(args, callback)
+      }
+      return callback(null, null)
+    }
   },
 
   getCommentCount: function (objid, callback) {

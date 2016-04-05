@@ -5,7 +5,7 @@
     require(['converse'], function (converse) {
         function initConverse(converse) {
             converse.initialize({
-                bosh_service_url: '/chat/http-bind',
+                bosh_service_url: '/api/v1/chat/http-bind',
                 i18n: locales['en'],
                 jid: '<%- req.user.chat_id || req.user.emails[0] %>',
                 api_key: 'KEY:<%- req.user.api_key %>',
@@ -33,7 +33,7 @@
                 expose_rid_and_sid: false,
                 animate: false,
                 xhr_user_search: true,
-                xhr_user_search_url: '/api/chat/search'
+                xhr_user_search_url: '/api/v1/chat/search'
             });
         }
         initConverse(converse);

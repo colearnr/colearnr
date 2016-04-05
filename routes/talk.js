@@ -53,7 +53,7 @@ function check_password (req, res) {
   } else {
     if (config.route_chat_auth) {
       logger.debug('Forwarding talk authentication to server', server)
-      let fwdServer = 'https://' + server + '/api/user/auth/check_password?user=' + user + '&pass=' + password + '&server=' + server
+      let fwdServer = 'https://' + server + '/api/v1/user/auth/check_password?user=' + user + '&pass=' + password + '&server=' + server
       request(fwdServer).pipe(res)
     } else {
       logger.warn(email, 'cannot be authenticated by this server!')
@@ -87,7 +87,7 @@ function user_exists (req, res) {
   } else {
     if (config.route_chat_auth) {
       logger.debug('Forwarding user check to server', server)
-      let fwdServer = 'https://' + server + '/api/user/auth/user_exists?user=' + user + '&server=' + server
+      let fwdServer = 'https://' + server + '/api/v1/user/auth/user_exists?user=' + user + '&server=' + server
       request(fwdServer).pipe(res)
     } else {
       logger.warn(email, 'cannot be verified by this server!')

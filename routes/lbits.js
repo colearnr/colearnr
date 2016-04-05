@@ -390,6 +390,11 @@ function del_lbit (req, res) {
       res.status(500).send('Unable to delete the learnbit. Please try after some time.')
     } else {
       res.send(SUCCESS)
+      req.query = {
+        lbit_id: id,
+        e: 'delete'
+      }
+      analytics.lbit_track(req)
       if (global.socket) {
         global.socket.emit('send:dellbit', {data: id, topic: {_id: topicid}, user: user, sessionid: sessionid})
       } else {
@@ -647,6 +652,12 @@ function save_edit_full (req, res) {
             logger.log('warn', 'Unable to push the changes to the clients')
           }
         })
+
+        req.query = {
+          lbit_id: oid,
+          e: 'edit'
+        }
+        analytics.lbit_track(req)
       }
     })
   }
@@ -760,6 +771,11 @@ function view (req, res) {
           logger.log('error', 'Unable to retrieve the topic for the learnbit. Please try after some time.', err, topicId)
           return
         } else {
+          req.query = {
+            lbit_id: oid,
+            topic_id: topicId,
+            e: 'view'
+          }
           analytics.lbit_track(req)
           if (topic) {
             lbit.user_role = topic.user_role
@@ -883,6 +899,10 @@ function download (req, res) {
               .pipe(res)
           }
         }
+        req.query = {
+          lbit_id: oid,
+          e: 'download'
+        }
         analytics.lbit_track(req)
       } else {
         res.status(500).send('Download is not supported for this learnbit')
@@ -995,6 +1015,10 @@ function like (req, response) {
       db.learnbits.save(lbit, function (err, nlbit) {
         if (!err) {
           response.send({liked: liked, likes: lbit.likes.length})
+          req.query = {
+            lbit_id: lbit_id,
+            e: 'like'
+          }
           analytics.lbit_track(req)
         } else {
           logger.log('error', 'Error while liking lbit', err, lbit_id)
@@ -1027,6 +1051,12 @@ function view_tracks (req, res) {
       let track_list = lbit['track_' + type] || ''
       let vttData = util.createWebVTT(track_list, lbit.video_duration || null)
       res.send(vttData)
+
+      req.query = {
+        lbit_id: oid,
+        e: 'view_tracks'
+      }
+      analytics.lbit_track(req)
     }
   })
 }
@@ -1048,6 +1078,11 @@ function optimise (req, res) {
     } else {
       if (util.isOptimisationSupported(lbit.type, null)) {
         res.send({started: true})
+        req.query = {
+          lbit_id: oid,
+          e: 'optimise'
+        }
+        analytics.lbit_track(req)
         optimiseLib.processLearnbit(lbit, function (err, lb) {
           if (err) {
             logger.log('error', 'Error during optimisation of lbit', err, oid)
@@ -1172,6 +1207,24 @@ function media_upload (req, res) {
   }
 }
 
+function count_api (req, res) {
+  let type = req.query['type'] || 'view'
+  let oid = req.params.oid
+  let topicId = req.query['topic_id'] || null
+  let user = req.user
+  if (util.validOid(oid)) {
+    query.getViewCount(oid, topicId, '' + user._id, type, function (e, count) {
+      if (e) {
+        res.json({})
+      } else {
+        res.json({oid: oid, type: type, count: count})
+      }
+    })
+  } else {
+    res.json({})
+  }
+}
+
 exports.save_edit = function (req, res) {
   save_edit(req, res)
 }
@@ -1242,4 +1295,8 @@ exports.like = function (req, res) {
 
 exports.view_tracks = function (req, res) {
   view_tracks(req, res)
+}
+
+exports.count_api = function (req, res) {
+  count_api(req, res)
 }
