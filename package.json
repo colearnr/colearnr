@@ -57,7 +57,7 @@
     "sendgrid": "^2.0.0",
     "serve-static": "^1.10.0",
     "sitemap": "^1.6.0",
-    "socket.io": "git://github.com/colearnr/socket.io.git#0.9.18",
+    "socket.io": "git://github.com/colearnr/socket.io.git#0.9.19",
     "socket.io-client": "0.9.17",
     "step": "^0.0.6",
     "unembed": "^1.0.5",
