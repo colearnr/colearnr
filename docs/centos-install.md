@@ -6,7 +6,7 @@
 
 ## Pre-requisites
 
-- Node.js 4 or 5. Tested with 5.9.1 (https://nodejs.org/dist/v5.9.1/node-v5.9.1-linux-x64.tar.xz)
+- Node.js 4 or 6. Tested with 6.2.0 (https://nodejs.org/dist/v6.2.0/node-v6.2.0-linux-x64.tar.xz)
 - Python 2.7 (For node-gyp)
 - MongoDB 3.0 or higher. Tested with 3.2 (Follow instructions in https://docs.mongodb.org/master/tutorial/install-mongodb-on-red-hat/)
 - Redis 3.0 or higher. Tested with 3.0.7 (http://download.redis.io/releases/redis-3.0.7.tar.gz)
@@ -19,8 +19,8 @@ yum install -y gcc gcc-c++ python python-setuptools pam-devel java-1.7.0-openjdk
 
 # Install node 5
 cd /tmp
-wget https://nodejs.org/dist/v5.9.1/node-v5.9.1-linux-x64.tar.xz
-cd /usr && tar --strip-components 1 -xf /tmp/node-v5.9.1-linux-x64.tar.xz
+wget https://nodejs.org/dist/v6.2.0/node-v6.2.0-linux-x64.tar.xz
+cd /usr && tar --strip-components 1 -xf /tmp/node-v6.2.0-linux-x64.tar.xz
 ```
 
 ### Optional sass support for customisation

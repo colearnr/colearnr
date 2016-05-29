@@ -1,23 +1,23 @@
 # Ubuntu dev setup
 
+Interested in contributing or extending CoLearnr for your own purpose? These instructions would help you setup a working dev environment in no time.
+
 ## Versions tested
-- 15.10 (Wily Werewolf)
-- 15.04 (Vivid Vervet)
-- 14.04 (Trusty Tahr)
+- 16.04 (Xenial Xerus)
 
 ## Pre-requisites
 
-- Node.js 4 or 5. Tested with 5.5.0 (https://nodejs.org/dist/v5.5.0/node-v5.5.0-linux-x64.tar.gz)
+- Node.js 4 or 6. Tested with 6.2.0 (https://nodejs.org/dist/v6.2.0/node-v6.2.0-linux-x64.tar.gz)
 - Python 2.7 (For node-gyp)
-- MongoDB 3.0 or higher. Tested with 3.2 (https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1410-clang-3.2.1.tgz)
+- MongoDB 2.6
 - Redis 3.0 or higher. Tested with 3.0.6 (http://download.redis.io/releases/redis-3.0.6.tar.gz)
 - Elasticsearch. Tested with 1.7.3 (https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.3.deb)
 - LibreOffice 4 or 5.
 
 ```
-# Install node 5
+# Install node 6
 sudo apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
-curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Install ubuntu default versions
@@ -28,12 +28,7 @@ sudo apt-get install -y mongodb redis-server libreoffice python2.7
 Stylesheets are based on compass framework (http://compass-style.org). Use the below commands to install compass.
 
 ```
-# For 15.10 and 15.04
-sudo apt-get install -y ruby2.1 ruby-compass
-
-# For 14.04 install ruby 2.0
-sudo apt-get install -y ruby2.0 ruby-compass
-
+sudo apt-get install -y ruby2.3 ruby-compass
 ```
 
 ## Build/Download CoLearnr
@@ -50,7 +45,7 @@ PWD=`pwd`
 npm config set python python2.7
 
 # Install global dependencies
-sudo npm install -g jscs jshint grunt grunt-cli gulp gulp-cli bower nodemon
+sudo npm install -g jscs jshint grunt grunt-cli gulp gulp-cli bower nodemon standard standard-format
 
 # clone and build the main app
 git clone https://github.com/colearnr/colearnr.git

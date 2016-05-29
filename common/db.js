@@ -1,7 +1,8 @@
 'use strict'
 
-let databaseURI = require('./dbURI')
-let collections = ['users', 'topics', 'learnbits', 'vanalytics', 'userdata', 'analytics', 'app_analytics', 'urls', 'user_invites', 'crm_contacts', 'access_tokens']
-let db = require('mongojs').connect(databaseURI, collections)
+const databaseURI = require('./dbURI')
+const mongojs = require('mongojs')
+const collections = ['users', 'topics', 'learnbits', 'vanalytics', 'userdata', 'analytics', 'app_analytics', 'urls', 'user_invites', 'crm_contacts', 'access_tokens']
+const db = mongojs(databaseURI, collections)
 
 module.exports = db

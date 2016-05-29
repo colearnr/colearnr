@@ -96,6 +96,10 @@ fi
 # Setting up database
 mongo < $INSTALL_DIR/colearnr/scripts/db-bootstrap.js
 
+systemctl enable mongodb
+systemctl enable redis-server
+systemctl enable elasticsearch
+
 # Cleanup
 rm -rf $DOWNLOAD_DIR
 chown -R colearnr:colearnr $INSTALL_DIR

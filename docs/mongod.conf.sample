@@ -22,10 +22,10 @@ storage:
       prefixCompression: true
 operationProfiling:
    slowOpThresholdMs: 250
-   mode: slowOp      
+   mode: slowOp
 processManagement:
-  pidFilePath: "/var/run/mongodb/mongod.pid"
-  fork: true  
+  pidFilePath: "/tmp/mongod.pid"
+  fork: true
 net:
   port: 27017
   http:
