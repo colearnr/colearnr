@@ -47,6 +47,9 @@ lxc exec colearnr-dev -- cd /cl/discuss && npm install
 ```
 
 ### DB setup
+> mongo
+rs.initiate({_id: 'clrs0', members: [{_id: 0, host: 'colearnr-dev:27017'}]});
+
 ```bash
 lxc exec colearnr-dev -- mongo < /cl/colearnr/scripts/db-bootstrap.js
 ```
