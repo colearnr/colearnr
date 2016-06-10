@@ -33,7 +33,7 @@ We have auto installation script for [Ubuntu 15.10](docs/ubuntu-install.md) and 
 CoLearnr is a node.js/express.js application
 
 - Ubuntu/Debian/Centos/RHEL
-- Node 5.9.1
+- Node 5 or 6
 - Express 4.13.3
 - MongoDB 3.2
 - Redis 3.0.6
@@ -53,3 +53,7 @@ Need some help here.
 ## Did you know?
 
 Nearly all of CoLearnr was developed by a single [developer](https://github.com/prabhu) who couldn't make the startup a commercial success.
+
+## Sponsors
+
+We would like to thank [Jetbrains](https://www.jetbrains.com/webstorm/?fromCoLearnr) for their free IDE license and [Azure](http://azure.microsoft.com) for free credits.

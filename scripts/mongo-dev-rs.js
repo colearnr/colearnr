@@ -1,0 +1,1 @@
+rs.initiate({_id: 'clrs0', members: [{_id: 0, host: 'colearnr-dev:27017'}]});
