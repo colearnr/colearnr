@@ -15,8 +15,6 @@ const elasticsearchHosts = config.es || 'localhost'
 const elasticsearch = require('elasticsearch')
 const client = new elasticsearch.Client({
   hosts: elasticsearchHosts,
-  sniffOnStart: false,
-  sniffInterval: 60000,
   maxRetries: 5
 })
 
