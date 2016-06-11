@@ -1,14 +1,14 @@
 'use strict'
 
-let db = require('./db')
-let log = require('./log')
-let util = require('./util')
-let cloud_lib = require('../lib/cloud')
-let http_utils = require('./http_utils')
-let extract_lib = require('./extract')
-let _ = require('lodash')
-let YT_URL_PREFIX = 'https://youtu.be/'
-let YT_URL_PARSER = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(feature\=player_embedded&))\??v?=?([^#\&\?]*).*/
+const db = require('./db')
+const log = require('./log')
+const util = require('./util')
+const cloud_lib = require('../lib/cloud')
+const http_utils = require('./http_utils')
+const extract_lib = require('./extract')
+const _ = require('lodash')
+const YT_URL_PREFIX = 'https://youtu.be/'
+const YT_URL_PARSER = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(feature\=player_embedded&))\??v?=?([^#\&\?]*).*/
 
 function getParam (param, url) {
   param = param.replace(/[\[]/g, '\\\[').replace(/[\]]/g, '\\\]')

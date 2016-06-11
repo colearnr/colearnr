@@ -1,21 +1,21 @@
 'use strict'
 
-let config = require('../lib/config').config
-let perms = require('../lib/perms')
-let query = require('../common/query')
-let constants = require('../common/constants')
-let _ = require('lodash')
+const config = require('../lib/config').config
+const perms = require('../lib/perms')
+const query = require('../common/query')
+const constants = require('../common/constants')
+const _ = require('lodash')
 // let logger = require('../common/log')
-let LRU = require('lru-cache')
-let options = {
+const LRU = require('lru-cache')
+const options = {
   max: 50, maxAge: 1000 * 10
 }
-let cache = LRU(options)
-let elasticsearchHosts = config.es || 'localhost'
-let elasticsearch = require('elasticsearch')
-let client = new elasticsearch.Client({
+const cache = LRU(options)
+const elasticsearchHosts = config.es || 'localhost'
+const elasticsearch = require('elasticsearch')
+const client = new elasticsearch.Client({
   hosts: elasticsearchHosts,
-  sniffOnStart: true,
+  sniffOnStart: false,
   sniffInterval: 60000,
   maxRetries: 5
 })

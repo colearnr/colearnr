@@ -1,15 +1,15 @@
 'use strict'
 
-let config_lib = require('../lib/config')
-let query = require('../common/query')
-let version = require('../version')
-let constants = require('../common/constants')
-let util = require('../common/util')
-let _ = require('lodash')
-let learnApps = require('../lib/apps')
-let urlUtils = require('url')
-let MobileDetect = require('mobile-detect')
-let perms = require('../lib/perms')
+const config_lib = require('../lib/config')
+const query = require('../common/query')
+const version = require('../version')
+const constants = require('../common/constants')
+const util = require('../common/util')
+const _ = require('lodash')
+const learnApps = require('../lib/apps')
+const urlUtils = require('url')
+const MobileDetect = require('mobile-detect')
+const perms = require('../lib/perms')
 
 function pageOptionsSetter (req, res, next) {
   // logger.log('debug', 'page options set')

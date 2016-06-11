@@ -1,17 +1,17 @@
 'use strict'
 
-let db = require('./db')
-let _ = require('lodash')
-let RDB = require('./redis')
-let logger = require('./log')
-let constants = require('./constants')
-let cloud_lib = require('../lib/cloud')
-let Step = require('step')
-let perms = require('../lib/perms')
-let async = require('async')
-let util = require('./util')
+const db = require('./db')
+const _ = require('lodash')
+const RDB = require('./redis')
+const logger = require('./log')
+const constants = require('./constants')
+const cloud_lib = require('../lib/cloud')
+const Step = require('step')
+const perms = require('../lib/perms')
+const async = require('async')
+const util = require('./util')
 
-let query = {
+const query = {
   _checkDeleteAccess: function (obj, user) {
     if (!obj.hidden || (obj.hidden && (obj.added_by === user._id || (obj.user_role && obj.user_role[user._id] && (obj.user_role[user._id] === constants.TOPIC_ADMIN_ROLE || obj.user_role[user._id] === constants.ADMIN_ROLE))))) {
       return true

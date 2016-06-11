@@ -1,11 +1,11 @@
 'use strict'
 
-let util = require('../common/util')
-let userlib = require('../lib/user')
-let logger = require('../common/log')
-let config = require('../lib/config').config
-let bcrypt = require('bcrypt')
-let request = require('request')
+const util = require('../common/util')
+const userlib = require('../lib/user')
+const logger = require('../common/log')
+const config = require('../lib/config').config
+const bcrypt = require('bcrypt')
+const request = require('request')
 
 function check_password (req, res) {
   let user = req.query.user

@@ -1,8 +1,8 @@
 'use strict'
 
-let db = require('../common/db')
-let query = require('../common/query')
-let _ = require('lodash')
+const db = require('../common/db')
+const query = require('../common/query')
+const _ = require('lodash')
 
 function _getHeaders (req, type) {
   let user = req.user || {_id: 'guest'}

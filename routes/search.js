@@ -1,11 +1,11 @@
 'use strict'
 
-let db = require('../common/db')
-let query = require('../common/query')
-let elasticsearch = require('../common/elasticsearch')
-let constants = require('../common/constants')
-let _ = require('lodash')
-let logger = require('../common/log')
+const db = require('../common/db')
+const query = require('../common/query')
+const elasticsearch = require('../common/elasticsearch')
+const constants = require('../common/constants')
+const _ = require('lodash')
+const logger = require('../common/log')
 
 function get_discuss_host (req) {
   let config_lib = require('../lib/config')

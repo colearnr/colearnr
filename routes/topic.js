@@ -1,26 +1,26 @@
 'use strict'
 
-let util = require('../common/util')
-let topicMapUtil = require('../common/util/topicMapUtil')
-let query = require('../common/query')
-let config = require('../lib/config').config
-let perms_lib = require('../lib/perms')
-let user_lib = require('../lib/user')
-let db = require('../common/db')
-let analytics = require('./analytics')
-let constants = require('../common/constants')
-let logger = require('../common/log')
-let Step = require('step')
-let wait = require('wait.for')
-let fs = require('fs')
-let GridFS = require('../lib/gridfs')
-let fse = require('fs-extra')
-let path = require('path')
-let es = require('../common/elasticsearch')
-let async = require('async')
-let _ = require('lodash')
+const util = require('../common/util')
+const topicMapUtil = require('../common/util/topicMapUtil')
+const query = require('../common/query')
+const config = require('../lib/config').config
+const perms_lib = require('../lib/perms')
+const user_lib = require('../lib/user')
+const db = require('../common/db')
+const analytics = require('./analytics')
+const constants = require('../common/constants')
+const logger = require('../common/log')
+const Step = require('step')
+const wait = require('wait.for')
+const fs = require('fs')
+const GridFS = require('../lib/gridfs')
+const fse = require('fs-extra')
+const path = require('path')
+const es = require('../common/elasticsearch')
+const async = require('async')
+const _ = require('lodash')
 // Number of recent learn bits to show
-let LIMIT_RECENT_BITS = 10
+const LIMIT_RECENT_BITS = 10
 
 function get_discuss_host (req) {
   let config_lib = require('../lib/config')

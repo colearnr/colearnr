@@ -1,15 +1,15 @@
 'use strict'
 
-let config = require('../lib/config')
-let query = require('../common/apps-query')
-let constants = require('../common/constants')
-let log = require('../common/log')
-let logger = require('../common/log')
-let util = require('../common/util')
-let analytics = require('./analytics')
-let entitlement = require('../lib/entitlement')
-let learnApps = require('../lib/apps')
-let perms = require('../lib/perms')
+const config = require('../lib/config')
+const query = require('../common/apps-query')
+const constants = require('../common/constants')
+const log = require('../common/log')
+const logger = require('../common/log')
+const util = require('../common/util')
+const analytics = require('./analytics')
+const entitlement = require('../lib/entitlement')
+const learnApps = require('../lib/apps')
+const perms = require('../lib/perms')
 
 function addAppRoutes (app, prefix, middlewares, preCallback, postCallback) {
   // logger.debug('Adding routes for apps')

@@ -2,11 +2,11 @@
 
 ;(function (module) {
   let RedisDB = null
-  let redis = require('redis')
-  let util = require('./util')
-  let logger = require('./log')
-  let config = require('../lib/config').config
-  let redis_socket_or_host = config.redis.host
+  const redis = require('redis')
+  const util = require('./util')
+  const logger = require('./log')
+  const config = require('../lib/config').config
+  const redis_socket_or_host = config.redis.host
 
   if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
     /* If redis.host contains a path name character, use the unix dom sock connection. ie, /tmp/redis.sock */

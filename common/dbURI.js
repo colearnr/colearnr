@@ -1,9 +1,9 @@
 'use strict'
 
-let config = require('../lib/config').config
-let numCPUs = require('os').cpus().length
-let maxPoolSize = config.db_pool_size || 20
-let authPrefix = ''
+const config = require('../lib/config').config
+const numCPUs = require('os').cpus().length
+const maxPoolSize = config.db_pool_size || 20
+const authPrefix = ''
 
 if (config.use_cluster) {
   maxPoolSize = Math.round(maxPoolSize / numCPUs)

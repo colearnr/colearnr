@@ -1,10 +1,10 @@
 'use strict'
 
-let db = require('../common/db')
-let _ = require('lodash')
-let permlib = require('../lib/perms')
-let logger = require('../common/log')
-let util = require('../common/util')
+const db = require('../common/db')
+const _ = require('lodash')
+const permlib = require('../lib/perms')
+const logger = require('../common/log')
+const util = require('../common/util')
 
 exports.list_annotations = function (req, res) {
   let lbit_oid = req.params['lbit_oid']

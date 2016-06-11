@@ -13,3 +13,5 @@ apps/
 .sass-cache
 public/dist/*
 .vscode/
+gulp-ruby-sass-0/
+.sass-cache/

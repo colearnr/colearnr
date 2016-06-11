@@ -1,6 +1,6 @@
 'use strict'
 
-let constants = require('../common/constants')
+const constants = require('../common/constants')
 
 function site_tour (req, res) {
   if (req.session) {

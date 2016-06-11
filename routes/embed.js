@@ -1,15 +1,15 @@
 'use strict'
 
-let util = require('../common/util')
-let query = require('../common/query')
-let db = require('../common/db')
-let constants = require('../common/constants')
-let AccessTokens = require('../lib/access-tokens')
-let logger = require('../common/log')
-let request = require('request')
-let create_lbit = require('../common/create_learn_bit')
-let url_utils = require('url')
-let _ = require('lodash')
+const util = require('../common/util')
+const query = require('../common/query')
+const db = require('../common/db')
+const constants = require('../common/constants')
+const AccessTokens = require('../lib/access-tokens')
+const logger = require('../common/log')
+const request = require('request')
+const create_lbit = require('../common/create_learn_bit')
+const url_utils = require('url')
+const _ = require('lodash')
 
 function doRender (res, lbit, topic, user, url, embedSize, info, extOptions) {
   logger.debug('Before embed', lbit._id, topic, url, embedSize)

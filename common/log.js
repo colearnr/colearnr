@@ -1,8 +1,8 @@
 'use strict'
 
-let winston = require('winston')
+const winston = require('winston')
 
-let log = new (winston.Logger)({
+const log = new (winston.Logger)({
   exitOnError: false,
   transports: [
     new (winston.transports.Console)({

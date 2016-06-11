@@ -1,14 +1,14 @@
 'use strict'
 
-let topic = require('./topic')
-let lbits = require('./lbits')
-let user = require('./user')
-let talk = require('./talk')
-let config = require('../lib/config').config
-let request = require('request')
-let passlib = require('../lib/pass')
+const topic = require('./topic')
+const lbits = require('./lbits')
+const user = require('./user')
+const talk = require('./talk')
+const config = require('../lib/config').config
+const request = require('request')
+const passlib = require('../lib/pass')
 const API_VERSION = config.API_VERSION || 1
-let API_PREFIX = '/api/v' + API_VERSION
+const API_PREFIX = '/api/v' + API_VERSION
 
 module.exports = function (app) {
   // Topic api

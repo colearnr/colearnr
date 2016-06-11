@@ -1,10 +1,10 @@
 'use strict'
 
-let util = require('../common/util')
-let db = require('../common/db')
-let constants = require('../common/constants')
-let logger = require('../common/log')
-let _ = require('lodash')
+const util = require('../common/util')
+const db = require('../common/db')
+const constants = require('../common/constants')
+const logger = require('../common/log')
+const _ = require('lodash')
 
 function view (req, res) {
 }

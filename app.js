@@ -20,25 +20,26 @@
  */
 'use strict'
 
-let express = require('express')
-let params = require('express-params')
-let http = require('http')
-let passlib = require('./lib/pass')
-let config = require('./lib/config').config
-let flash = require('connect-flash')
-let compression = require('compression')
-let session = require('express-session')
-let bodyParser = require('body-parser')
-let RedisStore = require('connect-redis')(session)
-let cookieParser = require('cookie-parser')
-let serveStatic = require('serve-static')
-let RDB = require('./common/redis')
-let logger = require('./common/log')
-let socketIOclient = require('socket.io-client')
-let learnApps = require('./lib/apps')
-let path = require('path')
-let cluster = require('cluster')
-let numCPUs = require('os').cpus().length
+const express = require('express')
+const params = require('express-params')
+const helmet = require('helmet')
+const http = require('http')
+const passlib = require('./lib/pass')
+const config = require('./lib/config').config
+const flash = require('connect-flash')
+const compression = require('compression')
+const session = require('express-session')
+const bodyParser = require('body-parser')
+const RedisStore = require('connect-redis')(session)
+const cookieParser = require('cookie-parser')
+const serveStatic = require('serve-static')
+const RDB = require('./common/redis')
+const logger = require('./common/log')
+const socketIOclient = require('socket.io-client')
+const learnApps = require('./lib/apps')
+const path = require('path')
+const cluster = require('cluster')
+const numCPUs = require('os').cpus().length
 
 function logErrors (err, req, res, next) {
   logger.log('error', 'logError', {stack: err.stack, user: req.user})
@@ -82,6 +83,7 @@ if (config.use_cluster && cluster.isMaster) {
   app.set('views', path.resolve(__dirname, 'views'))
   app.set('view engine', 'ejs')
   app.set('view options', {layout: false})
+  app.use(helmet())
   app.use(compression({
     threshold: 512
   }))

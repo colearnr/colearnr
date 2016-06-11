@@ -1,23 +1,23 @@
 'use strict'
 
-let util = require('../common/util')
-let userlib = require('../lib/user')
-let permslib = require('../lib/perms')
-let entitlement = require('../lib/entitlement')
-let query = require('../common/query')
-let logger = require('../common/log')
-let constants = require('../common/constants')
-let config = require('../lib/config').config
-let db = require('../common/db')
-let bcrypt = require('bcrypt')
-let request = require('request')
-let fs = require('fs')
-let GridFS = require('../lib/gridfs')
-let fse = require('fs-extra')
-let path = require('path')
-let generatePassword = require('password-generator')
-let es = require('../common/elasticsearch')
-let _ = require('lodash')
+const util = require('../common/util')
+const userlib = require('../lib/user')
+const permslib = require('../lib/perms')
+const entitlement = require('../lib/entitlement')
+const query = require('../common/query')
+const logger = require('../common/log')
+const constants = require('../common/constants')
+const config = require('../lib/config').config
+const db = require('../common/db')
+const bcrypt = require('bcrypt')
+const request = require('request')
+const fs = require('fs')
+const GridFS = require('../lib/gridfs')
+const fse = require('fs-extra')
+const path = require('path')
+const generatePassword = require('password-generator')
+const es = require('../common/elasticsearch')
+const _ = require('lodash')
 
 function generateChatEmail (email) {
   if (email) {

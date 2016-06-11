@@ -1,7 +1,7 @@
 'use strict'
 
-let config = require('../lib/config').config
-let constants = require('../common/constants')
+const config = require('../lib/config').config
+const constants = require('../common/constants')
 
 exports.index = function (req, res) {
   let user = req.user

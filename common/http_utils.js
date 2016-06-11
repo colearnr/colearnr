@@ -1,13 +1,13 @@
 'use strict'
 
-let http = require('http')
-let https = require('https')
-// let log = require('./log')
-let util = require('./util')
-let url_utils = require('url')
-let config = require('../lib/config').config
+const http = require('http')
+const https = require('https')
+// const log = require('./log')
+const util = require('./util')
+const url_utils = require('url')
+const config = require('../lib/config').config
 
-let HttpUtils = function () {}
+const HttpUtils = function () {}
 
 HttpUtils.HTTP_TIMEOUT = 20000
 

@@ -1,17 +1,17 @@
 'use strict'
 
-let util = require('./util')
-let log = require('./log')
-// let http = require('http')
-// let https = require('https')
-// let db = require('./db')
-// let unembed = require('unembed')
+const util = require('./util')
+const log = require('./log')
+// const http = require('http')
+// const https = require('https')
+// const db = require('./db')
+// const unembed = require('unembed')
 
 /*
 function httpsGet (opts, callback) {
   // console.log(opts)
   https.request(opts, function (res) {
-    let data = ''
+    const data = ''
     res.on('data', function (chunk) {
       data += chunk
     })
@@ -24,16 +24,16 @@ function httpsGet (opts, callback) {
 }
 */
 
-let extract = function (url, body, callback) {
+const extract = function (url, body, callback) {
   if (util.empty(url)) {
     log.log('debug', 'Url is empty! Nothing to extract.')
     callback({})
     return
   }
-  let type = null
+  const type = null
   /*
   if (url == '#' && !util.empty(body)) {
-    let parsedBody = unembed.parse(body)
+    const parsedBody = unembed.parse(body)
     if (parsedBody.direct_url) {
       url = parsedBody.direct_url
       type = parsedBody.type
@@ -58,7 +58,7 @@ let extract = function (url, body, callback) {
   }
 }
 
-let parse = function (url, callback) {
+const parse = function (url, callback) {
   callback({})
 }
 
