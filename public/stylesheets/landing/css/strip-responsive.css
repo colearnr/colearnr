@@ -12,14 +12,8 @@
 }
 
 @media only screen and (max-width: 767px) {
-
     .navbar-brand {
       margin-left: 20px;
-    }
-
-    .spacer {
-      width: 100%;
-      height: 200px;
     }
 
     .container {
@@ -38,12 +32,6 @@
 }
 
 @media only screen and (max-width: 480px) {
-
-    
-    .highlight .btn {
-        margin-left: 10px;
-    }
-
     article h1,
     article h2,
     article h3,
@@ -86,15 +74,6 @@
     h3 {
         font-size:20px;
         line-height:32px;
-    }
-
-    .footer-box {
-        padding-top: 10px;
-    }
-
-    .blurb {
-      height: 100px;
-      max-height: 100px;
     }
 
     .navbar-brand {

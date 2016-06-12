@@ -176,8 +176,8 @@ if (config.use_cluster && cluster.isMaster) {
   require('./routes/api')(app)
   require('./routes/router')(app)
 
-  let server = http.createServer(app).listen(config.port, function () {
-    console.log('Express server listening on port ' + config.port)
+  let server = http.createServer(app).listen(config.port, config.host, function () {
+    console.log('Express server listening on port ', server.address())
   })
 
   let socketClient = socketIOclient.connect(config.local_socket_server)
