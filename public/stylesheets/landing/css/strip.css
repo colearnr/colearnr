@@ -241,74 +241,6 @@ header {
     border-bottom-color: #080808 !important;
 }
 
-.footer-box {
-  width: 100%;
-  background: #FFF;
-}
-
-.footer-box a {
-	  font: 14px 'Source Sans Pro', sans-serif;
-    font-weight: normal;
-    padding: 6px 18px;
-    color: #888888;
-    text-shadow: 0 1px 0 #ffffff;
-    line-height: 16px;
-    text-align: center;
-}
-
-.footer-box .active a {
-    color:#486D98;
-    text-shadow:none;
-    text-shadow:0 1px 0 #ffffff;
-	background-color:transparent;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-}
-
-.footer-box a:hover {
-    color:#486D98;
-    text-shadow:0 1px 0 #ffffff;
-}
-
-.footer-box .active a:hover {
-    color:#4fb6e9;
-    text-shadow:none;
-	background-color:transparent;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-    text-shadow:0 1px 0 #ffffff;
-}
-
-/*
-* footer
-*/
-
-.footer-box {
-    padding:30px 0;
-	text-align:center;
-	font-family: 'Source Sans Pro', sans-serif;
-	font-size: 14px;
-	line-height: 26px;
-	color: #888888;
-}
-
-.footer-box .links {
-    margin:5px 0px 20px 0px;
-}
-
-.footer-box .links a{
-	display:inline-block;
-    margin: 4px 0px;
-}
-
-.footer-box .links a:hover{
-	text-decoration: none;
-}
-
-.thumbnails {
-    margin-top:30px;
-}
-
 /*
 * big sign up button
 */
@@ -326,8 +258,7 @@ header {
 }
 
 .apollo {
-  margin: 0px auto 0px auto;  
-  position: relative;    
+    padding-left: 20px;
 }
 .apollo .control-group {
   margin-bottom: 0;
@@ -369,14 +300,12 @@ header {
   display: none;
 }
 .apollo .apollo-login {
-  max-width: 300px;
 }
 .apollo .apollo-login .apollo-seperator:before {
   content: "";
   position: absolute;
   top: 50%;
   left: 0;
-  width: 43%;
   border-bottom: 1px solid #cccccc;
 }
 .apollo .apollo-login .apollo-seperator:after {
@@ -384,20 +313,16 @@ header {
   position: absolute;
   top: 50%;
   right: 0;
-  width: 43%;
   border-bottom: 1px solid #cccccc;
 }
 .apollo .apollo-forgotten-password {
   display: none;
-  max-width: 300px;
 }
 .apollo .apollo-password-reset {
   display: none;
-  max-width: 300px;
   text-align: center;
 }
 .apollo .apollo-register {
-  max-width: 300px;
   display: none;
 }
 .apollo .apollo-register .apollo-seperator:before {
@@ -448,8 +373,6 @@ header {
 }
 
 .apollo-container {
-  padding: 10px 30px 10px 30px;
-  margin: 0 auto;
 }
 .apollo-container .apollo-logging-in,
 .apollo-container .apollo-registering {
@@ -520,11 +443,7 @@ label.error {
 
 .login-box {
     padding: 0;
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
     opacity: 0.9;
-    min-height: 92%;
 }
 
 .full {
@@ -547,12 +466,8 @@ label.error {
 }
 
 .intro-content {
-    padding: 30px;
     border-right: rgba(0,0,0,0.8) 1px solid;
-}
-
-.intro-spacer {
-    height: 90px;
+    padding-right: 20px;
 }
 
 .intro-desc p {
@@ -568,4 +483,280 @@ label.error {
 
 input[type=radio], input[type=checkbox] {
     margin: 2px 0 0;
+}
+/**
+ * 1. Avoid the IE 10-11 `min-height` bug.
+ * 2. Set `flex-shrink` to `0` to prevent some browsers from
+ *    letting these items shrink to smaller than their content's default
+ *    minimum size. See http://bit.ly/1Mn35US for details.
+ * 3. Use `%` instead of `vh` since `vh` is buggy in older mobile Safari.
+ */
+
+.Site {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* 1, 3 */
+}
+
+.Site-header,
+.Site-footer {
+    flex: none; /* 2 */
+}
+
+.Site-content {
+    flex: 1 0 auto; /* 2 */
+    padding: var(--space) var(--space) 0;
+    width: 100%;
+}
+.Site-content::after {
+    content: '\00a0'; /* &nbsp; */
+    display: block;
+    margin-top: var(--space);
+    height: 0px;
+    visibility: hidden;
+}
+@media (--break-lg) {
+    .Site-content {
+        padding-top: var(--space-lg);
+    }
+    .Site-content::after {
+        margin-top: var(--space-lg);
+    }
+}
+
+.Site-content--full {
+    padding: 0;
+}
+.Site-content--full::after {
+    content: none;
+}
+
+.Aligner {
+    display: flex;
+    align-items: center;
+    min-height: 24em;
+    justify-content: center;
+}
+
+.Aligner-item {
+    flex: 1;
+}
+
+.Aligner-item--top {
+    align-self: flex-start;
+}
+
+.Aligner-item--bottom {
+    align-self: flex-end;
+}
+
+.Aligner-item--fixed {
+    flex: 1;
+    max-width: 80%;
+}
+
+.Grid {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.Grid-cell {
+    flex: 1;
+}
+
+.Grid--flexCells > .Grid-cell {
+    display: flex;
+}
+
+.Grid--top {
+    align-items: flex-start;
+}
+
+.Grid--bottom {
+    align-items: flex-end;
+}
+
+.Grid--center {
+    align-items: center;
+}
+
+.Grid--justifyCenter {
+    justify-content: center;
+}
+
+.Grid-cell--top {
+    align-self: flex-start;
+}
+
+.Grid-cell--bottom {
+    align-self: flex-end;
+}
+
+.Grid-cell--center {
+    align-self: center;
+}
+
+.Grid-cell--autoSize {
+    flex: none;
+}
+
+.Grid--fit > .Grid-cell {
+    flex: 1;
+}
+
+.Grid--full > .Grid-cell {
+    flex: 0 0 100%;
+}
+
+.Grid--1of2 > .Grid-cell {
+    flex: 0 0 50%;
+}
+
+.Grid--1of3 > .Grid-cell {
+    flex: 0 0 33.3333%;
+}
+
+.Grid--1of4 > .Grid-cell {
+    flex: 0 0 25%;
+}
+
+@media (--break-sm) {
+    .small-Grid--fit > .Grid-cell {
+        flex: 1;
+    }
+    .small-Grid--full > .Grid-cell {
+        flex: 0 0 100%;
+    }
+    .small-Grid--1of2 > .Grid-cell {
+        flex: 0 0 50%;
+    }
+    .small-Grid--1of3 > .Grid-cell {
+        flex: 0 0 33.3333%;
+    }
+    .small-Grid--1of4 > .Grid-cell {
+        flex: 0 0 25%;
+    }
+}
+
+@media (--break-md) {
+    .med-Grid--fit > .Grid-cell {
+        flex: 1;
+    }
+    .med-Grid--full > .Grid-cell {
+        flex: 0 0 100%;
+    }
+    .med-Grid--1of2 > .Grid-cell {
+        flex: 0 0 50%;
+    }
+    .med-Grid--1of3 > .Grid-cell {
+        flex: 0 0 33.3333%;
+    }
+    .med-Grid--1of4 > .Grid-cell {
+        flex: 0 0 25%;
+    }
+}
+
+@media (--break-lg) {
+    .large-Grid--fit > .Grid-cell {
+        flex: 1;
+    }
+    .large-Grid--full > .Grid-cell {
+        flex: 0 0 100%;
+    }
+    .large-Grid--1of2 > .Grid-cell {
+        flex: 0 0 50%;
+    }
+    .large-Grid--1of3 > .Grid-cell {
+        flex: 0 0 33.3333%;
+    }
+    .large-Grid--1of4 > .Grid-cell {
+        flex: 0 0 25%;
+    }
+}
+
+.Grid--gutters {
+    margin: -1em 0 1em -1em;
+}
+.Grid--gutters > .Grid-cell {
+    padding: 1em 0 0 1em;
+}
+
+.Grid--guttersLg {
+    margin: -1.5em 0 1.5em -1.5em;
+}
+.Grid--guttersLg > .Grid-cell {
+    padding: 1.5em 0 0 1.5em;
+}
+
+.Grid--guttersXl {
+    margin: -2em 0 2em -2em;
+}
+.Grid--guttersXl > .Grid-cell {
+    padding: 2em 0 0 2em;
+}
+
+@media (--break-sm) {
+    .small-Grid--gutters {
+        margin: -1em 0 1em -1em;
+    }
+    .small-Grid--gutters > .Grid-cell {
+        padding: 1em 0 0 1em;
+    }
+    .small-Grid--guttersLg {
+        margin: -1.5em 0 1.5em -1.5em;
+    }
+    .small-Grid--guttersLg > .Grid-cell {
+        padding: 1.5em 0 0 1.5em;
+    }
+    .small-Grid--guttersXl {
+        margin: -2em 0 2em -2em;
+    }
+    .small-Grid--guttersXl > .Grid-cell {
+        padding: 2em 0 0 2em;
+    }
+}
+
+@media (--break-md) {
+    .med-Grid--gutters {
+        margin: -1em 0 1em -1em;
+    }
+    .med-Grid--gutters > .Grid-cell {
+        padding: 1em 0 0 1em;
+    }
+    .med-Grid--guttersLg {
+        margin: -1.5em 0 1.5em -1.5em;
+    }
+    .med-Grid--guttersLg > .Grid-cell {
+        padding: 1.5em 0 0 1.5em;
+    }
+    .med-Grid--guttersXl {
+        margin: -2em 0 2em -2em;
+    }
+    .med-Grid--guttersXl > .Grid-cell {
+        padding: 2em 0 0 2em;
+    }
+}
+
+@media (--break-lg) {
+    .large-Grid--gutters {
+        margin: -1em 0 1em -1em;
+    }
+    .large-Grid--gutters > .Grid-cell {
+        padding: 1em 0 0 1em;
+    }
+    .large-Grid--guttersLg {
+        margin: -1.5em 0 1.5em -1.5em;
+    }
+    .large-Grid--guttersLg > .Grid-cell {
+        padding: 1.5em 0 0 1.5em;
+    }
+    .large-Grid--guttersXl {
+        margin: -2em 0 2em -2em;
+    }
+    .large-Grid--guttersXl > .Grid-cell {
+        padding: 2em 0 0 2em;
+    }
 }

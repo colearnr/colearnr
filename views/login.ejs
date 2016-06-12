@@ -32,7 +32,7 @@
 <link rel="stylesheet" href="/stylesheets/landing/css/strip-responsive.css?<%- page_options.version %>" type="text/css">
 <link href="/font/source-sans-pro/source-sans-pro.css" rel="stylesheet" type="text/css">
 </head>
-<body>
+<body class="Site">
     <header>
     <div class="container">
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="margin-right: 0;">
@@ -58,22 +58,21 @@
     </div>
     </header>
     
-    <div class="container login-box">        
-        <div class="row" style="margin-left: 0px; margin-right: 0px;">
-            <div class="col-md-5 col-md-offset-1 col-sm-6 full intro-content hidden-xs">
-                <div class="intro-spacer"></div>
-                <div class="intro-desc">                    
+    <div class="Site-content login-box Aligner">
+        <div class="Grid Aligner-item Aligner-item--fixed">
+            <div class="Grid-cell intro-content hidden-xs">
+                <p class="apollo-heading"> What is CoLearnr? </p>
+                <div class="intro-desc">
                     <p>A great mind-map to organise your thoughts</p>
                     <p>A team pinboard for all your content</p>
                     <p>A tool to make your team more productive with work and research</p>
                 </div>                
             </div>
             <% if (locals.mode && locals.mode=='register') { %>
-            <div class="col-md-4 col-sm-6 col-xs-12 apollo register">
+            <div class="Grid-cell apollo register">
             <% } else { %>
-            <div class="col-md-4 col-sm-6 col-xs-12 apollo">
+            <div class="Grid-cell apollo">
             <% }%>
-                <div class="intro-spacer"></div>
                 <section class="shadow">
                 <div class="apollo-container clearfix">
                     <div class="apollo-register">
@@ -106,7 +105,7 @@
                     </div>
     
                     <div class="apollo-login">
-                        <p class="apollo-heading"> Welcome </p>
+                        <p class="apollo-heading"> Welcome back </p>
                         <% if (locals.error && locals.error.length) { %>
                         <div class="alert alert-danger">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
