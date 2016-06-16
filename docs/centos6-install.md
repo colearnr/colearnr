@@ -6,21 +6,21 @@
 
 ## Pre-requisites
 
-- Node.js 4 or 6. Tested with 6.2.0 (https://nodejs.org/dist/v6.2.0/node-v6.2.0-linux-x64.tar.xz)
+- Node.js 4 or 6. Tested with 6.2.1 (https://nodejs.org/dist/v6.2.1/node-v6.2.1-linux-x64.tar.xz)
 - Python 2.7 (For node-gyp)
 - MongoDB 3.0 or higher. Tested with 3.2 (Follow instructions in https://docs.mongodb.org/master/tutorial/install-mongodb-on-red-hat/)
-- Redis 3.0 or higher. Tested with 3.0.7 (http://download.redis.io/releases/redis-3.0.7.tar.gz)
+- Redis 3.2 or higher. Tested with 3.2 (http://download.redis.io/releases/redis-3.2.0.tar.gz)
 - Elasticsearch. Tested with 1.7.3 (https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.3.noarch.rpm)
 - LibreOffice 4 or 5. (http://download.documentfoundation.org/libreoffice/stable/5.0.4/rpm/x86_64/LibreOffice_5.0.4_Linux_x86-64_rpm.tar.gz)
 
 ```
 # Install general dependencies
-yum install -y gcc gcc-c++ python python-setuptools pam-devel java-1.7.0-openjdk-devel libX11-devel libXext-devel libgcj libgcj-devel openssh-clients automake dhcp ntp ntpdate telnet git poppler-utils xz
+yum install -y wget tar gcc gcc-c++ python python-setuptools pam-devel java-1.7.0-openjdk-devel libX11-devel libXext-devel libgcj libgcj-devel openssh-clients automake dhcp ntp ntpdate telnet git poppler-utils xz
 
-# Install node 5
+# Install node 6
 cd /tmp
-wget https://nodejs.org/dist/v6.2.0/node-v6.2.0-linux-x64.tar.xz
-cd /usr && tar --strip-components 1 -xf /tmp/node-v6.2.0-linux-x64.tar.xz
+wget https://nodejs.org/dist/v6.2.1/node-v6.2.1-linux-x64.tar.xz
+cd /usr && tar --strip-components 1 -xf /tmp/node-v6.2.1-linux-x64.tar.xz
 ```
 
 ### Optional sass support for customisation

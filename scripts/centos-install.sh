@@ -1,6 +1,7 @@
 #!/bin/bash
 INSTALL_DIR=/opt/colearnr
 DOWNLOAD_DIR=$INSTALL_DIR/install_data
+NODE_VERSION=6.2.1
 
 if [ $EUID -ne 0 ]; then
    echo "This script must be run as root" 1>&2
@@ -17,8 +18,8 @@ banner() {
 banner
 
 EDITION="community"
-UBUNTU_VERSION=`lsb_release -r -s`
-OS="ubuntu"
+CENTOS_VERSION=`cat /etc/centos-release | grep -oE '[0-9]+\.[0-9]+'`
+OS="centos"
 OS_DIR=""
 
 if [ -d $INSTALL_DIR ]; then
@@ -27,15 +28,19 @@ if [ -d $INSTALL_DIR ]; then
     mv $INSTALL_DIR $INSTALL_DIR.old
 else
     echo "Downloading dev and build tools"
-    sudo apt-get install -y git-core curl unzip zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev mongodb redis-server python2.7 ruby ruby-compass
-    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-    sudo apt-get install -y nodejs
+    yum groupinstall -y 'Development Tools'
+    yum install -y wget tar unzip gcc gcc-c++ python python-setuptools pam-devel java-1.8.0-openjdk-devel libX11-devel libXext-devel openssh-clients automake dhcp ntp ntpdate telnet git poppler-utils xz patch readline readline-devel curl zlib zlib-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison ruby rubygems
+
+    cd /tmp
+    wget https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz
+    cd /usr && tar --strip-components 1 -xf /tmp/node-v$NODE_VERSION-linux-x64.tar.xz
 
     # Set npm python to 2.7
     npm config set python python2.7
     # Install global dependencies
     echo "Begin npm installation"
-    sudo npm install -g grunt grunt-cli gulp gulp-cli bower nodemon
+    npm install -g grunt grunt-cli gulp gulp-cli bower nodemon
+    rpm -ivh https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.3.noarch.rpm
 fi
 
 mkdir -p $INSTALL_DIR $DOWNLOAD_DIR
@@ -54,7 +59,7 @@ else
     useradd -m colearnr -c "User for CoLearnr"
 fi
 
-OS_DIR=${UBUNTU_VERSION/./}
+OS_DIR=${CENTOS_VERSION/./}
 echo "Checking for pre-built package for $OS $OS_DIR ..."
 wget http://downloads.colearnr.com/$OS$OS_DIR/colearnr-$EDITION.tar.xz
 if [ $? = 0 ]; then
@@ -69,6 +74,17 @@ if [ $? = 0 ]; then
     fi
 else
     echo "No pre-built package found. Downloading source archive from git ..."
+    if hash sass 2>/dev/null; then
+        echo "Compass is already installed."
+    else
+        gem update
+        gem update --system
+        gem uninstall psych -v 2.0.17
+        gem install compass
+        gem install psych
+    fi
+
+
     wget https://github.com/colearnr/colearnr/archive/master.zip
     unzip master.zip
     rm master.zip
@@ -86,12 +102,28 @@ else
     mv $DOWNLOAD_DIR/discuss-master $INSTALL_DIR/discuss
 fi
 
+if [! -e "/etc/yum.repos.d/mongodb-org-3.2.repo"]; then
+cat <<EOF >/etc/yum.repos.d/mongodb-org-3.2.repo
+[mongodb-org-3.2]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/3.2/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-3.2.asc
+EOF
+fi
+
+yum install -y mongodb-org
+service mongod start
+sleep 5
+
 # Setting up database
 mongo < $INSTALL_DIR/colearnr/scripts/db-bootstrap.js
 
-systemctl enable mongodb
-systemctl enable redis-server
-systemctl enable elasticsearch
+rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-6.noarch.rpm
+yum install redis -y
+
+systemctl start redis.service
 
 # Cleanup
 rm -rf $DOWNLOAD_DIR
