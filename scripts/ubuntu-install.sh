@@ -29,7 +29,7 @@ else
     echo "Downloading dev and build tools"
     sudo apt-get install -y git-core curl unzip zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-    sudo apt-get install -y nodejs mongodb redis-server libreoffice python2.7
+    sudo apt-get install -y nodejs mongodb redis-server python2.7
 
     # Set npm python to 2.7
     npm config set python python2.7
