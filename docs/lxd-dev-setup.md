@@ -3,10 +3,15 @@
 ## Environment
 
 - Ubuntu 16.04 with lxd installed
+```
+sudo apt-get install -y zfsutils-linux lxd
+sudo lxd init
+# Follow the screen. We use zfs, 0.0.0.0, 8443, enable bridge, enable ipv4, disable ipv6
+```
 
 ## Steps
 
-### Launch new ubuntu container
+### Launch new ubuntu container (Name: colearnr-dev)
 
 ```bash
 sudo lxc launch ubuntu:16.04 colearnr-dev

@@ -1,26 +1,34 @@
 'use strict'
 
 // Load plugins
-var gulp = require('gulp')
-var sass = require('gulp-ruby-sass')
-var cssnano = require('gulp-cssnano')
-var uglify = require('gulp-uglify')
-var rename = require('gulp-rename')
-var include = require('gulp-include')
-var ejs = require('gulp-ejs')
-var gutil = require('gulp-util')
-var rimraf = require('gulp-rimraf')
-var revall = require('gulp-rev-all')
-var livereload = require('gulp-livereload')
-var serveStatic = require('serve-static')
-var flatten = require('gulp-flatten')
+const gulp = require('gulp')
+const sass = require('gulp-ruby-sass')
+const cssnano = require('gulp-cssnano')
+const uglify = require('gulp-uglify')
+const rename = require('gulp-rename')
+const include = require('gulp-include')
+const ejs = require('gulp-ejs')
+const gutil = require('gulp-util')
+const jsdoc = require('gulp-jsdoc3')
+const rimraf = require('gulp-rimraf')
+const revall = require('gulp-rev-all')
+const livereload = require('gulp-livereload')
+const serveStatic = require('serve-static')
+const flatten = require('gulp-flatten')
 
 // Define paths
-var paths = {
+const paths = {
   scripts: ['public/javascripts/*.js', '!public/javascripts/*.min.js', '!public/javascripts/*-min.js', '!public/javascripts/*combined.js'],
   styles: ['public/stylesheets/*.scss', 'public/stylesheets/*.sass'],
   templates: ['views/**/*.ejs']
 }
+
+const jsSources = [
+  'app.js',
+  'common/**/*.js',
+  'lib/**/*.js',
+  'routes/**/*.js'
+]
 
 // CSS
 gulp.task('css', function () {
@@ -40,6 +48,11 @@ gulp.task('js', function () {
     .pipe(rename({ suffix: '.min' }))
     .pipe(uglify())
     .pipe(gulp.dest('public/dist/javascripts'))
+})
+
+gulp.task('docs', (cb) => {
+  let config = require('./jsdocConfig')
+  gulp.src(jsSources, {read: false}).pipe(jsdoc(config, cb))
 })
 
 // Templates
@@ -71,13 +84,13 @@ gulp.task('fonts', function () {
 
 // Default task
 gulp.task('default', ['clean'], function () {
-  gulp.start('css', 'js', 'templates', 'fonts')
+  gulp.start('docs', 'css', 'js', 'templates', 'fonts')
 })
 
 // Setup connect server
 gulp.task('connect', function () {
-  var connect = require('connect')
-  var app = connect()
+  const connect = require('connect')
+  const app = connect()
     .use(require('connect-livereload')({ port: 35729 }))
     .use(serveStatic('dist'))
 

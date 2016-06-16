@@ -80,6 +80,7 @@
     "gulp-if": "^2.0.0",
     "gulp-include": "^2.2.1",
     "gulp-jsbeautifier": "2.0.3",
+    "gulp-jsdoc3": "^0.2.1",
     "gulp-jshint": "^2.0.0",
     "gulp-livereload": "^3.8.1",
     "gulp-prettify": "^0.4.0",
