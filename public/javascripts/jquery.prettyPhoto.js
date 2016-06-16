@@ -1310,7 +1310,7 @@
         for (var i = 0; i < pp_images.length; i++) {
           if (!pp_images[i].match(/\b(jpg|jpeg|png|gif)\b/gi)) {
             classname = '';
-            img_src = '/images/articles-icon.png';
+            img_src = '/images/article_icon.png';
           }
           else {
             classname = '';

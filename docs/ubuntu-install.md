@@ -1,9 +1,9 @@
 # Ubuntu quick installation
 
 ## Versions tested
+- 16.04 (Xenial Xerus)
 - 15.10 (Wily Werewolf)
 - 15.04 (Vivid Vervet)
-- 14.04 (Trusty Tahr)
 
 ## 1. Prepare
 ```
@@ -34,10 +34,10 @@ sudo bash ubuntu-install.sh
 The script will install the following:
 
 - Essential build tools and dev libraries
-- Nodejs 5.6.0 from nodesource
+- Nodejs 6 from nodesource
 - MongoDB
 - Redis
 - Python 2.7 (Required for npm native modules)
-- Ruby 2.1 (Required for sass compilation)
+- Ruby (Required for sass compilation)
 
 Then it will install CoLearnr community edition under /opt/colearnr. It will also create a 'colearnr' user.

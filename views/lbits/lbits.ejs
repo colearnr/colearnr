@@ -83,7 +83,7 @@ var notesurl = '/userdata/' + lbit._id + '/notes?topic_id=' + topicToUse._id;
             <a href="/topic/<%- topicToUse._id %>/#lbit=<%- lbit._id %>/show" data-topic-id="<%- topicToUse._id %>" data-lbit-id="<%- lbit._id %>"><i class="fa fa-book"></i>&nbsp; <%- topicToUse.name || 'Unassigned' %></a>
         </div>
         <% } %>
-        <div class="lbit-tools pull-right">            
+        <div class="lbit-tools pull-right">
             <div class="lbit-edit-btn item-title hidden-xs" <% if (!editAllowed) { %>style="display: none;"<% } %>>
                 <a href="/lbit/edit/<%- lbit._id %>" data-topic-id="<%- topicToUse._id %>" data-lbit-id="<%- lbit._id %>" data-action="edit" title="Edit"><i class="fa fa-pencil-square-o"></i></a>&nbsp;
             </div>
@@ -212,7 +212,7 @@ var notesurl = '/userdata/' + lbit._id + '/notes?topic_id=' + topicToUse._id;
 
         <% if (lbit.type == 'pdf') { %>
         <% noMatch = false %>
-        <% var imageToUse = "articles-icon.png" %>
+        <% var imageToUse = "article_icon.png" %>
         <% if (lbitTitle.indexOf('Notes') != -1) { imageToUse = 'notebook-lite.png'; } %>
         <% if (lbitTitle.indexOf('Problem set') != -1) { imageToUse = 'problem-solution.gif'; } %>
         <div class="picture">
@@ -233,7 +233,7 @@ var notesurl = '/userdata/' + lbit._id + '/notes?topic_id=' + topicToUse._id;
 
         <% if (lbit.type == 'office') { %>
         <% noMatch = false %>
-        <% var imageToUse = "articles-icon.png" %>
+        <% var imageToUse = "article_icon.png" %>
         <div class="picture">
             <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" rel="prettyPhoto[<%- topicToUse.id %>]" itemprop="url" href="/lbit/view/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix %>/images/<%- imageToUse %><% } %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>

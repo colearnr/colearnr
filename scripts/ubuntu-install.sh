@@ -27,8 +27,8 @@ if [ -d $INSTALL_DIR ]; then
     mv $INSTALL_DIR $INSTALL_DIR.old
 else
     echo "Downloading dev and build tools"
-    sudo apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
-    curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
+    sudo apt-get install -y git-core curl unzip zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
+    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     sudo apt-get install -y nodejs mongodb redis-server libreoffice python2.7
 
     # Set npm python to 2.7
@@ -74,12 +74,7 @@ else
     unzip master.zip
     rm master.zip
 
-    if [ $UBUNTU_VERSION = "14.04" ]; then
-        sudo apt-get install -y ruby2.0
-    else
-        sudo apt-get install -y ruby2.1
-    fi
-    sudo apt-get install ruby-compass
+    sudo apt-get install -y ruby ruby-compass
     echo "Begin npm installation"
     npm config set python python2.7
     # Install global dependencies
