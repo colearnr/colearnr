@@ -27,12 +27,15 @@ if [ -d $INSTALL_DIR ]; then
     mv $INSTALL_DIR $INSTALL_DIR.old
 else
     echo "Downloading dev and build tools"
-    sudo apt-get install -y git-core curl unzip zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev mongodb redis-server python2.7
+    sudo apt-get install -y git-core curl unzip zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev mongodb redis-server python2.7 ruby ruby-compass
     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     sudo apt-get install -y nodejs
 
     # Set npm python to 2.7
     npm config set python python2.7
+    # Install global dependencies
+    echo "Begin npm installation"
+    sudo npm install -g grunt grunt-cli gulp gulp-cli bower nodemon
 fi
 
 mkdir -p $INSTALL_DIR $DOWNLOAD_DIR
@@ -74,11 +77,6 @@ else
     unzip master.zip
     rm master.zip
 
-    sudo apt-get install -y ruby ruby-compass
-    echo "Begin npm installation"
-    npm config set python python2.7
-    # Install global dependencies
-    sudo npm install -g grunt grunt-cli gulp gulp-cli bower nodemon
     cd $DOWNLOAD_DIR/colearnr-master
     npm install --production --loglevel warn
     npm install gulp

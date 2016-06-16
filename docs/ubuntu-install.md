@@ -14,7 +14,7 @@ sudo apt-get install curl wget
 ```
 curl -sS http://downloads.colearnr.com/scripts/ubuntu-install.sh | sudo bash
 
-# Install latest from githuhub
+# Install latest from github
 curl -sS https://raw.githubusercontent.com/colearnr/colearnr/master/scripts/ubuntu-install.sh | sudo bash
 ```
 
