@@ -15,9 +15,9 @@ sudo lxc launch ubuntu:16.04 colearnr-dev
 ### Install dependencies
 
 ```bash
-sudo lxc exec colearnr-dev -- apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
+sudo lxc exec colearnr-dev -- apt-get install -y git-core unzip curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
 sudo lxc exec colearnr-dev -- sh -c 'curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -'
-sudo lxc exec colearnr-dev -- apt-get install -y nodejs mongodb redis-server libreoffice python2.7 ruby2.3 ruby-compass
+sudo lxc exec colearnr-dev -- apt-get install -y nodejs mongodb redis-server python2.7 ruby ruby-compass
 
 sudo lxc exec colearnr-dev -- npm config set python python2.7
 sudo lxc exec colearnr-dev -- sh -c 'npm install -g jscs jshint grunt grunt-cli gulp gulp-cli bower nodemon standard standard-format'
