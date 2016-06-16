@@ -1,30 +1,29 @@
 'use strict'
 
-let vows = require('vows')
-let should = require('should')
-let http_utils = require('../http_utils')
-
+const vows = require('vows')
+const http_utils = require('../http_utils')
+const assert = require('assert')
 vows.describe('http_util').addBatch({
   'When using the http util module': {
     "to get google's header": {
       topic: function () {
-        http_utils.getHeaders('http://www.google.com', this.callback)
+        http_utils.getHeaders('http://www.gmail.com', this.callback)
       },
-      'should become Hello': function (topic, err, data, index) {
-        topic.should.not.be.null
-        topic.headers.should.not.be.null
-        topic.headers.should.have.property('x-frame-options')
-        topic.headers['x-frame-options'].should.equal('SAMEORIGIN')
+      'should return value': function (topic, err, data, index) {
+        assert.isNotNull(topic)
+        assert.isNotNull(topic.headers)
+        assert.include(topic.headers, 'x-content-type-options')
+        assert.equal(topic.headers['x-content-type-options'], 'nosniff')
       }
     },
 
     "to check google's header": {
       topic: function () {
-        http_utils.isFrameRestricted('http://www.google.com', this.callback)
+        http_utils.isFrameRestricted('http://www.colearnr.com', this.callback)
       },
-      'should become Hello': function (err, res) {
-        should.not.exist(err)
-        res.should.be.true
+      'should return value': function (err, res) {
+        assert.isNull(err)
+        assert.isFalse(res)
       }
     },
 
@@ -32,10 +31,9 @@ vows.describe('http_util').addBatch({
       topic: function () {
         http_utils.getHeaders('http://www.colearnr.com', this.callback)
       },
-      'should become Hello': function (topic, err, data, index) {
-        topic.should.not.be.null
-        topic.headers.should.not.be.null
-        topic.headers.should.not.have.property('x-frame-options')
+      'should return value': function (topic, err, data, index) {
+        assert.isNotNull(topic)
+        assert.isNotNull(topic.headers)
       }
     }
   }

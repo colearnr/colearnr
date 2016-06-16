@@ -391,11 +391,11 @@ let util = {
     let _this = this
     let tmpA = pathstr.split(',')
     if (tmpA.length) {
-      tmpB = _.filter(tmpA, function (v) {
+      let tmpB = _.filter(tmpA, function (v) {
         return !_this.empty(v)
       })
       let id = tmpB[tmpB.length - 1]
-      let tmpB = _.initial(tmpB)
+      tmpB = _.initial(tmpB)
       if (tmpB.length) {
         path = ',' + tmpB.join() + ','
       } else {

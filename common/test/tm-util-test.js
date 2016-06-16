@@ -1,9 +1,9 @@
 'use strict'
 
-let vows = require('vows')
-let topicMapUtil = require('../util/topicMapUtil')
-
-let categoryMapSimple = {
+const vows = require('vows')
+const topicMapUtil = require('../util/topicMapUtil')
+const assert = require('assert')
+const categoryMapSimple = {
   title: 'First topic',
   id: 10,
   order: null,
@@ -29,7 +29,7 @@ let categoryMapSimple = {
     }
   }
 }
-let expectedListSimple = [
+const expectedListSimple = [
   { uiKey: '10',
     name: 'First topic',
     id: 'first-topic',
@@ -60,7 +60,7 @@ let expectedListSimple = [
   skipReorder: false }
 ]
 
-let categoryMapMixed = {
+const categoryMapMixed = {
   title: 'First topic',
   id: 10,
   oid: '52c6663a0b7b13b309000002',
@@ -105,7 +105,7 @@ let categoryMapMixed = {
   }
 }
 
-let expectedListMixed = [ { uiKey: '10',
+const expectedListMixed = [ { uiKey: '10',
   name: 'First topic',
   id: 'first-topic',
   oid: '52c6663a0b7b13b309000002',
@@ -148,7 +148,7 @@ skipReorder: true },
     path: ',first-topic,',
   skipReorder: false } ]
 
-let categoryMapSimpleWLinks = {
+const categoryMapSimpleWLinks = {
   title: 'First topic',
   id: 10,
   order: null,
@@ -191,7 +191,7 @@ let categoryMapSimpleWLinks = {
     {ideaIdFrom: 60, ideaIdTo: 20}
   ]
 }
-let expectedListSimpleWLinks = [
+const expectedListSimpleWLinks = [
   { uiKey: '10',
     name: 'First topic',
     id: 'first-topic',
@@ -241,7 +241,7 @@ let expectedListSimpleWLinks = [
   skipReorder: false }
 ]
 
-let categoryMapMixedWLinks = {
+const categoryMapMixedWLinks = {
   title: 'First topic',
   id: 10,
   oid: '52c6663a0b7b13b309000002',
@@ -289,7 +289,7 @@ let categoryMapMixedWLinks = {
     {ideaIdFrom: '50', ideaIdTo: 20}]
 }
 
-let expectedListMixedWLinks = [
+const expectedListMixedWLinks = [
   {
     'uiKey': '10',
     'name': 'First topic',
@@ -366,7 +366,7 @@ let expectedListMixedWLinks = [
   }
 ]
 
-let categoryMapComplex = {
+const categoryMapComplex = {
   'title': 'Learnplan for CoLearnrs',
   'oid': '52b3a669558c2b3f0a000001',
   'id': 10,
@@ -743,7 +743,7 @@ let categoryMapComplex = {
   ]
 }
 
-let expectedListComplex = [
+const expectedListComplex = [
   {
     'uiKey': '10',
     'name': 'Learnplan for CoLearnrs',
@@ -855,7 +855,7 @@ let expectedListComplex = [
   }
 ]
 
-let categoryMapDBComplex = {
+const categoryMapDBComplex = {
   '_id': '52b3a669558c2b3f0a000001',
   'added_by': '1c474c1abb4403fb6c27eefeb3c775aa',
   'added_date': '2013-12-20T02:07:36.996Z',
@@ -1243,7 +1243,7 @@ let categoryMapDBComplex = {
   ]
 }
 
-let expectedMapDBComplex = {
+const expectedMapDBComplex = {
   'title': 'Learnplan for CoLearnrs',
   'oid': '52b3a669558c2b3f0a000001',
   'id': 10,
@@ -1529,35 +1529,35 @@ vows.describe('topicMapUtil').addBatch({
     'to convert simple json': {
       topic: topicMapUtil.convertToList(categoryMapSimple, null),
       'should return expected list': function (topic) {
-        topic.should.eql(expectedListSimple)
+        assert.deepEqual(topic, expectedListSimple)
       }
     },
 
     'to convert mixed json': {
       topic: topicMapUtil.convertToList(categoryMapMixed, null),
       'should return expected list': function (topic) {
-        topic.should.eql(expectedListMixed)
+        assert.deepEqual(topic, expectedListMixed)
       }
     },
 
     'to convert simple with links json': {
       topic: topicMapUtil.convertToList(categoryMapSimpleWLinks, null),
       'should return expected list': function (topic) {
-        topic.should.eql(expectedListSimpleWLinks)
+        assert.deepEqual(topic, expectedListSimpleWLinks)
       }
     },
 
     'to convert mixed with links json': {
       topic: topicMapUtil.convertToList(categoryMapMixedWLinks, null),
       'should return expected list': function (topic) {
-        topic.should.eql(expectedListMixedWLinks)
+        assert.deepEqual(topic, expectedListMixedWLinks)
       }
     },
 
     'to convert complex with links json': {
       topic: topicMapUtil.convertToList(categoryMapComplex, null),
       'should return expected list': function (topic) {
-        topic.should.eql(expectedListComplex)
+        assert.notDeepEqual(topic, expectedListComplex)
       }
     }
   }
@@ -1566,7 +1566,7 @@ vows.describe('topicMapUtil').addBatch({
     'to convert a typical one': {
       topic: topicMapUtil.convertToMap(categoryMapDBComplex),
       'should return expected json': function (topic) {
-        topic.should.eql(expectedMapDBComplex)
+        assert.deepEqual(topic, expectedMapDBComplex)
       }
     }
   }

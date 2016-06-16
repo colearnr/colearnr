@@ -213,7 +213,8 @@ vows.describe('util').addBatch({
 
     'quote regex tests': {
       topic: function () {
-        let ret = []['c++'].forEach(function (v) {
+        let ret = []
+        ;['c++'].forEach(function (v) {
           ret.push(util.quote_regex(v))
         })
         return ret
