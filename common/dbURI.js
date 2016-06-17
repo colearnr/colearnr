@@ -2,8 +2,8 @@
 
 const config = require('../lib/config').config
 const numCPUs = require('os').cpus().length
-const maxPoolSize = config.db_pool_size || 20
-const authPrefix = ''
+let maxPoolSize = config.db_pool_size || 20
+let authPrefix = ''
 
 if (config.use_cluster) {
   maxPoolSize = Math.round(maxPoolSize / numCPUs)

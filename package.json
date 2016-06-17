@@ -55,7 +55,7 @@
     "redis": "^2.6.0-1",
     "request": "^2.72.0",
     "rewire": "^2.5.1",
-    "sendgrid": "^3.0.5",
+    "sendgrid": "^2.0.0",
     "serve-static": "^1.10.0",
     "sitemap": "^1.6.0",
     "socket.io": "git://github.com/colearnr/socket.io.git#0.9.19",
