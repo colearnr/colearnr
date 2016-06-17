@@ -17,7 +17,7 @@
     "acl": "git://github.com/colearnr/node_acl.git#0.4.8",
     "async": "^1.5.2",
     "aws-cloudfront-sign": "^2.1.2",
-    "bcrypt": "^0.8.5",
+    "bcrypt": "^0.8.6",
     "body-parser": "^1.14.2",
     "compression": "^1.6.0",
     "connect": "^3.4.1",
