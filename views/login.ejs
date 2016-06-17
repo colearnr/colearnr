@@ -61,12 +61,8 @@
     <div class="Site-content login-box Aligner">
         <div class="Grid Aligner-item Aligner-item--fixed">
             <div class="Grid-cell intro-content hidden-xs">
-                <p class="apollo-heading"> What is CoLearnr? </p>
-                <div class="intro-desc">
-                    <p>A great mind-map to organise your thoughts</p>
-                    <p>A team pinboard for all your content</p>
-                    <p>A tool to make your team more productive with work and research</p>
-                </div>                
+                <section id="nodes">
+                </section>
             </div>
             <% if (locals.mode && locals.mode=='register') { %>
             <div class="Grid-cell apollo register">
@@ -105,7 +101,7 @@
                     </div>
     
                     <div class="apollo-login">
-                        <p class="apollo-heading"> Welcome back </p>
+                        <p class="apollo-heading"> Login </p>
                         <% if (locals.error && locals.error.length) { %>
                         <div class="alert alert-danger">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -153,6 +149,7 @@
         </div>
     </div>
     <% include includes/scripts-common.html %>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="<%- page_options.cdn_prefix %>/vendor/jquery-anystretch/jquery.anystretch.min.js"></script>
     <script src="<%- page_options.cdn_prefix %>/javascripts/custom.js?<%- page_options.version %>"></script>
     <script src="<%- page_options.cdn_prefix %>/javascripts/login.js?<%- page_options.version %>"></script>

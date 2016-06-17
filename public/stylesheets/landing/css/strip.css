@@ -552,7 +552,19 @@ input[type=radio], input[type=checkbox] {
 
 .Aligner-item--fixed {
     flex: 1;
-    max-width: 80%;
+    max-width: 800px;
+}
+
+@media (max-width: 1200px) {
+    .Aligner-item--fixed {
+        max-width: 760px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .apollo {
+        padding-right: 20px;
+    }
 }
 
 .Grid {
@@ -759,4 +771,8 @@ input[type=radio], input[type=checkbox] {
     .large-Grid--guttersXl > .Grid-cell {
         padding: 2em 0 0 2em;
     }
+}
+
+#nodes {
+    position: relative;
 }
