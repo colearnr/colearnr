@@ -23,7 +23,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
   let topicAdd = false
   let topicFound = false
 
-  self._val = function (value, default_value) {
+  const _val = function (value, default_value) {
     let ret = (!value || value === '') ? default_value : value
     if (!ret) {
       ret = ''
@@ -31,7 +31,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
     return ret
   }
 
-  self._images = function (be, value) {
+  const _images = function (be, value) {
     let ilist = []
     if (be) {
       return [be]
@@ -45,7 +45,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
     return ilist
   }
 
-  self._url = function (url, canUrl) {
+  const _url = function (url, canUrl) {
     let ret = url
     if (!util.empty(canUrl) && canUrl !== url) {
       ret = canUrl
@@ -53,7 +53,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
     return ret
   }
 
-  self._topic = function (topic, subtopic) {
+  const _topic = function (topic, subtopic) {
     if (!topic && !subtopic) {
       return null
     }
@@ -72,7 +72,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
     return {id: util.idify(name), order: order}
   }
 
-  self._gen_yt_url = function (url, bodystr) {
+  const _gen_yt_url = function (url, bodystr) {
     //    log.log('debug', 'URL INPUT TO FUNCTION : ' , url)
     //    log.log('debug', 'BODYSTRING INPUT TO FUNCTION : ' , bodystr)
 
@@ -95,7 +95,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
     return ret
   }
 
-  self._gen_title = function (url) {
+  const _gen_title = function (url) {
     if (util.empty(url) || url === '#') {
       return ''
     }
@@ -118,14 +118,14 @@ function create_learn_bit (main_topic, bare_element, callback) {
     return ret
   }
 
-  self._privacy_mode = function (bare_element) {
+  const _privacy_mode = function (bare_element) {
     if (bare_element.privacy_mode) {
       return bare_element.privacy_mode
     }
     return (bare_element.author && bare_element.author === 'colearnr') ? 'public' : 'private'
   }
 
-  self._find_order = function (bare_element, callback) {
+  const _find_order = function (bare_element, callback) {
     if (bare_element) {
       if (bare_element.order) {
         callback(null, bare_element.order)
@@ -148,7 +148,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
     }
   }
 
-  self._db_update = function (exis_obj, ele, callback) {
+  const _db_update = function (exis_obj, ele, callback) {
     let update_map = {}
     if (exis_obj.topics && ele.topic_oid) {
       for (let i in exis_obj.topics) {
@@ -218,11 +218,11 @@ function create_learn_bit (main_topic, bare_element, callback) {
     } else {
       if (doc[0] && (doc[0].url && doc[0].url !== '#') && !bare_element._id) {
         log.info(doc[0]._id + ' is already present in the db. Checking for update ...')
-        self._db_update(doc[0], bare_element, callback)
+        _db_update(doc[0], bare_element, callback)
       } else if (bare_element._id && bare_element.topic_oid) {
         if (bare_element._id === doc[0]._id) {
           log.info(doc[0]._id + ' is already present in the db. Checking for update ...')
-          self._db_update(doc[0], bare_element, callback)
+          _db_update(doc[0], bare_element, callback)
         } else {
           db.learnbits.update({_id: db.ObjectId('' + bare_element._id)}, {
             $push: {topics: {_id: db.ObjectId('' + bare_element.topic_oid)}}
@@ -231,28 +231,28 @@ function create_learn_bit (main_topic, bare_element, callback) {
         }
       } else if (!util.empty(bare_element.url) || !util.empty(bare_element.body)) {
         extract_lib.extract(bare_element.url, bare_element.body, function (url_data) {
-          self._find_order(bare_element, function (err, order) {
+          _find_order(bare_element, function (err, order) {
             if (err) {
               return callback(err, null)
             }
-            let urlToUse = self._url(bare_element.url, url_data.url)
-            let body_val = self._body(urlToUse, bare_element, url_data)
+            let urlToUse = _url(bare_element.url, url_data.url)
+            let body_val = _body(urlToUse, bare_element, url_data)
             let lbit_type = bare_element.type || util.getUrlType(urlToUse, body_val)
             log.log('debug', 'lbit to create', bare_element, order, lbit_type)
             let lb = {
-              title: self._val(bare_element.title, url_data.title),
-              description: self._val(bare_element.description, url_data.description),
+              title: _val(bare_element.title, url_data.title),
+              description: _val(bare_element.description, url_data.description),
               type: lbit_type,
               url: urlToUse,
-              img_url: bare_element.img_url || (self._images(bare_element['image-url'], url_data.images)),
-              img_title: self._val(bare_element.title, url_data.title),
+              img_url: bare_element.img_url || (_images(bare_element['image-url'], url_data.images)),
+              img_title: _val(bare_element.title, url_data.title),
               body: body_val,
               source: url_data.provider_url,
               license: '',
-              topics: (bare_element.topic_oid) ? bare_element.topic_oid : (self._topic(bare_element['topic'], bare_element['sub-topic'])),
+              topics: (bare_element.topic_oid) ? bare_element.topic_oid : (_topic(bare_element['topic'], bare_element['sub-topic'])),
               order: order || (bare_element.order ? parseInt(bare_element.order, 10) : null),
               added_by: bare_element.author || bare_element['author_email'] || 'colearnr',
-              privacy_mode: self._privacy_mode(bare_element),
+              privacy_mode: _privacy_mode(bare_element),
               added_date: new Date(),
               last_updated: new Date(),
               related: url_data.related || [],
@@ -266,13 +266,13 @@ function create_learn_bit (main_topic, bare_element, callback) {
             }
 
             if (lbit_type === 'youtube') {
-              lb['url'] = self._gen_yt_url(lb['url'], lb['body'])
+              lb['url'] = _gen_yt_url(lb['url'], lb['body'])
             }
             if (lbit_type === 'quote') {
               lb['body'] = JSON.stringify({quote: lb['body'].replace(/\"/g, ''), author: ''})
             }
             if (util.empty(lb['title'])) {
-              lb['title'] = self._gen_title(lb['url'])
+              lb['title'] = _gen_title(lb['url'])
             }
 
             // log.info(lb)
@@ -323,7 +323,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
     }
   })
 
-  self._body = function (urlToUse, ele, url_data) {
+  const _body = function (urlToUse, ele, url_data) {
     let url = urlToUse || ele.url
     let body = ele.body
     if (!url || url === '#') {

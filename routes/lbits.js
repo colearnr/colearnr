@@ -677,7 +677,7 @@ function _pushLbit (req, topic_id, topic_oid, lbit_list, user, sessionid) {
   })
   topicObj.user_perms = null
   topicObj.user_role = null
-  let LBITS_TPL_NAME = path.resolve(__dirname, '/../views/lbits/lbits-full.ejs')
+  let LBITS_TPL_NAME = path.resolve(__dirname, '../views/lbits/lbits-full.ejs')
   let template = fs.readFileSync(LBITS_TPL_NAME, 'utf8')
   let durl = config.socket.address + ((config.socket.port !== 80 && config.socket.port !== 443) ? ':' + config.socket.port : '')
   let host_url = config.base_url + (config.use_port ? (':' + config.port) : '')

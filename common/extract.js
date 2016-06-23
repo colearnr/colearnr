@@ -30,7 +30,7 @@ const extract = function (url, body, callback) {
     callback({})
     return
   }
-  const type = null
+  let type = null
   /*
   if (url == '#' && !util.empty(body)) {
     const parsedBody = unembed.parse(body)

@@ -95,7 +95,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="#" data-hover="dropdown" class="dropdown-toggle needsclick" data-toggle="dropdown">
-                            <% if (locals.user) { %><img class="navProfileImage img-circle lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-original="<%- user.profileImage || '/images/profile/profile_1.jpg' %>" width="25px" height="25px" /><span class="hidden-sm usernameText">&nbsp; <%- user.displayName %><% } else { %>&nbsp; Guest<% } %></span>
+                            <% if (locals.user) { %><img class="navProfileImage img-circle" src="<%- user.profileImage || '/images/profile/profile_1.jpg' %>" width="25px" height="25px" /><span class="hidden-sm usernameText">&nbsp; <%- user.displayName %><% } else { %>&nbsp; Guest<% } %></span>
                             <b class="caret"></b></a>
                         <ul id="user_options" class="dropdown-menu dropdown-menu-right">
                             <li><a href="http://www.colearnr.com/help" target="_new"><i class="fa fa-question-circle"></i> Help</a></li>
