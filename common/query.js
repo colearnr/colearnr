@@ -173,34 +173,29 @@ const query = {
 
     lbits.forEach(function (lbit) {
       // Set the user permissions
-      self._streamUrlCheck(lbit, function (err, lbit) {
-        if (err) {
-          return callback(err)
-        }
-        if (!lbit.user_perms) {
-          let uid = user ? user._id : null
-          lbit.user_perms = {}
-          lbit.user_perms[uid] = []
-          lbit.topics.forEach(function (at) {
-            if (topicPerms[at._id]) {
-              _.merge(lbit.user_perms[user._id], topicPerms[at._id])
+      if (!lbit.user_perms) {
+        let uid = user ? user._id : null
+        lbit.user_perms = {}
+        lbit.user_perms[uid] = []
+        lbit.topics.forEach(function (at) {
+          if (topicPerms[at._id]) {
+            _.merge(lbit.user_perms[user._id], topicPerms[at._id])
+            _setCommentCount(self, lbit, callback)
+          } else {
+            self.get_topic(user, {_id: at._id}, function (err, ft) {
+              if (err) {
+                return callback(err)
+              }
+              if (ft && ft.user_perms) {
+                _.merge(lbit.user_perms[uid], ft.user_perms)
+              }
               _setCommentCount(self, lbit, callback)
-            } else {
-              self.get_topic(user, {_id: at._id}, function (err, ft) {
-                if (err) {
-                  return callback(err)
-                }
-                if (ft && ft.user_perms) {
-                  _.merge(lbit.user_perms[uid], ft.user_perms)
-                }
-                _setCommentCount(self, lbit, callback)
-              })
-            }
-          })
-        } else {
-          _setCommentCount(self, lbit, callback)
-        }
-      })
+            })
+          }
+        })
+      } else {
+        _setCommentCount(self, lbit, callback)
+      }
     })
   },
 

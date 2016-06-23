@@ -703,7 +703,7 @@ let util = {
   isStreamUrl: function (url) {
     let ret = false
     constants.STREAM_SERVERS.forEach(function (cserver) {
-      if (url.indexOf(cserver) !== -1) {
+      if (cserver && url.indexOf(cserver) !== -1) {
         ret = true
       }
     })
