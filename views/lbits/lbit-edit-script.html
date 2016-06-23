@@ -113,6 +113,7 @@
                 if (data.redirectUrl) {
                     window.location = data.redirectUrl;
                 } else {
+                    $('.emptyTopicMsg').hide();
                     var $newItems = $(data.data.replace(/\n/,''));
                     $('.topic-' + tid).isotope( 'insert', $newItems);
                     // Setup pretty photo and edit in place
@@ -129,7 +130,6 @@
                       }
                     });
                     setup();
-                    $('.emptyTopicMsg').hide();
                 }
             }
         }).error(function(xhr, status, data) {
