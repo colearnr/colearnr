@@ -205,7 +205,7 @@
                 e.preventDefault();
                 break;
               case 27:
-                if (!settings.modal)
+                if (!pp_settings.modal)
                   $.prettyPhoto.close();
                 e.preventDefault();
                 break;
