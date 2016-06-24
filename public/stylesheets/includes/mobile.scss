@@ -1,5 +1,8 @@
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .fabContainer {
+    bottom: 0px;
+  }
   .search-result {
     .img-circle {
       margin-top: 5px;
@@ -42,6 +45,9 @@
 
 /* iPads (landscape) ----------- */
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+  .fabContainer {
+    bottom: 0px;
+  }
   .search-result {
     height: 140px;
     .img-circle {
@@ -72,6 +78,9 @@
 
 /* iPads (portrait) ----------- */
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
+  .fabContainer {
+    bottom: 0px;
+  }
   .search-result {
     width: 380px;
     height: 140px;

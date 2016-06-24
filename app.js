@@ -83,7 +83,9 @@ if (config.use_cluster && cluster.isMaster) {
   app.set('views', path.resolve(__dirname, 'views'))
   app.set('view engine', 'ejs')
   app.set('view options', {layout: false})
-  app.use(helmet())
+  app.use(helmet({
+    frameguard: false
+  }))
   app.use(compression({
     threshold: 512
   }))
