@@ -84,7 +84,6 @@ else
         gem install psych
     fi
 
-
     wget https://github.com/colearnr/colearnr/archive/master.zip
     unzip master.zip
     rm master.zip

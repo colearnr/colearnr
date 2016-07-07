@@ -36,13 +36,13 @@ export CC=/opt/rh/devtoolset-2/root/usr/bin/gcc
 export CPP=/opt/rh/devtoolset-2/root/usr/bin/cpp
 export CXX=/opt/rh/devtoolset-2/root/usr/bin/c++
 
-sudo yum install -y ruby
-sudo yum install -y gcc g++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel
-sudo yum install -y ruby-rdoc ruby-devel rubygems
+yum install -y ruby
+yum install -y gcc g++ make automake autoconf curl-devel openssl-devel zlib-devel httpd-devel apr-devel apr-util-devel sqlite-devel
+yum install -y ruby-rdoc ruby-devel rubygems
 
-sudo gem update
-sudo gem update --system
-sudo gem install compass
+gem update
+gem update --system
+gem install compass
 ```
 
 In case of RedHat 6.7
@@ -67,7 +67,7 @@ PWD=`pwd`
 npm config set python python2.7
 
 # Install global dependencies
-sudo npm install -g grunt grunt-cli gulp gulp-cli bower nodemon
+npm install -g grunt grunt-cli gulp gulp-cli bower nodemon
 
 # clone and build the main app
 git clone https://github.com/colearnr/colearnr.git
