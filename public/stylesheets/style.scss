@@ -49,8 +49,8 @@ a:hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Source Sans Pro" !important;
-  font-weight: normal !important;
+  font-family: "Source Sans Pro";
+  font-weight: normal;
   color: #414141;
   margin: 10px 0px 10px 0px;
   padding: 0;
@@ -722,7 +722,7 @@ div.istoolbar_container h1, h2, h3, h4, h5, h6 {
   padding: 0px 15px 15px 15px;
   margin: 0 auto;
   background: $mercury;
-  font-family: "Economica", Arial, sans-serif !important;
+  font-family: "Economica", Arial, sans-serif;
   color: rgba(80, 80, 80, 0.8);
   font-size: 30px;
 }
@@ -731,7 +731,7 @@ div.istoolbar_container h1, h2, h3, h4, h5, h6 {
   display: inline-block;
   padding: 0px 10px 0px 0px;
   margin: 0px 0px 5px 0px;
-  font-family: "Economica", Arial, sans-serif !important;
+  font-family: "Economica", Arial, sans-serif;
   color: rgba(80, 80, 80, 0.8);
   font-size: 26px;
 }

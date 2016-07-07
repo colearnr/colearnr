@@ -299,14 +299,15 @@
             field_type: "textarea",
             text_out: "#FFFFFF",
             textarea_rows: 3,
-            bg_out: "rgba(0, 0, 0, 0.5)",
+            bg_over: "<%= config.color_primary %>",
+            bg_out: "<%= config.color_lbit_highlight %>",
             value_required: true,
             delegate: {
                 didOpenEditInPlace : function(aDOMNode, aSettingsDict) {
-                    aDOMNode.css('background-color', 'rgba(255, 255, 255, 0.9)');
+                    aDOMNode.css('background-color', "<%= config.color_lbit_edit_bg %>");
                 },
                 didCloseEditInPlace : function(aDOMNode, aSettingsDict) {
-                    aDOMNode.css('background-color', 'rgba(0, 0, 0, 0.5)');
+                    aDOMNode.css('background-color', "<%= config.color_lbit_highlight %>");
                 }
             }
         });

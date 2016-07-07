@@ -60,6 +60,9 @@ var isAdmin = user.roles && _.indexOf(user.roles, constants.ALL_TOPIC_ADMIN_ROLE
         <h1><% if (locals.topicObj) { %><% if (isCollaborator) { %><i class="fa fa-users parentTopicIcon" title="Collaborator"></i> &nbsp;<% } else if (topicObj.privacy_mode == constants.PUBLIC && !isColearnr) { %><i class="fa fa-globe parentTopicIcon" title="Public topic"></i> &nbsp;<% } else if(topicObj.type == 'search') { %><i class="fa fa-search parentTopicIcon" title="Saved search"></i><% } else if (topicObj.privacy_mode == constants.PRIVATE && !isColearnr) { %><i class="fa fa-lock parentTopicIcon" title="Private topic"></i> &nbsp;<% } %><span <% if (!locals.isMyTopicsPage && user && user.hasAddPermission) { %>id="id-<%- topicObj._id %>-name" class=""<% } %>><%- topicObj.name %></span><% } %></h1>
         <span class="topic-description"><% if (locals.topicObj && topicObj.description) { %><%- topicObj.description %><% } %></span>
         </h1>
+        <% if (config.extra_art) { %>
+        <div class="extraArt hidden-xs"></div>
+        <% } %>
     </div>
 </div>
 <% } else if (!locals.noChildMode) { %>

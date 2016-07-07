@@ -1,6 +1,9 @@
 <link rel="shortcut icon" href="/images/favicon.ico" />
 
 <!-- start: CSS -->
+<% if (config.custom_font) { %>
+<link href="/font/<%= config.custom_font %>/<%= config.custom_font %>.css" rel="stylesheet" type="text/css">
+<% } %>
 <link href="/font/source-sans-pro/source-sans-pro.css" rel="stylesheet" type="text/css">
 <link href="/font/boogaloo/boogaloo.css" rel="stylesheet" type="text/css">
 <link href="/font/economica/economica.css" rel="stylesheet" type="text/css">
