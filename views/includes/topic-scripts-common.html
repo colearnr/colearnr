@@ -228,16 +228,18 @@
             url: "/lbit/quick_edit",
             params: "",
             field_type: field_type,
-            text_out: "#000",
+            text_out: "#FFFFFF",
             textarea_rows: 5,
             textarea_cols: 10,
+            bg_over: "<%= config.color_primary %>",
+            bg_out: "<%= config.color_lbit_highlight %>",
             value_required: false,
             delegate: {
                 didOpenEditInPlace : function(aDOMNode, aSettingsDict) {
                     var itemNode = $(aDOMNode).closest("div.item");
                     prevht = itemNode.css('height');
                     itemNode.css('height', 'auto').css("border", "");
-                    $(aDOMNode).parent().css('height', '170px').css('max-height', '180px');
+                    $(aDOMNode).parent().css('height', '<%= config.lbit_edit_height || "170px" %>').css('max-height', '<%= config.lbit_edit_max_height || "180px" %>');
                     itemNode.find('.lbit-info').css('visibility','hidden');
                     itemNode.find('.lbit-order-display').hide();
                     $('.topic_lbits').isotope();
@@ -260,7 +262,9 @@
             url: "/lbit/quick_edit",
             params: "",
             field_type: "number",
-            text_out: "#000",
+            text_out: "#FFFFFF",
+            bg_over: "<%= config.color_primary %>",
+            bg_out: "<%= config.color_lbit_highlight %>",
             value_required: false,
             delegate: {
                 didOpenEditInPlace : function(aDOMNode, aSettingsDict) {
