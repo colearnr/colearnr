@@ -25,6 +25,7 @@ const params = require('express-params')
 const helmet = require('helmet')
 const http = require('http')
 const passlib = require('./lib/pass')
+const constants = require('./common/constants')
 const config = require('./lib/config').config
 const flash = require('connect-flash')
 const compression = require('compression')

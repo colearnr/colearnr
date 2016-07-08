@@ -19,7 +19,7 @@
     "aws-cloudfront-sign": "^2.1.2",
     "bcrypt": "^0.8.6",
     "body-parser": "^1.14.2",
-    "colearnr-theme-default": "^1.0.0",
+    "colearnr-theme-default": "^1.0.2",
     "compression": "^1.6.0",
     "connect": "^3.4.1",
     "connect-busboy": "^0.0.2",
