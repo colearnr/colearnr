@@ -28,6 +28,9 @@ function pageOptionsSetter (req, res, next) {
   }
   let hostname = req.headers['host'] ? req.headers['host'].split(':')[0] : '127.0.0.1'
   let config = config_lib.config.use_client_host ? config_lib.configure(hostname) : config_lib.config
+  if (global.themeConfig) {
+    _.merge(config, global.themeConfig)
+  }
   page_options.cdn_prefix = config.cdn_prefix
   page_options.version = version
   page_options.env = process.env

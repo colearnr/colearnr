@@ -28,6 +28,7 @@ const passlib = require('./lib/pass')
 const constants = require('./common/constants')
 const config = require('./lib/config').config
 const flash = require('connect-flash')
+const fs = require('fs')
 const compression = require('compression')
 const session = require('express-session')
 const bodyParser = require('body-parser')
@@ -126,7 +127,24 @@ if (config.use_cluster && cluster.isMaster) {
 
   app.use(serveStatic(path.resolve(__dirname, 'public'), {maxAge: maxAge}))
   if (config.theme) {
-    app.use(serveStatic(path.resolve(__dirname, 'node_modules', config.theme), { maxAge: maxAge }))
+    // Check local themes or node_modules directory
+    if (fs.existsSync(path.resolve(__dirname, config.themes_dir, config.theme))) {
+      app.use(serveStatic(path.resolve(__dirname, config.themes_dir, config.theme), { maxAge: maxAge }))
+      try {
+        global.themeConfig = require(path.resolve(__dirname, config.themes_dir, config.theme, 'config'))
+      } catch(e) {
+
+      }
+    } else if (fs.existsSync(path.resolve(__dirname, 'node_modules', config.theme))){
+      app.use(serveStatic(path.resolve(__dirname, 'node_modules', config.theme), { maxAge: maxAge }))
+      try {
+        global.themeConfig = require(path.resolve(__dirname, 'node_modules', config.theme, 'config'))
+      } catch(e) {
+
+      }
+    } else {
+      logger.warn('Unable to find any colearnr theme!')
+    }
   }
   // If it is not the default theme then add an endpoint to the default theme as well so that we can serve
   // the non-overridden paths

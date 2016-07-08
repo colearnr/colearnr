@@ -674,7 +674,7 @@ $(window).bind('hashchange', function(event) {
             var randomImage = Math.floor((Math.random() * (images.length-1)) + 1);
             var rimg = images[randomImage];
             if (!rimg) {
-                images = [<%- config.DEFAULT_COVER_ARTS %>];
+                images = [<%- config.default_cover_arts %>];
                 randomImage = Math.floor((Math.random() * (images.length)));
                 rimg = images[randomImage];
             }
@@ -686,7 +686,7 @@ $(window).bind('hashchange', function(event) {
         <% } %>
     }
     $('.coverArt img').error(function () {
-        var images = [<%- config.DEFAULT_COVER_ARTS %>];
+        var images = [<%- config.default_cover_arts %>];
         randomImage = Math.floor((Math.random() * (images.length)));
         rimg = images[randomImage];
         $('.coverArt img').attr("src", rimg);
