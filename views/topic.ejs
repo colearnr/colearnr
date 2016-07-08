@@ -24,7 +24,8 @@
     <meta name="twitter:title" content="<% if (locals.topicObj) { %><%- topicObj.name %> | CoLearnr<% } %>">
     <meta name="twitter:description" content="<% if (locals.topicObj && topicObj.description) { %><%- topicObj.description %><% } %>">
     <meta name="twitter:image:src" content="<% if (locals.topicObj && locals.topicObj.img_url && topicObj.img_url.length) { %><%- topicObj.img_url[0] %><% } else { %><%- host_url %>/images/logo-mini.png<% } %>">
-
+    <link rel="apple-touch-icon" href="<%- page_options.cdn_prefix %>/images/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="<%- page_options.cdn_prefix %>/images/favicon.ico" />
     <% include includes/css-common.html %>
     <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/jquery-ui/jquery-ui-flick.min.css">
 </head>

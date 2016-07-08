@@ -3,8 +3,6 @@
 // Load plugins
 const gulp = require('gulp')
 const sass = require('gulp-ruby-sass')
-const cssnano = require('gulp-cssnano')
-const uglify = require('gulp-uglify')
 const rename = require('gulp-rename')
 const include = require('gulp-include')
 const ejs = require('gulp-ejs')
@@ -19,7 +17,6 @@ const flatten = require('gulp-flatten')
 // Define paths
 const paths = {
   scripts: ['public/javascripts/*.js', '!public/javascripts/*.min.js', '!public/javascripts/*-min.js', '!public/javascripts/*combined.js'],
-  styles: ['public/stylesheets/*.scss', 'public/stylesheets/*.sass'],
   templates: ['views/**/*.ejs']
 }
 
@@ -29,16 +26,6 @@ const jsSources = [
   'lib/**/*.js',
   'routes/**/*.js'
 ]
-
-// CSS
-gulp.task('css', function () {
-  return sass('public/stylesheets/**/*.scss', {precision: 6, loadPath: [process.cwd() + '/public/stylesheets/includes', process.cwd() + '/public/vendor']})
-    .on('error', sass.logError)
-    .pipe(gulp.dest('public/dist/stylesheets'))
-    .pipe(rename({suffix: '.min'}))
-    .pipe(cssnano())
-    .pipe(gulp.dest('public/dist/stylesheets'))
-})
 
 // Javascript
 gulp.task('js', function () {
@@ -64,7 +51,7 @@ gulp.task('templates', function () {
 
 // Clean up
 gulp.task('clean', function () {
-  return gulp.src(['public/dist/stylesheets', 'public/dist/javascripts', 'public/dist/fonts', 'dist/*.html'], {read: false})
+  return gulp.src(['public/dist/javascripts', 'dist/*.html'], {read: false})
     .pipe(rimraf())
 })
 
@@ -75,16 +62,9 @@ gulp.task('rev', function () {
     .pipe(gulp.dest('rev'))
 })
 
-// Copy fonts
-gulp.task('fonts', function () {
-  gulp.src('public/fonts/**/*.{eot,svg,ttf,woff}')
-    .pipe(flatten())
-    .pipe(gulp.dest('public/dist/fonts'))
-})
-
 // Default task
 gulp.task('default', ['clean'], function () {
-  gulp.start('docs', 'css', 'js', 'templates', 'fonts')
+  gulp.start('docs', 'js', 'templates')
 })
 
 // Setup connect server
@@ -108,17 +88,12 @@ gulp.task('serve', ['connect'], function () {
 
 // Watch
 gulp.task('watch', ['connect', 'serve'], function () {
-  // Watch SASS files
-  gulp.watch('public/stylesheets/**/*.scss', ['css'])
 
   // Watch JS files
   gulp.watch('public/javascripts/**/*.js', ['js'])
 
   // Watch template files
   gulp.watch('views/**/*.ejs', ['templates'])
-
-  // Watch for fonts
-  gulp.watch('public/fonts/**/*.{eot,svg,ttf.woff}', ['fonts'])
 
   // Create LiveReload server
   var server = livereload()

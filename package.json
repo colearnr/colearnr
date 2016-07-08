@@ -1,6 +1,6 @@
 {
   "name": "colearnr",
-  "version": "1.0.0-alpha1",
+  "version": "1.0.0-alpha2",
   "private": false,
   "homepage": "https://www.colearnr.com",
   "license": "GPL-3.0",
@@ -9,7 +9,7 @@
   },
   "main": "app.js",
   "scripts": {
-    "start": "mkdir -p dist && gulp css && NODE_ENV=development nodemon --watch lib --watch common --watch routes app.js",
+    "start": "NODE_ENV=development nodemon --watch lib --watch common --watch routes app.js",
     "inspect": "NODE_ENV=development node --debug app.js",
     "inspector": "NODE_ENV=development node ./node_modules/node-inspector/bin/inspector.js --debug-brk app.js --forward-io --profile --web-port=6060"
   },
@@ -19,6 +19,7 @@
     "aws-cloudfront-sign": "^2.1.2",
     "bcrypt": "^0.8.6",
     "body-parser": "^1.14.2",
+    "colearnr-theme-default": "^1.0.0",
     "compression": "^1.6.0",
     "connect": "^3.4.1",
     "connect-busboy": "^0.0.2",
@@ -74,7 +75,6 @@
     "gulp": "^3.9.0",
     "gulp-cache": "^0.4.3",
     "gulp-concat": "^2.6.0",
-    "gulp-cssnano": "^2.1.0",
     "gulp-ejs": "2.1.2",
     "gulp-flatten": "0.2.0",
     "gulp-if": "^2.0.0",
@@ -88,7 +88,6 @@
     "gulp-rev": "^7.0.0",
     "gulp-rev-all": "^0.8.24",
     "gulp-rimraf": "^0.2.0",
-    "gulp-ruby-sass": "^2.0.6",
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.7",
     "jshint": "^2.9.1-rc2",

@@ -124,6 +124,9 @@ if (config.use_cluster && cluster.isMaster) {
   app.use(allowCrossDomain)
 
   app.use(serveStatic(path.resolve(__dirname, 'public'), {maxAge: maxAge}))
+  if (config.theme) {
+    app.use(serveStatic(path.resolve(__dirname, 'node_modules', config.theme), { maxAge: maxAge }))
+  }
   let appsMap = learnApps.list()
   for (let key in appsMap) {
     app.use('/apps/' + key + '-static', serveStatic(path.resolve(__dirname, 'apps', key, 'src', 'public'), {maxAge: maxAge}))
