@@ -99,3 +99,4 @@ define('ALLOWED_EMBED_DOMAINS', [config.cookieDomain, 'drive.google.com', 'view.
 define('LIKED', 'Liked')
 define('DISCUSSED', 'Discussed')
 define('MENTIONED', 'Mentioned')
+define('DEFAULT_THEME', 'colearnr-theme-default')

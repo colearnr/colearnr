@@ -36,7 +36,7 @@ const serveStatic = require('serve-static')
 const RDB = require('./common/redis')
 const logger = require('./common/log')
 const socketIOclient = require('socket.io-client')
-const learnApps = require('./lib/apps')
+const clApps = require('./lib/apps')
 const path = require('path')
 const cluster = require('cluster')
 const numCPUs = require('os').cpus().length
@@ -127,7 +127,12 @@ if (config.use_cluster && cluster.isMaster) {
   if (config.theme) {
     app.use(serveStatic(path.resolve(__dirname, 'node_modules', config.theme), { maxAge: maxAge }))
   }
-  let appsMap = learnApps.list()
+  // If it is not the default theme then add an endpoint to the default theme as well so that we can serve
+  // the non-overridden paths
+  if (config.theme !== constants.DEFAULT_THEME) {
+    app.use(serveStatic(path.resolve(__dirname, 'node_modules', constants.DEFAULT_THEME), { maxAge: maxAge }))
+  }
+  let appsMap = clApps.list()
   for (let key in appsMap) {
     app.use('/apps/' + key + '-static', serveStatic(path.resolve(__dirname, 'apps', key, 'src', 'public'), {maxAge: maxAge}))
     logger.debug('Static', '/apps/' + key + '-static')
