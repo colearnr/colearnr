@@ -12,9 +12,6 @@ unzip master.zip
 rm master.zip
 
 cd colearnr-master
-npm install --unsafe-perm && gulp css
-# Remove dev dependencies after gulp
-rm -rf node_modules
 npm install --unsafe-perm --production --loglevel warn
 cd ..
 mv colearnr-master colearnr
