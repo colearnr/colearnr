@@ -19,6 +19,9 @@ HttpUtils.DEFAULT_USER_AGENT = config.cl_user_agent || 'CoLearnr Bot'
 HttpUtils.httpHeadRequest = function (opts, url, index, data, callback) {
   let req
   let serviceToUse = http
+  opts.agentOptions = {
+    rejectUnauthorized: false
+  }
   opts.agent = this.httpAgent
   if (url.indexOf('https') >= 0) {
     opts.agent = HttpUtils.httpsAgent

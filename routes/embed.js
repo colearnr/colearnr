@@ -12,7 +12,7 @@ const url_utils = require('url')
 const _ = require('lodash')
 
 function doRender (res, lbit, topic, user, url, embedSize, info, extOptions) {
-  logger.debug('Before embed', lbit._id, topic, url, embedSize)
+  logger.debug('Before embed', topic, url, embedSize)
   let urlType = (lbit ? lbit.type : util.getUrlType(url, null))
   let options = _getUrlOptions(url)
   if (!util.empty(extOptions)) {
@@ -101,10 +101,12 @@ function embed_url (req, res) {
         query.find_or_create_topic(topicPath, tmpName, tmpId, null, user._id, null, null, function (err, topic) {
           if (err) {
             logger.error(err)
+            res.status(500).send('Unable to embed this url')
           }
           query.get_learnbit(user, {url: url, topics: {_id: '' + topic._id}}, function (err, lbit) {
             if (err) {
               logger.error(err)
+              res.status(500).send('Unable to embed this url')
             }
             if (lbit) {
               doRender(res, lbit, topic, user, url, embedSize, info, extOptions)
@@ -112,8 +114,10 @@ function embed_url (req, res) {
               create_lbit(topic.id, {topic_oid: '' + topic._id, url: url, body: null, path: topic.path, author: user._id, title: tmpTitle}, function (err, lbit, isUpdate) {
                 if (err) {
                   logger.error(err)
+                  res.status(500).send('Unable to embed this url')
+                } else {
+                  doRender(res, lbit, topic, user, url, embedSize, info, extOptions)
                 }
-                doRender(res, lbit, topic, user, url, embedSize, info, extOptions)
               })
             }
           })
@@ -208,7 +212,12 @@ function proxy_url (req, res) {
     res.status(500).send('Invalid url!')
     return
   }
-  request.get(url)
+  request.get({
+    url: url,
+    agentOptions: {
+      rejectUnauthorized: false
+    }
+  })
     .on('response', function (response) {
       if (response.statusCode !== 200) {
         logger.log('warn', 'Unable to proxy', url, '. Response code:', response.statusCode)
