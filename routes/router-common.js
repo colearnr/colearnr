@@ -66,15 +66,15 @@ function sessionOptionsSetter (req, res, next) {
     let returnTo = util.getReturnToUrl(req)
     res.locals.returnTo = req.session.returnTo = returnTo
     req.session.push = function (data) {
-      let array = req.session.recently_visited_topics || []
-      for (let i in array) {
-        if (array[i]._id === data._id) {
-          array.splice(i, 1)
+      let arr = req.session.recently_visited_topics || []
+      for (let i in arr) {
+        if (arr[i]._id === data._id) {
+          arr.splice(i, 1)
           break
         }
       }
-      array.push(data)
-      req.session.recently_visited_topics = array.slice(-5).reverse()
+      arr.push(data)
+      req.session.recently_visited_topics = arr.slice(-5).reverse()
     }
   }
 

@@ -76,7 +76,7 @@ function process (req, response) {
     // console.log(data)
     if (!data.topicObj.hidden) {
       let recently_viewed = {
-        _id: data.topicObj._id,
+        _id: ''+data.topicObj._id,
         id: data.topicObj.id,
         name: data.topicObj.name,
         privacy_mode: data.topicObj.privacy_mode,
