@@ -29,9 +29,9 @@
     <% include includes/css-common.html %>
     <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/jquery-ui/jquery-ui-flick.min.css">
 </head>
-<body>
+<body class="Site">
 <% include includes/modals.html %>
-<div id="wrap">
+<div id="wrap" class="Site-content">
 
 <% if (!locals.noChildMode && !locals.embedMode) { %>
 <!--start: Header -->
@@ -93,7 +93,7 @@ var isAdmin = user.roles && _.indexOf(user.roles, constants.ALL_TOPIC_ADMIN_ROLE
             <div id="previews" class="dropzone-previews"></div>
         </div>
     </div>
-    <div class="topic_lbits this_topic_lbits topic<% if (locals.topicObj && topicObj._id) { %>-<%- topicObj._id %><% } %>">
+    <div class="topic_lbits this_topic_lbits <% if (!locals.firstChilds || !locals.firstChilds.length) { %>topic_no_childs<% } %> topic<% if (locals.topicObj && topicObj._id) { %>-<%- topicObj._id %><% } %>">
         <% if (locals.learnbits && locals.learnbits.length) { %>
         <% var topicToUse = topicObj %>
         <% learnbits.forEach(function(lbit) { %>
@@ -143,7 +143,7 @@ var isAdmin = user.roles && _.indexOf(user.roles, constants.ALL_TOPIC_ADMIN_ROLE
     <% } %>
     <% } %>
 
-    <% if (locals.firstChilds) { %>
+    <% if (locals.firstChilds && locals.firstChilds.length) { %>
     <% firstChilds.forEach(function (st) { %>
         <%
         var isStCollaborator = st.collaborators && st.collaborators.indexOf(user._id) != -1;
@@ -167,7 +167,7 @@ var isAdmin = user.roles && _.indexOf(user.roles, constants.ALL_TOPIC_ADMIN_ROLE
             <% } %>
 
             <% if (emptyAddAllowed) { %>
-              <div class="row emptyTopicMsg" style="">
+              <div class="row emptyTopicMsg">
 
               </div>
             <% } %>

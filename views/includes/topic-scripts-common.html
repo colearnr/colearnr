@@ -387,7 +387,9 @@ socket.on('connect', function (data) {
             }
         });
         $('.emptyTopicMsg').removeClass('hide').hide();
-        $('.this_topic_lbits').isotope('layout');
+        if (lbit_list.length) {
+            $('.this_topic_lbits').isotope('layout');
+        }
     });
 
     socket.on('api:dellbit', function (lbit_data) {
