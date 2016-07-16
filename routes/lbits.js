@@ -886,7 +886,12 @@ function download (req, res) {
               filestream.pipe(res)
             })
           } else {
-            request.get(url)
+            request.get({
+              url: url,
+              agentOptions: {
+                rejectUnauthorized: false
+              }
+            })
               .on('response', function (response) {
                 if (response.statusCode !== 200) {
                   logger.log('warn', 'Unable to download', url, '. Response code:', response.statusCode)
@@ -960,7 +965,12 @@ function redirect_url (req, res) {
           })
         } else {
           logger.log('info', 'Proxying data from', url)
-          request.get(url)
+          request.get({
+            url: url,
+            agentOptions: {
+              rejectUnauthorized: false
+            }
+          })
             .on('response', function (response) {
               if (response.statusCode !== 200) {
                 logger.log('warn', 'Unable to proxy', url, '. Response code:', response.statusCode)

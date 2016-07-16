@@ -233,6 +233,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
         extract_lib.extract(bare_element.url, bare_element.body, function (url_data) {
           _find_order(bare_element, function (err, order) {
             if (err) {
+              log.log('error', 'Error during extract', err)
               return callback(err, null)
             }
             let urlToUse = _url(bare_element.url, url_data.url)
@@ -296,6 +297,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
               lb['topics'] = [{_id: db.ObjectId(bare_element['topic_oid'])}]
               http_utils.isFrameRestricted(lb['url'], function (err, res) {
                 if (err) {
+                  log.log('error', 'Error during http check', err)
                   return callback(err, null)
                 }
                 lb['frame_restricted'] = res
