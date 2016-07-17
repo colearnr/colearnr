@@ -30,12 +30,6 @@ var beingOptimised = !lbit.optimised && lbit.optimisation_started;
     <% var lbit_url = lbit.short_url || (host_url + '/topic/' + topicToUse._id + '#lbit=' + lbit._id + '/show') %>
     <% var lbit_embed_url = lbit.embed_url || (host_url + '/lbit/embed/' + lbit._id + '?topicId=' + topicToUse._id + '&embedSize=large' ) %>
     <% var enc_lbit_url = encodeURIComponent(lbit_url) %>
-    <%
-    var user_liked = false;
-    if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
-        user_liked = true;
-    }
-    %>
     <div class="share-block">
         <a href="#" title="Like" onclick="javascript:addLbitFavourite('<%- ftopic._id %>', '<%- lbit._id %>');return false;">
         <i class="lbitLikeBtn-<%- lbit._id %> fa <% if (user_liked) { %>fa-heart<% } else { %>fa-heart-o<% } %> icon-2x"></i></a><span class="id-<%- lbit._id %>-like_count" style="font-size:0.6em;"><% if (lbit.likes && lbit.likes.length) { %><%- lbit.likes.length %><% } %></span>&nbsp;

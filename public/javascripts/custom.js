@@ -254,9 +254,10 @@ jQuery(document).ready(function() {
   // initialize Isotope
   $container.isotope({
     // options...
-    resizable: false, // disable normal resizing
     // set columnWidth to a percentage of container width
     layoutMode: 'fitRows',
+    stagger: 30,
+    resize: true,
     getSortData: {
       order: function(itemElem) {
         var $elem = $(itemElem);
@@ -274,10 +275,14 @@ jQuery(document).ready(function() {
       }
     },
     sortBy: 'order',
+    hiddenStyle: {
+      opacity: 0.7
+    },
+    visibleStyle: {
+      opacity: 1
+    }
   });
 
-  $container.isotope('bindResize');
-  
   if ($('.topic_lbits')) {
     $('.topic_lbits').imagesLoaded(function() {
       var $container = $('.topic_lbits');

@@ -2,29 +2,49 @@
  * Isotope Item
 **/
 
-( function( window ) {
+( function( window, factory ) {
+  // universal module definition
+  /* jshint strict: false */ /*globals define, module, require */
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+        'outlayer/outlayer'
+      ],
+      factory );
+  } else if ( typeof module == 'object' && module.exports ) {
+    // CommonJS
+    module.exports = factory(
+      require('outlayer')
+    );
+  } else {
+    // browser global
+    window.Isotope = window.Isotope || {};
+    window.Isotope.Item = factory(
+      window.Outlayer
+    );
+  }
 
+}( window, function factory( Outlayer ) {
 'use strict';
 
 // -------------------------- Item -------------------------- //
-
-function itemDefinition( Outlayer ) {
 
 // sub-class Outlayer Item
 function Item() {
   Outlayer.Item.apply( this, arguments );
 }
 
-Item.prototype = new Outlayer.Item();
+var proto = Item.prototype = Object.create( Outlayer.Item.prototype );
 
-Item.prototype._create = function() {
+var _create = proto._create;
+proto._create = function() {
   // assign id, used for original-order sorting
   this.id = this.layout.itemGUID++;
-  Outlayer.Item.prototype._create.call( this );
+  _create.call( this );
   this.sortData = {};
 };
 
-Item.prototype.updateSortData = function() {
+proto.updateSortData = function() {
   if ( this.isIgnored ) {
     return;
   }
@@ -42,8 +62,8 @@ Item.prototype.updateSortData = function() {
   }
 };
 
-var _destroy = Item.prototype.destroy;
-Item.prototype.destroy = function() {
+var _destroy = proto.destroy;
+proto.destroy = function() {
   // call super
   _destroy.apply( this, arguments );
   // reset display, #741
@@ -54,27 +74,4 @@ Item.prototype.destroy = function() {
 
 return Item;
 
-}
-
-// -------------------------- transport -------------------------- //
-
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( [
-      'outlayer/outlayer'
-    ],
-    itemDefinition );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = itemDefinition(
-    require('outlayer')
-  );
-} else {
-  // browser global
-  window.Isotope = window.Isotope || {};
-  window.Isotope.Item = itemDefinition(
-    window.Outlayer
-  );
-}
-
-})( window );
+}));

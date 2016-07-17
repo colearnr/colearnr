@@ -34,9 +34,9 @@
     "bootstrap-notify": "git://github.com/colearnr/bootstrap-notify.git#0.2.1",
     "jquery.lazyload": "~1.9.3",
     "summernote": "git://github.com/colearnr/summernote.git#0.6.2",
-    "fontawesome": "~4.2.0",
+    "fontawesome": "~4.6.3",
     "code-prettify": "git://github.com/colearnr/code-prettify.git#0.0.3",
-    "isotope": "~2.1.0",
+    "isotope": "~3.0.1",
     "OwlCarousel2": "git://github.com/colearnr/OwlCarousel2.git#2.0.0",
     "showdown": "~0.3.4",
     "dropzone": "~4.0.1"

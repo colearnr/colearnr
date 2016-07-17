@@ -70,11 +70,19 @@ if (topicToUse.discuss_anchor !== 'disable') {
     disurl = (topic_discussion_url) || ( (locals.discussion_url || '') + '/topic/user/' + user._id + '/by_objid/' + (discuss_id || 9) + '/' + lbit._id + '?topic_id=' + topicToUse._id);
 }
 var notesurl = '/userdata/' + lbit._id + '/notes?topic_id=' + topicToUse._id;
+var user_liked = false;
+if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
+    user_liked = true;
+}
 %>
 
 <% if (editAllowed) { editClass = 'edit-class'; titleEditClass='title-edit-class'; orderEditClass='order-edit-class' } %>
 
-<div id="<%- topicToUse._id %>-<%- lbit._id %>-lbit" class="lbit-<%- lbit._id %> col-md-3 col-xs-6 col-sm-4 item <% if(lbit.topics && lbit.topics.length && typeof lbit.topics == Array) { lbit.topics.forEach(function(at) { %><% if (locals.sid_id_map && sid_id_map[at._id]) { %><%- sid_id_map[at._id] %><% } %> <% }) } %>" itemscope itemtype="http://schema.org/Article">
+<div id="<%- topicToUse._id %>-<%- lbit._id %>-lbit" data-views="<%- lbit.own_views || 0 %>" class="lbit-<%- lbit._id %> col-md-3 col-xs-6 col-sm-4 item <% if (lbit.own_views) { %>viewedLbit<% } else if (lbit.own_comments) { %>discussedLbit<% } else if (user_liked) { %>likedLbit<% } %> <% if(lbit.topics && lbit.topics.length && typeof lbit.topics == Array) { lbit.topics.forEach(function(at) { %><% if (locals.sid_id_map && sid_id_map[at._id]) { %><%- sid_id_map[at._id] %><% } %> <% }) } %>" itemscope itemtype="http://schema.org/Article">
+    <div class="lbit-decorate">
+        <i class="fa fa-check viewedDecorate"></i>
+        <i class="fa fa-commenting discussedDecorate"></i>
+    </div>
     <div id="<%- lbit._id %>" class="grid-title hide">
         <p id="id-<%- lbit._id %>-order" class="number <%- orderEditClass %> lbit-order pull-left <% if (!sameTopic) { %>hide<% } %>"><%- lbit.order || "0" %></p>
         <p itemprop="datePublished" class="added_date pull-left" id="id-<%- lbit._id %>-last_updated"><% if (lbit.last_updated) { %><%- util.relativeTime(lbit.last_updated) %><% } %></p>
@@ -245,7 +253,7 @@ var notesurl = '/userdata/' + lbit._id + '/notes?topic_id=' + topicToUse._id;
         <% var body = util.parseJson(lbit.body) %>
         <div class="quotes">
             <div itemprop="description" class="quote">
-                "<%- body.quote %>"
+                <sup><i class="fa fa-quote-left"></i></sup> <%- body.quote %> <sup><i class="fa fa-quote-right"></sup></i>
             </div>
             <div itemprop="author" itemscope itemtype="http://schema.org/Person" class="author">
                 - <%- body.author %> -

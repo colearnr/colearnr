@@ -1,19 +1,43 @@
-( function( window ) {
+/**
+ * fitRows layout mode
+ */
 
+( function( window, factory ) {
+  // universal module definition
+  /* jshint strict: false */ /*globals define, module, require */
+  if ( typeof define == 'function' && define.amd ) {
+    // AMD
+    define( [
+        '../layout-mode'
+      ],
+      factory );
+  } else if ( typeof exports == 'object' ) {
+    // CommonJS
+    module.exports = factory(
+      require('../layout-mode')
+    );
+  } else {
+    // browser global
+    factory(
+      window.Isotope.LayoutMode
+    );
+  }
+
+}( window, function factory( LayoutMode ) {
 'use strict';
-
-function fitRowsDefinition( LayoutMode ) {
 
 var FitRows = LayoutMode.create('fitRows');
 
-FitRows.prototype._resetLayout = function() {
+var proto = FitRows.prototype;
+
+proto._resetLayout = function() {
   this.x = 0;
   this.y = 0;
   this.maxY = 0;
   this._getMeasurement( 'gutter', 'outerWidth' );
 };
 
-FitRows.prototype._getItemLayoutPosition = function( item ) {
+proto._getItemLayoutPosition = function( item ) {
   item.getSize();
 
   var itemWidth = item.size.outerWidth + this.gutter;
@@ -35,30 +59,10 @@ FitRows.prototype._getItemLayoutPosition = function( item ) {
   return position;
 };
 
-FitRows.prototype._getContainerSize = function() {
+proto._getContainerSize = function() {
   return { height: this.maxY };
 };
 
 return FitRows;
 
-}
-
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( [
-      '../layout-mode'
-    ],
-    fitRowsDefinition );
-} else if ( typeof exports === 'object' ) {
-  // CommonJS
-  module.exports = fitRowsDefinition(
-    require('../layout-mode')
-  );
-} else {
-  // browser global
-  fitRowsDefinition(
-    window.Isotope.LayoutMode
-  );
-}
-
-})( window );
+}));
