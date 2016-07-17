@@ -11,7 +11,8 @@
     pp_settings = jQuery.extend({
       hook: 'rel', /* the attribute tag to use for prettyPhoto hooks. default: 'rel'. For HTML5, use "data-rel" or similar. */
       animation_speed: 'fast', /* fast/slow/normal */
-      ajaxcallback: function() {
+      ajaxcallback: function(lbit_id, topic_id) {
+        $.ajax({url: '/lbit_track?e=view&lbit_id=' + lbit_id + '&topic_id=' + topic_id});
       },
       slideshow: false, /* false OR interval time in ms */
       autoplay_slideshow: false, /* true/false */
@@ -950,10 +951,9 @@
         settings.changepicturecallback(lbit_comments_count); // Callback!
 
         pp_open = true;
-        $.ajax({url: '/lbit_track?e=view&lbit_id=' + lbit_id + '&topic_id=' + topic_id});
       });
       _insert_gallery();
-      pp_settings.ajaxcallback();
+      pp_settings.ajaxcallback(lbit_id, topic_id);
     };
 
     /**

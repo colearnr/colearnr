@@ -18,12 +18,12 @@ var beingOptimised = !lbit.optimised && lbit.optimisation_started;
     <% if (lbit.topics && lbit.topics.length) { %>
     <%
         var ftopic = lbit.topics[0];
-        if (ftopic._id == topicToUse._id && topicToUse.name) {
+        if (ftopic._id === topicToUse._id && topicToUse.name) {
             ftopic = topicToUse;
         }
      %>
-    <% if (ftopic && (ftopic._id != ''+topicToUse._id || locals.isSearchPage)) { %>
-    <span> <a href="/topic/<%- ftopic._id %>"> <i class="fa fa-book"></i></a></span>
+    <% if (ftopic) { %>
+    <span> <a title="View topic" data-toggle="tooltip" href="/topic/<%- ftopic._id %>"> <i class="fa fa-book"></i></a></span>
     <% } %>
     <% } %>
     </div>

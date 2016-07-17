@@ -10,6 +10,7 @@ const Step = require('step')
 const perms = require('../lib/perms')
 const async = require('async')
 const util = require('./util')
+const LIMIT_RECENT_BITS = 10
 
 const query = {
   _checkDeleteAccess: function (obj, user) {
@@ -446,6 +447,9 @@ const query = {
   get_virtual_learnbits: function (user, callback) {
     let self = this
     async.parallel({
+      'recently viewed': function (cb) {
+        self.get_recent_viewed_learnbits(user, {}, cb)
+      },
       liked: function (cb) {
         self.get_learn_bits_arged(user, {likes: '' + user._id}, cb)
       },
@@ -827,6 +831,35 @@ const query = {
           }
         })
       })
+    })
+  },
+
+  get_recent_viewed_learnbits: function (user, args, callback) {
+    let self = this
+    args = args || {}
+    args.type = 'lbit'
+    args.user = ''+user._id
+    db.analytics.find(args, {lbit_id: 1, topic_id: 1}).sort({timestamp: -1}).limit(args.limit || LIMIT_RECENT_BITS, function (err, lbits) {
+      if (err || !lbits || !lbits.length) {
+        callback(err, null)
+      } else {
+        let lbit_ids = []
+        let lbit_topic_map = {}
+        lbits.forEach(function (v) {
+          lbit_ids.push(db.ObjectId(v.lbit_id))
+          if (v.topic_id) {
+            lbit_topic_map[ v.lbit_id ] = [ {_id: v.topic_id} ]
+          }
+        })
+        db.learnbits.find({_id: {$in: lbit_ids}}, function (err, tmpLbits) {
+          let albits = []
+          tmpLbits.forEach(function (l) {
+            l.topics = lbit_topic_map[''+l._id]
+            albits.push(l)
+          })
+          self.setLearnbitMetadata(user, [], albits, callback)
+        })
+      }
     })
   },
 
