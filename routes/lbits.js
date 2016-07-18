@@ -1235,6 +1235,23 @@ function count_api (req, res) {
   }
 }
 
+function stats (req, res) {
+  let user = req.user
+  let lbitIds = req.body.lbitIds
+  lbitIds = JSON.parse(lbitIds)
+  if (lbitIds && lbitIds.length) {
+    query.get_lbit_stats(user, lbitIds, function (err, stats) {
+      if (err) {
+        res.json({})
+      } else {
+        res.json(stats)
+      }
+    })
+  } else {
+    res.json({})
+  }
+}
+
 exports.save_edit = function (req, res) {
   save_edit(req, res)
 }
@@ -1309,4 +1326,8 @@ exports.view_tracks = function (req, res) {
 
 exports.count_api = function (req, res) {
   count_api(req, res)
+}
+
+exports.stats = function (req, res) {
+  stats(req, res)
 }

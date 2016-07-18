@@ -444,24 +444,6 @@ const query = {
     return this.get_topics(user, query, includeDeleted, callback)
   },
 
-  get_virtual_learnbits: function (user, callback) {
-    let self = this
-    async.parallel({
-      'recently viewed': function (cb) {
-        self.get_recent_viewed_learnbits(user, {}, cb)
-      },
-      liked: function (cb) {
-        self.get_learn_bits_arged(user, {likes: '' + user._id}, cb)
-      },
-      discussed: function (cb) {
-        self.get_learn_bits_arged(user, {discussed: '' + user._id}, cb)
-      },
-      mentioned: function (cb) {
-        self.get_learn_bits_arged(user, {mentioned: '' + user._id}, cb)
-      }
-    }, callback)
-  },
-
   get_user_search_topics: function (user, callback) {
     let args = {type: 'search', path: new RegExp('^,' + user._id + ',search,')}
     this.get_topics(user, args, false, callback)
@@ -834,10 +816,47 @@ const query = {
     })
   },
 
+  get_lbit_stats: function (user, lbitIds, callback) {
+    let self = this
+    async.parallel({
+      'own_views': function (cb) {
+        db.analytics.aggregate([
+          {$match: {lbit_id: {$in: lbitIds}, type: 'lbit', e: 'view', user: ''+user._id}},
+          {$group: {_id: "$lbit_id", views: {$sum: 1}}}
+          ], cb)
+      },
+      views: function (cb) {
+        db.analytics.aggregate([
+          {$match: {lbit_id: {$in: lbitIds}, type: 'lbit', e: 'view', user: ''+user._id}},
+          {$group: {_id: "$lbit_id", views: {$sum: 1}}}
+        ], cb)
+      }
+    }, callback)
+  },
+
+  get_virtual_learnbits: function (user, callback) {
+    let self = this
+    async.parallel({
+      'recently viewed': function (cb) {
+        self.get_recent_viewed_learnbits(user, {}, cb)
+      },
+      liked: function (cb) {
+        self.get_learn_bits_arged(user, {likes: '' + user._id}, cb)
+      },
+      discussed: function (cb) {
+        self.get_learn_bits_arged(user, {discussed: '' + user._id}, cb)
+      },
+      mentioned: function (cb) {
+        self.get_learn_bits_arged(user, {mentioned: '' + user._id}, cb)
+      }
+    }, callback)
+  },
+
   get_recent_viewed_learnbits: function (user, args, callback) {
     let self = this
     args = args || {}
     args.type = 'lbit'
+    args.e = 'view'
     args.user = ''+user._id
     db.analytics.find(args, {lbit_id: 1, topic_id: 1}).sort({timestamp: -1}).limit(args.limit || LIMIT_RECENT_BITS, function (err, lbits) {
       if (err || !lbits || !lbits.length) {

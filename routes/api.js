@@ -6,11 +6,15 @@ const user = require('./user')
 const talk = require('./talk')
 const config = require('../lib/config').config
 const request = require('request')
+const router_common = require('./router-common')
 const passlib = require('../lib/pass')
 const API_VERSION = config.API_VERSION || 1
 const API_PREFIX = '/api/v' + API_VERSION
 
 module.exports = function (app) {
+  let pageOptionsSetter = router_common.pageOptionsSetter
+  let sessionOptionsSetter = router_common.sessionOptionsSetter
+
   // Topic api
   app.get(API_PREFIX + '/topic/map/:oid', passlib.ensureAuthenticated, topic.load_map_api)
   app.get(API_PREFIX + '/topic/search', passlib.ensureAuthenticated, topic.search_api)
@@ -20,6 +24,7 @@ module.exports = function (app) {
   // lbit api
   app.get(API_PREFIX + '/lbit/search', passlib.ensureAuthenticated, lbits.search_api)
   app.get(API_PREFIX + '/lbit/count/:oid', passlib.ensureAuthenticated, lbits.count_api)
+  app.post(API_PREFIX + '/lbit/stats', pageOptionsSetter, passlib.ensureAuthenticated, sessionOptionsSetter, lbits.stats)
 
   // user api
   app.get(API_PREFIX + '/user/search', passlib.ensureAuthenticated, user.search_api)

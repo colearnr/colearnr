@@ -149,19 +149,21 @@
             flipButton.addClass('clblue');
             var item = $(this).closest("div.item");
             var flipcard = item.find('.flipcard');
-            var discussBtn = item.find('.lbit-discuss');
+            var discussBtn = item.find('.lbit-stats');
             var orderBtn = item.find('.lbit-order');
             var added_date = item.find('.added_date');
             var dinfo = item.find('.detailed_info');
             var titleBar = item.find('.grid-title');
             var topicBtn = item.find('.lbit-topic-btn');
             var profileImg = item.find('.lbit-by');
+            var decorateBtn = item.find('.lbit-decorate');
             item.removeClass('selectedLbit animated bounce');
             if (!item.hasClass("expanded")) { // deactivate click handler when showing expanded view (-> close button!)
                 added_date.show();
                 discussBtn.hide();
                 orderBtn.show();
                 topicBtn.hide();
+                decorateBtn.removeClass('hide').show();
                 titleBar.removeClass('hide');
                 item.addClass("expanded");
                 if (profileImg.attr('src') && profileImg.attr('src') != profileImg.attr('data-original')) {
@@ -185,9 +187,10 @@
                             setupTitleEdit(item.find('.title-edit-class'));
                         }
                         flipButton.removeClass('clblue');
-                        var discussBtn = item.find('.lbit-discuss');
+                        var discussBtn = item.find('.lbit-stats');
                         var added_date = item.find('.added_date');
                         discussBtn.show();
+                        decorateBtn.hide();
                         orderBtn.hide();
                         if (orderBtn.text() !== null) {
                             if (orderBtn.text() !== '' && orderBtn.text() !== '0') {
@@ -477,11 +480,10 @@ socket.on('connect', function (data) {
                     }
                 });
             }
-            if (lbit.comments_count && $('#id-' + lbit._id + '-comments_count').html() != lbit.comments_count) {
-                $('#id-' + lbit._id + '-comments_count').html(lbit.comments_count);
-                if ($('#id-' + lbit._id + '-comments_count').hasClass('hide')) {
-                    $('#id-' + lbit._id + '-comments_count').removeClass('hide');
-                }
+            if (lbit.comments_count && $('.id-' + lbit._id + '-comments_count').html() != lbit.comments_count) {
+                $('.id-' + lbit._id + '-comments_count').html(lbit.comments_count);
+                $('.id-' + lbit._id + '-comments_count').parent().removeClass('hide');
+                $('.id-' + lbit._id + '-comments_count').removeClass('hide');
             }
             if (lbit.img_url && lbit.img_url.length) {
                 var elem = $('#id-' + lbit._id + '-thumbnail');
@@ -511,12 +513,11 @@ socket.on('connect', function (data) {
                 var lbit_full = $('.lbit-' + lbit_data.lbit_id);
                 var lbit_img_data = lbit_full.find('.image');
                 lbit_img_data.attr('data-comments_count', postcount - 1);
-                if ($('#id-' + lbit_data.lbit_id + '-comments_count').hasClass('hide')) {
-                    $('#id-' + lbit_data.lbit_id + '-comments_count').removeClass('hide');
-                }
-                $('#id-' + lbit_data.lbit_id + '-comments_count').fadeOut(250, function() {
-                    $('#id-' + lbit_data.lbit_id + '-comments_count').html(postcount - 1);
-                    $('#id-' + lbit_data.lbit_id + '-comments_count').fadeIn(250);
+                $('.id-' + lbit_data.lbit_id + '-comments_count').parent().removeClass('hide');
+                $('.id-' + lbit_data.lbit_id + '-comments_count').removeClass('hide');
+                $('.id-' + lbit_data.lbit_id + '-comments_count').fadeOut(250, function() {
+                    $('.id-' + lbit_data.lbit_id + '-comments_count').html(postcount - 1);
+                    $('.id-' + lbit_data.lbit_id + '-comments_count').fadeIn(250);
                 });
             }
         }
@@ -573,10 +574,34 @@ $( window ).unload(function() {
 <% } %>
 
 function watchAllLbits() {
-    if (window.lbitIds && lbitIds.length) {
+    if (window.lbitIds && lbitIds.length && socket) {
         lbitIds.forEach(function (id) {
-            if (socket) {
-                socket.emit('api:join_room', 'lbit:' + id);
+            socket.emit('api:join_room', 'lbit:' + id);
+        });
+        var data = {lbitIds: JSON.stringify(window.lbitIds)};
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/lbit/stats',
+            dataType: 'json',
+            data: data,
+            success: function (data) {
+                if (data && data.own_views) {
+                    data.own_views.forEach(function(l) {
+                        $('.lbit-' + l._id).addClass('viewedLbit');
+                        $('.lbit-' + l._id).data('own_views', l.views);
+                    });
+                }
+                if (data.views) {
+                    data.views.forEach(function(l) {
+                        $('.lbit-' + l._id).data('views', l.views);
+                        if (l.views) {
+                            $('.id-' + l._id + '-views_count').parent().removeClass('hide');
+                            $('.id-' + l._id + '-views_count').removeClass('hide').html(l.views);
+                        } else {
+                            $('.id-' + l._id + '-views_count').parent().addClass('hide');
+                        }
+                    });
+                }
             }
         });
     }
