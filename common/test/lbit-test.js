@@ -26,7 +26,7 @@ vows.describe('create learn bit').addBatch({
   'When using the create learn bit library': {
     'to parse youtube url': {
       topic: function () {
-        create_lbit(null, elem, this.callback)
+        create_lbit(null, null, elem, this.callback)
       },
       'checks': function (err, lbit, isUpdate) {
         should.not.exist(err)

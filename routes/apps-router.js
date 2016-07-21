@@ -8,7 +8,7 @@ const logger = require('../common/log')
 const util = require('../common/util')
 const analytics = require('./analytics')
 const entitlement = require('../lib/entitlement')
-const learnApps = require('../lib/apps')
+const clApps = require('../lib/apps')
 const perms = require('../lib/perms')
 
 function addAppRoutes (app, prefix, middlewares, preCallback, postCallback) {
@@ -28,11 +28,11 @@ function addAppRoutes (app, prefix, middlewares, preCallback, postCallback) {
     }
   }
 
-  let appModules = learnApps.getAll()
+  let appModules = clApps.getAll()
   if (!util.empty(appModules)) {
     for (let key in appModules) {
       let amodule = appModules[key]
-      let info = learnApps.getInfo(key)
+      let info = clApps.getInfo(key)
       if (amodule && amodule.routes) {
         logger.debug('Adding routes for', key)
         middlewares = middlewares || []

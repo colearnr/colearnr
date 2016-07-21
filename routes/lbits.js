@@ -8,7 +8,6 @@ const topicRoute = require('./topic')
 const perms = require('../lib/perms')
 const config = require('../lib/config').config
 const userLib = require('../lib/user')
-const extractLib = require('../common/extract')
 const request = require('request')
 const createLbit = require('../common/create_learn_bit')
 const optimiseLib = require('../lib/lbit-optimise')
@@ -27,6 +26,9 @@ const mime = require('mime')
 const SUCCESS = '0'
 const MIN_WORDS = 50
 const UPLOAD_SERVER_PREFIX = config.upload_server_prefix
+const sdk = require('colearnr-sdk')
+const CoreApp = sdk.CoreApp
+const Events = sdk.Events
 
 function save_edit (req, res) {
   let user = req.user
@@ -75,7 +77,7 @@ function save_edit (req, res) {
 
 function _doCreate (sessionid, topic, oid, order, url, content, req, res, callbackFn) {
   logger.debug('_doCreate', sessionid, url, oid, order)
-  createLbit(topic.id, {
+  createLbit(req.user, topic.id, {
     topic_oid: oid,
     order: order,
     url: url,
@@ -216,7 +218,7 @@ function save_lbit_url (req, res) {
               let tmpA = tmpTitle.split('.')
               tmpTitle = (tmpA && tmpA.length) ? tmpA[0] : tmpTitle
 
-              createLbit(topic.id, {
+              createLbit(user, topic.id, {
                 topic_oid: oid,
                 order: order,
                 url: url,
@@ -292,7 +294,7 @@ function save_lbit_url (req, res) {
                   } else {
                     if (lbit_id) { // Is this a learnbit share url?
                       logger.log('debug', 'Creating new learnbit', oid, lbit_id)
-                      createLbit(topic.id, {_id: lbit_id, topic_oid: oid}, function (err, lbit, isUpdate) {
+                      createLbit(user, topic.id, {_id: lbit_id, topic_oid: oid}, function (err, lbit, isUpdate) {
                         if (err || util.empty(lbit)) {
                           res.status(500).send('Oops. There is a problem while saving this url. Please try again later.')
                         } else if (isUpdate) {
@@ -394,6 +396,7 @@ function del_lbit (req, res) {
         lbit_id: id,
         e: 'delete'
       }
+      CoreApp.EventEmitter.emit(Events.LEARNBIT_DELETED, user, {_id: id})
       analytics.lbit_track(req)
       if (global.socket) {
         global.socket.emit('send:dellbit', {data: id, topic: {_id: topicid}, user: user, sessionid: sessionid})
@@ -605,7 +608,7 @@ function save_edit_full (req, res) {
   }
 
   if (isNew) {
-    createLbit(topic_id, update_map, function (err, lbit, isUpdate) {
+    createLbit(user, topic_id, update_map, function (err, lbit, isUpdate) {
       if (err || !lbit) {
         res.status(500).send('Error while updating learnbit. Please try again later.')
       } else {
@@ -619,7 +622,7 @@ function save_edit_full (req, res) {
       if (err) {
         res.status(500).send('Unable to find the original learnbit for editing!')
       } else if (!lbit) {
-        createLbit(topic_id, update_map, function (err, lbit, isUpdate) {
+        createLbit(user, topic_id, update_map, function (err, lbit, isUpdate) {
           if (err || !lbit) {
             res.status(500).send('Error while updating learnbit. Please try again later.')
           } else {
@@ -642,6 +645,7 @@ function save_edit_full (req, res) {
               res.status(500).send('Error while updating learnbit. Please try again later.')
             } else {
               res.send({id: lbit._id})
+              CoreApp.EventEmitter.emit(Events.LEARNBIT_UPDATED, user, lbit)
             }
           })
 
@@ -786,23 +790,11 @@ function view (req, res) {
             if ((lbit.body && lbit.body.split(' ').length > MIN_WORDS) || lbit.url === '#' || lbit.type === 'inline-html') {
               res.render('lbits/readable.ejs', {lbit: lbit, user: user, topicId: topicId})
             } else if (!util.empty(lbit.url) && util.validUrl(lbit.url)) {
-              extractLib.parse(lbit.url, function (data) {
-                if (data.data && data.data.error) {
-                  logger.error(data.data.messages, '. Tried url', lbit.url)
-                }
-                logger.log('debug', lbit.url, data.rendered_pages, data.word_count)
-                if (!data.error && data.rendered_pages > 0 && data.word_count > MIN_WORDS) {
-                  lbit.body = data.content
-                  res.render('lbits/readable.ejs', {lbit: lbit, user: user, topicId: topicId})
-                  db.learnbits.save(lbit, function (err) {
-                    if (!err && lbit) {
-                      logger.log('info', lbit.url, 'updated successfully with content.')
-                    }
-                  })
-                } else {
-                  res.redirect(lbit.url)
-                }
-              })
+              if (lbit.body) {
+                res.render('lbits/readable.ejs', {lbit: lbit, user: user, topicId: topicId})
+              } else {
+                res.redirect(lbit.url)
+              }
             } else {
               res.redirect(lbit.url)
             }
@@ -1331,3 +1323,30 @@ exports.count_api = function (req, res) {
 exports.stats = function (req, res) {
   stats(req, res)
 }
+
+CoreApp.EventEmitter.on(Events.LEARNBIT_EXTRACTED, (user, lbitId, meta) => {
+  db.learnbits.findOne({_id: db.ObjectId(lbitId)}, function (err, lbit) {
+    if (err || !lbit) {
+      logger.warn('Unable to find learnbit', lbitId, 'after extraction!');
+    } else {
+      if (!meta.title && !meta.description) {
+        return
+      } else {
+        let title = lbit.title || meta.title
+        let description = lbit.description || meta.description
+        let body = lbit.body || meta.body
+        let img_url = lbit.img_url || meta.img_url
+        _.merge(lbit, meta)
+        lbit.title = title
+        lbit.description = description
+        lbit.body = body
+        lbit.img_url = img_url
+        db.learnbits.save(lbit, function (err, newlbit) {
+          if (!err && global.socket) {
+            global.socket.emit('send:editlbit', { lbit: newlbit, user: user, sessionid: null })
+          }
+        })
+      }
+    }
+  })
+});

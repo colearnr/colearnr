@@ -5,8 +5,12 @@ const log = require('./log')
 const util = require('./util')
 const cloud_lib = require('../lib/cloud')
 const http_utils = require('./http_utils')
-const extract_lib = require('./extract')
 const _ = require('lodash')
+const sdk = require('colearnr-sdk')
+const CoreApp = sdk.CoreApp
+const Events = sdk.Events
+const ExtractLib = require('colearnr-extract-app')
+const ExtractApp = new ExtractLib()
 const YT_URL_PREFIX = 'https://youtu.be/'
 const YT_URL_PARSER = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(feature\=player_embedded&))\??v?=?([^#\&\?]*).*/
 
@@ -18,7 +22,7 @@ function getParam (param, url) {
   return (results == null) ? '' : results[1].replace(/ /g, '')
 }
 
-function create_learn_bit (main_topic, bare_element, callback) {
+function create_learn_bit (user, main_topic, bare_element, callback) {
   let self = this
   let topicAdd = false
   let topicFound = false
@@ -230,7 +234,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
           callback(null, doc[0])
         }
       } else if (!util.empty(bare_element.url) || !util.empty(bare_element.body)) {
-        extract_lib.extract(bare_element.url, bare_element.body, function (url_data) {
+        ExtractApp.quickProcess(user, bare_element, function (err, url_data) {
           _find_order(bare_element, function (err, order) {
             if (err) {
               log.log('error', 'Error during extract', err)
@@ -239,13 +243,13 @@ function create_learn_bit (main_topic, bare_element, callback) {
             let urlToUse = _url(bare_element.url, url_data.url)
             let body_val = _body(urlToUse, bare_element, url_data)
             let lbit_type = bare_element.type || util.getUrlType(urlToUse, body_val)
-            log.log('debug', 'lbit to create', bare_element, order, lbit_type)
+            //log.log('debug', 'lbit to create', bare_element, order, lbit_type)
             let lb = {
               title: _val(bare_element.title, url_data.title),
               description: _val(bare_element.description, url_data.description),
               type: lbit_type,
               url: urlToUse,
-              img_url: bare_element.img_url || (_images(bare_element['image-url'], url_data.images)),
+              img_url: bare_element.image ? [bare_element.image] : bare_element.thumbnails,
               img_title: _val(bare_element.title, url_data.title),
               body: body_val,
               source: url_data.provider_url,
@@ -313,6 +317,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
                     }
                   }
                   callback(err, lb)
+                  CoreApp.EventEmitter.emit(Events.LEARNBIT_CREATED, user, lb)
                 })
               })
             }
@@ -332,7 +337,7 @@ function create_learn_bit (main_topic, bare_element, callback) {
       return body
     }
     let ret = ''
-    let content = url_data.content
+    let content = url_data.content || url_data.text
     let retMap = {}
     let regExp = null
     let match = false

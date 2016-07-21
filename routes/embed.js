@@ -111,7 +111,7 @@ function embed_url (req, res) {
             if (lbit) {
               doRender(res, lbit, topic, user, url, embedSize, info, extOptions)
             } else {
-              create_lbit(topic.id, {topic_oid: '' + topic._id, url: url, body: null, path: topic.path, author: user._id, title: tmpTitle}, function (err, lbit, isUpdate) {
+              create_lbit(user, topic.id, {topic_oid: '' + topic._id, url: url, body: null, path: topic.path, author: user._id, title: tmpTitle}, function (err, lbit, isUpdate) {
                 if (err) {
                   logger.error(err)
                   res.status(500).send('Unable to embed this url')

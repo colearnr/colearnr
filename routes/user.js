@@ -21,7 +21,7 @@ const _ = require('lodash')
 
 function generateChatEmail (email) {
   if (email) {
-    return email.split('@')[0] + '@' + config.chat_domain
+    return email.split('@')[0] + '@' + (config.chat_domain || 'colearnr.com')
   } else {
     return ''
   }
