@@ -425,8 +425,8 @@ socket.on('connect', function (data) {
                 }
             }
             var elems = $('.item');
-            if (!elems.length || (elems.prop('id') === (lbit_data.topic._id + '-' + lbit_data.data + "-lbit"))) {
-              $('.emptyTopicMsg').show();
+            if (!elems.length) {
+              $('.emptyTopicMsg').removeClass('hide').show();
               $('.topic-' + lbit_data.topic._id).isotope('layout');
             }
         }
@@ -869,7 +869,7 @@ function delLbit(lbitId, tid) {
             $(".modal-footer a#del-confirm").data('id', ' ');
             $(".modal-footer a#del-confirm").data('topicid', ' ');
             var elems = $('.item');
-            if (!elems.length || (elems.prop('id') === (lbitId + '-lbit'))) {
+            if (!elems.length) {
               $('.emptyTopicMsg').removeClass('hide').show();
               $('.topic-' + tid).isotope('layout');
             }
