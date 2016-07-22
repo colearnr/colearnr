@@ -715,7 +715,9 @@ function _pushLbit (req, topic_id, topic_oid, lbit_list, user, sessionid) {
 
 function view_media (req, res) {
   let oid = req.params.oid
-
+  let type = req.query.type
+  let fname = req.query.fname
+  
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid media id!')
     return
