@@ -1144,7 +1144,7 @@
       if (itemSrc.match(/\biframe=true\b/i)) {
         return 'iframe';
       }
-      else if (itemSrc.match(/\.jpg/i) || itemSrc.match(/\.png/i) || itemSrc.match(/\.gif/i) || itemSrc.match(/\.webp/i)) {
+      else if (itemSrc.match(/\btype=image\b/i) || itemSrc.match(/\.jpg/i) || itemSrc.match(/\.png/i) || itemSrc.match(/\.gif/i) || itemSrc.match(/\.webp/i)) {
         return 'image';
       }
       else if (itemSrc.match(/\.js/i)) {
@@ -1156,7 +1156,7 @@
       else if (itemSrc.match(/\.pdf/i) || itemSrc.match(/\.ppt/i) || itemSrc.match(/\.doc/i) || itemSrc.match(/\.docx/i) || itemSrc.match(/\.pptx/i)) {
         return 'embed-viewer';
       }
-      else if (itemSrc.match(/\.mp4/i) || itemSrc.match(/\.webm/i) || itemSrc.match(/\.flv/i) || itemSrc.match(/\.m4v/i)) {
+      else if (itemSrc.match(/\btype=video\b/i) || itemSrc.match(/\.mp4/i) || itemSrc.match(/\.webm/i) || itemSrc.match(/\.flv/i) || itemSrc.match(/\.m4v/i)) {
         return 'video';
       }
       else if (itemSrc.match(/\.mov/i)) {
