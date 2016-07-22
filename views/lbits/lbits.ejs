@@ -41,8 +41,8 @@ if (lbit.highlight && lbit.highlight.description) {
 lbitDescription = util.clean_html(lbitDescription);
 
 if (lbit.url && lbit.url.indexOf('cl://') === 0) {
-    let tmpA = lbit.url.split('/')
-    let fname = (tmpA && tmpA.length) ? util.purify(tmpA[tmpA.length - 1]) : null
+    var tmpA = lbit.url.split('/');
+    var fname = (tmpA && tmpA.length) ? util.purify(tmpA[tmpA.length - 1]) : null;
     lbit.url = '/media/' + lbit._id + '?type=' + lbit.type + '&fname=' + fname;
 }
 %>
