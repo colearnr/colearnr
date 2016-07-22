@@ -37,10 +37,10 @@
             </li>
             <% } else { %>
             <li style="padding-top: 5px;" class="active"><% if (locals.topicObj) { %><span itemprop="title" class="active-topic-name"><%- locals.topicObj.name %><% } %></span></li>
-            <% } %>       
+            <% } %>
         </ul>
-        <div class="col-xs-3">
-        <% if (!locals.embedMode) { %>            
+        <div class="col-xs-3 topicOptionsBar">
+        <% if (!locals.embedMode) { %>
             <% include topic-options.html %>
             <% } %>
             <% include ../branding/extraToolbarBtn.ejs %>

@@ -17,10 +17,10 @@
         <% if (user_perms && (_.indexOf(user_perms, 'edit') != -1)) { editAllowed = true } %>
         <% include lbit-nav.html %>
         <div id="" class="readableContent">
-            <div id="" class="style-ebook container">
+            <div id="" class="style-ebook">
                 <div id="articleContent" class="margin-narrow size-medium">
                     <% if (editAllowed) { %>
-                    <div class="row">
+                    <div class="">
                         <div class="pull-right">
                             <button class="btn btn-primary" id="btnEdit">Edit</button>
                             <button class="btn btn-primary" id="btnSave" style="display: none;">Save changes</button>

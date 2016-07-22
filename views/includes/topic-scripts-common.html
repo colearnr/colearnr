@@ -380,16 +380,18 @@ socket.on('connect', function (data) {
             if (!elem.length) {
                 $newItems = $(lbit_data.data.replace(/\n/,''));
                 $('.topic-' + lbit_data.topic._id).isotope( 'insert', $newItems);
+                $('.topic-' + lbit_data.topic._id).isotope('layout');
                 if ( location.href.indexOf('#lbit') !== -1 ) location.hash = '';
-                bounce($('.lbit-' + albit._id), albit._id);
                 setup();
                 if (socket) {
                   socket.emit('api:join_room', 'lbit:' + albit._id);
                 }
+                bounce($('.lbit-' + albit._id), albit._id);
                 $('.shuffle').removeClass('hide');
             }
         });
         $('.emptyTopicMsg').removeClass('hide').hide();
+        $('.shuffle').show();
         if (lbit_list.length) {
             $('.this_topic_lbits').isotope('layout');
         }
@@ -425,9 +427,11 @@ socket.on('connect', function (data) {
                 }
             }
             var elems = $('.item');
-            if (!elems.length) {
+            if (!elems.length || (elems.length === 1 && elems.prop('id') === (lbit_data.topic._id + '-' + lbit_data.data + "-lbit"))) {
               $('.emptyTopicMsg').removeClass('hide').show();
+              $('.this_topic_lbits').isotope('layout');
               $('.topic-' + lbit_data.topic._id).isotope('layout');
+              $('.shuffle').hide();
             }
         }
     });
@@ -848,7 +852,9 @@ function delLbit(lbitId, tid) {
         $.post('/lbit/delete', pdata).done(function(data) {
             var elem = $("#" + lbitId + "-lbit");
             if (elem.length) {
-                $('.topic-' + tid).isotope( 'remove', elem).isotope('layout');
+                $('.topic-' + tid).isotope( 'remove', elem);
+                $('.topic-' + tid).isotope('layout');
+                $('.this_topic_lbits').isotope('layout');
                 var owl = elem.parent().parent().parent().parent();
                 if (owl.hasClass('owl-carousel')) {
                     var carousel = owl.owlCarousel();
@@ -869,9 +875,11 @@ function delLbit(lbitId, tid) {
             $(".modal-footer a#del-confirm").data('id', ' ');
             $(".modal-footer a#del-confirm").data('topicid', ' ');
             var elems = $('.item');
-            if (!elems.length) {
+            if (!elems.length || (elems.length === 1 && elems.prop('id') === (lbitId + '-lbit'))) {
               $('.emptyTopicMsg').removeClass('hide').show();
               $('.topic-' + tid).isotope('layout');
+              $('.this_topic_lbits').isotope('layout');
+              $('.shuffle').hide();
             }
         }).error(function(xhr, status, data) {
                     $('.top-right').notify({

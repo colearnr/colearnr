@@ -715,9 +715,9 @@ function _pushLbit (req, topic_id, topic_oid, lbit_list, user, sessionid) {
 
 function view_media (req, res) {
   let oid = req.params.oid
-  let type = req.query.type
-  let fname = req.query.fname
-  
+  let type = req.query.type || ''
+  let fname = req.query.fname || ''
+
   if (!util.validOid(oid)) {
     res.status(500).send('Invalid media id!')
     return
@@ -728,8 +728,10 @@ function view_media (req, res) {
       res.status(500).send('Problem fetching your media!')
       return
     }
-    let contentType = mime.lookup(fname)
-    res.set('Content-Type', contentType)
+    if (!util.empty(fname)) {
+      let contentType = mime.lookup(fname)
+      res.set('Content-Type', contentType)
+    }
     logger.debug('About to stream file from Grid', oid)
     filestream.pipe(res)
   })

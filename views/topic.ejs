@@ -55,19 +55,18 @@ var isAdmin = user.roles && _.indexOf(user.roles, constants.ALL_TOPIC_ADMIN_ROLE
 %>
 <!-- start: Page Title -->
 <% if (!locals.embedMode) { %>
-<div id="page-title" class="row titleWArt">
+<div id="page-title" class="titleWArt">
     <div class="coverArt">
         <img src="">
         <h1><% if (locals.topicObj) { %><% if (isCollaborator) { %><i class="fa fa-users parentTopicIcon" title="Collaborator"></i> &nbsp;<% } else if (topicObj.privacy_mode == constants.PUBLIC && !isColearnr) { %><i class="fa fa-globe parentTopicIcon" title="Public topic"></i> &nbsp;<% } else if(topicObj.type == 'search') { %><i class="fa fa-search parentTopicIcon" title="Saved search"></i><% } else if (topicObj.privacy_mode == constants.PRIVATE && !isColearnr) { %><i class="fa fa-lock parentTopicIcon" title="Private topic"></i> &nbsp;<% } %><span <% if (!locals.isMyTopicsPage && user && user.hasAddPermission) { %>id="id-<%- topicObj._id %>-name" class=""<% } %>><%- topicObj.name %></span><% } %></h1>
         <span class="topic-description"><% if (locals.topicObj && topicObj.description) { %><%- topicObj.description %><% } %></span>
-        </h1>
         <% if (config.extra_art) { %>
         <div class="extraArt hidden-xs"></div>
         <% } %>
     </div>
 </div>
 <% } else if (!locals.noChildMode) { %>
-<div id="page-title" class="row embedded" style="">
+<div id="page-title" class="embedded" style="">
     <div class="coverArt embedded">
         <img src="">
     </div>
@@ -76,7 +75,7 @@ var isAdmin = user.roles && _.indexOf(user.roles, constants.ALL_TOPIC_ADMIN_ROLE
 <!-- end: Page Title -->
 <% include branding/body_enhancements.ejs %>
 <!--start: Wrapper-->
-<div id="wrapper" class="row wcoverArt <% if (locals.embedMode) { %>embedded<% } %>">
+<div id="wrapper" class="wcoverArt <% if (locals.embedMode) { %>embedded<% } %>">
 
 <% if (!locals.noChildMode) { %>
 <% include includes/breadcrumb.html %>
@@ -102,13 +101,11 @@ var isAdmin = user.roles && _.indexOf(user.roles, constants.ALL_TOPIC_ADMIN_ROLE
             <% ss_count = ss_count + 1 %>
         <% }) %>
         <% } %>
-        <div class="row container emptyTopicMsg <% if (locals.topicObj.empty && user && user.hasAddPermission) { %><% } else { %>hide<% } %>" style="margin-top: 20px; margin-left: -5px;">
-            <div class="col-xs-12">
-                <div class="jumbotron">
-                    <h1>This topic is empty</h1>
-                    <p>&nbsp;</p>
-                    <p>To add content, drag and drop any file on to this page or simply click the <i class="fa fa-plus"></i> button for options.</p>
-                </div>
+        <div class="emptyTopicMsg <% if (locals.topicObj.empty && user && user.hasAddPermission) { %><% } else { %>hide<% } %>">
+            <div class="jumbotron">
+                <h1>This topic is empty</h1>
+                <p>&nbsp;</p>
+                <p>To add content, drag and drop any file on to this page or simply click the <i class="fa fa-plus"></i> button for options.</p>
             </div>
         </div>
     </div>
