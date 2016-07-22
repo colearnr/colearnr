@@ -41,7 +41,7 @@ if (lbit.highlight && lbit.highlight.description) {
 lbitDescription = util.clean_html(lbitDescription);
 
 if (lbit.url && lbit.url.indexOf('cl://') === 0) {
-    lbit.url = '/media/' + lbit._id;
+    lbit.url = '/media/' + lbit._id + '?type=' + lbit.type;
 }
 %>
 <%
