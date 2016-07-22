@@ -726,6 +726,8 @@ function view_media (req, res) {
       res.status(500).send('Problem fetching your media!')
       return
     }
+    let contentType = mime.lookup(fname)
+    res.set('Content-Type', contentType)
     logger.debug('About to stream file from Grid', oid)
     filestream.pipe(res)
   })
