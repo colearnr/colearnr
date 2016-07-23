@@ -821,14 +821,14 @@ const query = {
     async.parallel({
       'own_views': function (cb) {
         db.analytics.aggregate([
-          {$match: {lbit_id: {$in: lbitIds}, type: 'lbit', e: 'view', user: ''+user._id}},
-          {$group: {_id: "$lbit_id", views: {$sum: 1}}}
-          ], cb)
+          {$match: {lbit_id: {$in: lbitIds}, type: 'lbit', e: 'view', user: '' + user._id}},
+          {$group: {_id: '$lbit_id', views: {$sum: 1}}}
+        ], cb)
       },
       views: function (cb) {
         db.analytics.aggregate([
-          {$match: {lbit_id: {$in: lbitIds}, type: 'lbit', e: 'view', user: ''+user._id}},
-          {$group: {_id: "$lbit_id", views: {$sum: 1}}}
+          {$match: {lbit_id: {$in: lbitIds}, type: 'lbit', e: 'view', user: '' + user._id}},
+          {$group: {_id: '$lbit_id', views: {$sum: 1}}}
         ], cb)
       }
     }, callback)
@@ -857,7 +857,7 @@ const query = {
     args = args || {}
     args.type = 'lbit'
     args.e = 'view'
-    args.user = ''+user._id
+    args.user = '' + user._id
     db.analytics.find(args, {lbit_id: 1, topic_id: 1}).sort({timestamp: -1}).limit(args.limit || LIMIT_RECENT_BITS, function (err, lbits) {
       if (err || !lbits || !lbits.length) {
         callback(err, null)
@@ -873,7 +873,7 @@ const query = {
         db.learnbits.find({_id: {$in: lbit_ids}}, function (err, tmpLbits) {
           let albits = []
           tmpLbits.forEach(function (l) {
-            l.topics = lbit_topic_map[''+l._id]
+            l.topics = lbit_topic_map['' + l._id]
             albits.push(l)
           })
           self.setLearnbitMetadata(user, [], albits, callback)

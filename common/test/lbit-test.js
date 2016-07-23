@@ -38,7 +38,7 @@ vows.describe('create learn bit').addBatch({
         lbit.topics.should.have.length(1)
         lbit['added_by'].should.equal(elem.author)
         lbit['privacy_mode'].should.equal('private')
-      },
-    },
+      }
+    }
   }
 }).export(module)

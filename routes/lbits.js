@@ -1333,7 +1333,7 @@ exports.stats = function (req, res) {
 CoreApp.EventEmitter.on(Events.LEARNBIT_EXTRACTED, (user, lbitId, meta) => {
   db.learnbits.findOne({_id: db.ObjectId(lbitId)}, function (err, lbit) {
     if (err || !lbit) {
-      logger.warn('Unable to find learnbit', lbitId, 'after extraction!');
+      logger.warn('Unable to find learnbit', lbitId, 'after extraction!')
     } else {
       if (!meta.title && !meta.description) {
         return
@@ -1355,4 +1355,4 @@ CoreApp.EventEmitter.on(Events.LEARNBIT_EXTRACTED, (user, lbitId, meta) => {
       }
     }
   })
-});
+})
