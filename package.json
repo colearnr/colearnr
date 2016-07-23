@@ -1,6 +1,6 @@
 {
   "name": "colearnr",
-  "version": "1.0.0-alpha2",
+  "version": "1.0.0-alpha3",
   "private": false,
   "homepage": "https://www.colearnr.com",
   "license": "GPL-3.0",
@@ -19,8 +19,8 @@
     "aws-cloudfront-sign": "^2.1.2",
     "bcrypt": "^0.8.6",
     "body-parser": "^1.14.2",
-    "colearnr-extract-app": "1.0.0-alpha1",
-    "colearnr-sdk": "1.0.0-alpha1",
+    "colearnr-extract-app": "1.0.0-alpha3",
+    "colearnr-sdk": "1.0.0-alpha2",
     "colearnr-theme-default": "^1.0.9",
     "compression": "^1.6.0",
     "connect": "^3.4.1",
