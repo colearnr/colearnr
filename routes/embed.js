@@ -12,7 +12,7 @@ const url_utils = require('url')
 const _ = require('lodash')
 
 function doRender (res, lbit, topic, user, url, embedSize, info, extOptions) {
-  logger.debug('Before embed', topic, url, embedSize)
+  //logger.debug('Before embed', topic, url, embedSize)
   let urlType = (lbit ? lbit.type : util.getUrlType(url, null))
   let options = _getUrlOptions(url)
   if (!util.empty(extOptions)) {
@@ -60,9 +60,7 @@ function doRender (res, lbit, topic, user, url, embedSize, info, extOptions) {
     case 'inline-html':
       res.render('lbits/readable.ejs', {lbit: lbit, user: user, topicId: topicId, embed: true, embedSize: embedSize, info: false, options: options})
       break
-    case 'hstalks':
-      res.render('lbits/video-embed.ejs', {lbit: lbit, topic: topic, user: user, type: urlType, url: url, extn: extn, embed: true, embedSize: embedSize, info: info, options: options})
-      break
+
     default:
       res.redirect(lbit.url || url)
       break
@@ -172,6 +170,12 @@ function _getUrlOptions (url) {
   if (urlObj.query) {
     options = util.query_to_json(urlObj.query)
     options.query = encodeURIComponent(urlObj.query)
+    if (util.empty(options.start)) {
+      delete options.start
+    }
+    if (util.empty(options.end)) {
+      delete options.end
+    }
   }
   return options
 }
