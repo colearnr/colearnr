@@ -18,7 +18,7 @@
         <img src="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- rimg %><% } %>">
         <h1><%- lbit.title || '' %></h1>
         <% if (!util.empty(lbit.description)) { %>
-        <span class="description col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1"><%- lbit.description || '' %></span>
+        <span class="description"><%- lbit.description || '' %></span>
         <% } %>
     </div>
 </div>

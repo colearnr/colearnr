@@ -175,9 +175,6 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
     if (!exis_obj.description && ele.description) {
       update_map['description'] = ele.description
     }
-    if ((!exis_obj.img_url.length && ele['image-url']) || (exis_obj.img_url && ele['image-url'] && exis_obj.img_url[0] !== ele['image-url'])) {
-      update_map['img_url'] = [ele['image-url']]
-    }
     if (!topicAdd && !exis_obj.order && ele.order || (ele.order && exis_obj.order && exis_obj.order !== ele.order)) {
       update_map['order'] = ele.order
     }
@@ -337,7 +334,7 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
       return body
     }
     let ret = ''
-    let content = url_data.content || url_data.text
+    let content = url_data.content || url_data.body
     let retMap = {}
     let regExp = null
     let match = false

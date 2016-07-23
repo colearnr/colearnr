@@ -10,13 +10,13 @@
     <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/summernote/summernote-overrides.css?<%- locals.page_options.version %>">
     <% include ../includes/scripts-simple.html %>
     </head>
-    <body>
+    <body class="Site">
         <% include lbit-header.html %>
         <% var user_perms = lbit.user_perms && lbit.user_perms[user._id] ? lbit.user_perms[user._id] : null %>
         <% var editAllowed = false %>
         <% if (user_perms && (_.indexOf(user_perms, 'edit') != -1)) { editAllowed = true } %>
         <% include lbit-nav.html %>
-        <div id="" class="readableContent">
+        <div id="" class="readableContent Site-content">
             <div id="" class="style-ebook">
                 <div id="articleContent" class="margin-narrow size-medium">
                     <% if (editAllowed) { %>
@@ -44,13 +44,13 @@
             </div>
         </div>
         <% if (lbit.url && lbit.url != '#') { %>
-        <div id="readFooter" class="row">
-          <div class="container">
-          <div class="footer-right">
-              <p>Automatically made readable by CoLearnr. <a target="_blank" href="<%- lbit.url %>">Click here</a> to view the original content.</p>
-          </div>
-          </div>
-        </div>
+        <footer class="Site-footer">
+            <div class="Footer">
+                <div class="Footer-credits">
+                    <span class="Footer-credit">Automatically made readable by <a href="https://www.colearnr.com">CoLearnr</a>. <a target="_blank" href="<%- lbit.url %>">Click here</a> to view the original content.</span>
+                </div>
+            </div>
+        </footer>
         <% } %>
     </body>
     <script src="<%- locals.page_options.cdn_prefix %>/vendor/code-prettify/dist/prettify.js"></script>
