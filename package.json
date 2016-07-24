@@ -21,7 +21,7 @@
     "body-parser": "^1.15.2",
     "colearnr-extract-app": "^1.0.0-alpha5",
     "colearnr-sdk": "^1.0.0-alpha2",
-    "colearnr-theme-default": "^1.0.9",
+    "colearnr-theme-default": "^1.0.11",
     "compression": "^1.6.0",
     "connect": "^3.4.1",
     "connect-busboy": "^0.0.2",
