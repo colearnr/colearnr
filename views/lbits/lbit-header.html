@@ -20,5 +20,8 @@
         <% if (!util.empty(lbit.description)) { %>
         <span class="description"><%- lbit.description || '' %></span>
         <% } %>
+        <% if (lbit.friendlyTime) { %>
+        <span class="readabilityStats pull-right"><i class="fa fa-clock-o"> <%- lbit.friendlyTime %></i></span>
+        <% } %>
     </div>
 </div>

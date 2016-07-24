@@ -65,6 +65,7 @@ function save_edit (req, res) {
     } else {
       res.send('' + newValue)
       query.get_learnbit(user, {_id: db.ObjectId(id)}, function (err, lbit) {
+        CoreApp.EventEmitter.emit(Events.LEARNBIT_UPDATED, user, lbit)
         if (!err && global.socket) {
           global.socket.emit('send:editlbit', {lbit: lbit, user: user, sessionid: sessionid})
         } else {
@@ -84,11 +85,11 @@ function _doCreate (sessionid, topic, oid, order, url, content, req, res, callba
     body: content,
     path: topic.path,
     author: req.user._id
-  }, function (err, lbit, isUpdate) {
+  }, function (err, lbit, isUpdate, wasHidden) {
     let user = req.user
     if (err || util.empty(lbit)) {
       res.status(500).send('Oops. There is a problem while saving this url. Please try again later.')
-    } else if (isUpdate && util.isExternalLink(lbit.type)) {
+    } else if (isUpdate && util.isExternalLink(lbit.type) && !wasHidden) {
       logger.warn('Url already exists in topic', oid, url, topic.path)
       res.status(500).send('This learnbit already exists in this topic!')
     } else {
@@ -112,7 +113,7 @@ function _doCreate (sessionid, topic, oid, order, url, content, req, res, callba
         }
       }
 
-      if (isUpdate) {
+      if (isUpdate && !wasHidden) {
         res.json({status: 'success', message: lbit.title + ' updated successfully', data: null})
         if (global.socket) {
           global.socket.emit('send:editlbit', {lbit: lbit, user: user})
@@ -562,7 +563,7 @@ function save_edit_full (req, res) {
         }
       }
       if (!choices.length) {
-        errorStr = 'A good poll is as good as its options!'
+        errorStr = 'A good poll is only as good as its options!'
         res.status(500).send(errorStr)
         return
       }
@@ -636,7 +637,7 @@ function save_edit_full (req, res) {
           let quote_author = req.body.quote_author || ''
           let bodyObj = {quote: update_map['body'], author: quote_author}
           update_map['body'] = util.stringify(bodyObj)
-        // console.log('Body', update_map['body'])
+          // console.log('Body', update_map['body'])
         }
         db.learnbits.update(
           {_id: db.ObjectId(oid)},
@@ -1331,28 +1332,26 @@ exports.stats = function (req, res) {
 }
 
 CoreApp.EventEmitter.on(Events.LEARNBIT_EXTRACTED, (user, lbitId, meta) => {
-  db.learnbits.findOne({_id: db.ObjectId(lbitId)}, function (err, lbit) {
+  db.learnbits.findOne({_id: db.ObjectId(''+lbitId)}, function (err, lbit) {
     if (err || !lbit) {
       logger.warn('Unable to find learnbit', lbitId, 'after extraction!')
     } else {
-      if (!meta.title && !meta.description) {
-        return
-      } else {
-        let title = lbit.title || meta.title
-        let description = lbit.description || meta.description
-        let body = lbit.body || meta.body
-        let img_url = lbit.img_url || meta.img_url
-        _.merge(lbit, meta)
-        lbit.title = title
-        lbit.description = description
-        lbit.body = body
-        lbit.img_url = img_url
-        db.learnbits.save(lbit, function (err, newlbit) {
-          if (!err && global.socket) {
-            global.socket.emit('send:editlbit', { lbit: newlbit, user: user, sessionid: null })
-          }
-        })
-      }
+      let title = lbit.title || meta.title
+      let description = lbit.description || meta.description
+      let body = lbit.body
+      let img_url = lbit.img_url || meta.img_url
+      _.merge(lbit, meta)
+      lbit.title = title
+      lbit.description = description
+      lbit.body = body
+      lbit.img_url = img_url
+
+      //console.log(lbit.cleanBody, lbit.friendlyTime)
+      db.learnbits.save(lbit, function (err, newlbit) {
+        if (!err && global.socket) {
+          global.socket.emit('send:editlbit', { lbit: newlbit, user: user, sessionid: null })
+        }
+      })
     }
   })
 })

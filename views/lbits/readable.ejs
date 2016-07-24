@@ -32,7 +32,7 @@
                     <div id="annotate_wrapper">
                         <div id="body_content" class="<% if (editAllowed) { %>body_edit<% } %>">
                           <%
-                          var bodyStr = lbit.body || '';
+                          var bodyStr = config.filterContent && !util.empty(lbit.cleanBody) ? lbit.cleanBody : lbit.body || '';
                           if (locals.host_url_http && locals.host_url_https) {
                             bodyStr = bodyStr.replace(new RegExp(locals.host_url_http, 'ig'), locals.host_url_https);
                           }

@@ -43,6 +43,9 @@ var beingOptimised = !lbit.optimised && lbit.optimisation_started;
             <a href="#" style="<% if (optimised || beingOptimised) { %>display: none;<% } %>" onclick="javascript:optimiseLbit('<%- ftopic._id %>', '<%- lbit._id %>');return false;" id="optimise-<%- lbit._id %>" title="Optimise"><i class="fa fa-rocket icon-2x"></i></a>
             <a href="#" style="<% if (optimised || !beingOptimised) { %>display: none;<% } %>" onclick="return false;" id="being_optimised-<%- lbit._id %>" title="Currently optimised for viewing"><i class="fa fa-circle-o-notch fa-spin icon-2x"></i></a>
         <% } %>
+        <% if (lbit.friendlyTime) { %>
+        <i class="friendlyTime fa fa-clock-o pull-right"> <%- lbit.friendlyTime %></i>
+        <% } %>
     </div>
     <textarea class="lbit-bookmark" id="lbit-bookmark-<%- lbit._id %>" rows="3" readonly="readonly" data-lbit-url="<%- lbit_url %>" data-url-mode="true"><%- lbit_url %></textarea>
     <div class="item-tags">

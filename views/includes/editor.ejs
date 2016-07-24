@@ -71,7 +71,6 @@
                   var iurl = "<%- locals.host_url %>/embed?topicId=<%- locals.topicId || '' %>&url=" + encodeURIComponent(url) + "&embedSize=" + embedSize;
                   $.summernote.pluginEvents['createVideoNode'](layoutInfo, iurl, embedSize);
                   handled = true;
-                  console.log('CAll create video node');
                   return true;
                 }
               });

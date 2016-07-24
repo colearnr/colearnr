@@ -28,8 +28,8 @@
 <% include ../includes/css-common.html %>
 <% include ../includes/scripts-common.html %>
 </head>
-<body>
-<div id="wrap">
+<body class="Site">
+<div id="wrap" class="Site-content">
     <!--start: Header -->
     <header>
 
@@ -46,8 +46,8 @@
 <div id="main" class="container">
 
     <!-- start: Page Title -->
-    <div class="row">
-    <div id="page-title" class="col-md-12">
+    <div class="">
+    <div id="page-title">
 
         <h1><% if (locals.lbit && lbit.type == 'poll') { %><i class="fa fa-tasks"></i><% } else { %><i class="fa fa-book"></i><% } %> &nbsp;<% if (locals.mode && mode == 'edit') { %>Edit<% } else { %>New<% } %> <% if (locals.lbit && lbit.type == 'poll') { %>Poll<% } else { %>Learnbit<% } %></h1>
 

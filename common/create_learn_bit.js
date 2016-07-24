@@ -9,7 +9,7 @@ const _ = require('lodash')
 const sdk = require('colearnr-sdk')
 const CoreApp = sdk.CoreApp
 const Events = sdk.Events
-const ExtractLib = require('colearnr-extract-app')
+const ExtractLib = require('colearnr-extract-app').Extract
 const ExtractApp = new ExtractLib()
 const YT_URL_PREFIX = 'https://youtu.be/'
 const YT_URL_PARSER = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?)|(feature\=player_embedded&))\??v?=?([^#\&\?]*).*/
@@ -26,6 +26,7 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
   let self = this
   let topicAdd = false
   let topicFound = false
+  let wasDeleted = false
 
   const _val = function (value, default_value) {
     let ret = (!value || value === '') ? default_value : value
@@ -178,6 +179,11 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
     if (!topicAdd && !exis_obj.order && ele.order || (ele.order && exis_obj.order && exis_obj.order !== ele.order)) {
       update_map['order'] = ele.order
     }
+    // Unhide if the user is adding a deleted learnbit again
+    if (exis_obj.hidden) {
+      update_map['hidden'] == false
+      wasDeleted = true
+    }
 
     // Update the existing object map with the new contents that can be passed on to the callback
     _.merge(exis_obj, update_map)
@@ -192,7 +198,7 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
         }
       )
     } else {
-      callback(null, exis_obj, topicFound)
+      callback(null, exis_obj, topicFound, wasDeleted)
     }
   }
 
@@ -296,26 +302,20 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
             path = path + add_path
             if (bare_element['topic_oid']) {
               lb['topics'] = [{_id: db.ObjectId(bare_element['topic_oid'])}]
-              http_utils.isFrameRestricted(lb['url'], function (err, res) {
+              db.learnbits.save(lb, function (err) {
                 if (err) {
-                  log.log('error', 'Error during http check', err)
-                  return callback(err, null)
+                  log.log('error', 'Error in first save', err, lb)
                 }
-                lb['frame_restricted'] = res
-                db.learnbits.save(lb, function (err) {
-                  if (err) {
-                    log.log('error', 'Error in first save', err, lb)
+                // Check if this is a stream url. Then sign the url and send it
+                if (util.isStreamUrl(lb.url)) {
+                  let surl = cloud_lib.getSignedUrl(lb.url, null)
+                  if (surl) {
+                    lb.url = surl
                   }
-                  // Check if this is a stream url. Then sign the url and send it
-                  if (util.isStreamUrl(lb.url)) {
-                    let surl = cloud_lib.getSignedUrl(lb.url, null)
-                    if (surl) {
-                      lb.url = surl
-                    }
-                  }
-                  callback(err, lb)
-                  CoreApp.EventEmitter.emit(Events.LEARNBIT_CREATED, user, lb)
-                })
+                }
+                callback(err, lb)
+                log.debug('Emit created event for', lb.url)
+                CoreApp.EventEmitter.emit(Events.LEARNBIT_CREATED, user, lb)
               })
             }
           }) // _find_order
