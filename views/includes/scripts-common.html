@@ -29,7 +29,7 @@ window.addEventListener('load', function() {
     FastClick.attach(document.body);
 }, false);
 </script>
-<% if (config.cookieDomain) { %>
+<% if (config.cookieDomain && config.cookieDomain !== 'localhost') { %>
 <script>
 document.domain = '<%- config.cookieDomain.substring(1) %>';
 </script>
