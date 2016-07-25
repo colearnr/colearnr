@@ -252,7 +252,7 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
               description: _val(bare_element.description, url_data.description),
               type: lbit_type,
               url: urlToUse,
-              img_url: bare_element.image ? [bare_element.image] : bare_element.thumbnails,
+              img_url: bare_element.img_url || (bare_element.image ? [bare_element.image] : bare_element.thumbnails),
               img_title: _val(bare_element.title, url_data.title),
               body: body_val,
               source: url_data.provider_url,

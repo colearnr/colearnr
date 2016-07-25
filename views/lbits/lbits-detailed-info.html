@@ -43,7 +43,7 @@ var beingOptimised = !lbit.optimised && lbit.optimisation_started;
             <a href="#" style="<% if (optimised || beingOptimised) { %>display: none;<% } %>" onclick="javascript:optimiseLbit('<%- ftopic._id %>', '<%- lbit._id %>');return false;" id="optimise-<%- lbit._id %>" title="Optimise"><i class="fa fa-rocket icon-2x"></i></a>
             <a href="#" style="<% if (optimised || !beingOptimised) { %>display: none;<% } %>" onclick="return false;" id="being_optimised-<%- lbit._id %>" title="Currently optimised for viewing"><i class="fa fa-circle-o-notch fa-spin icon-2x"></i></a>
         <% } %>
-        <% if (lbit.friendlyTime) { %>
+        <% if (lbit.friendlyTime && (lbit.type === 'html' || lbit.type === 'inline-html')) { %>
         <i class="friendlyTime fa fa-clock-o pull-right"> <%- lbit.friendlyTime %></i>
         <% } %>
     </div>

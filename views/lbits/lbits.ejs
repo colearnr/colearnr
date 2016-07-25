@@ -128,12 +128,12 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
             if (lbit.optimised_url) {
                 urlToUse = lbit.optimised_url;
             } else if (body.embed) {
-                urlToUse = 'https://vimeo.com/' + body.embed + '?title=0&byline=0&portrait=0';
+                urlToUse = 'https://vimeo.com/' + body.embed + '?title=0&byline=0&portrait=0&badge=0';
             }
         %>
         <div class="picture">
             <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
-            <a class="image" itemprop="http://schema.org/sameAs" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" data-start="<%- lbit.start %>" data-end="<%- lbit.end %>" href="<%- urlToUse %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix + '/images/blank_video.png' %><% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
+            <a class="image" itemprop="http://schema.org/sameAs" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" data-start="<%- lbit.start %>" data-end="<%- lbit.end %>" href="<%- urlToUse %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %>https://i.vimeocdn.com/video/<%- body.embed %>%>.jpg?mw=1000&mh=562&q=70<% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
 

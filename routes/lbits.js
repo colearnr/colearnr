@@ -1338,15 +1338,11 @@ CoreApp.EventEmitter.on(Events.LEARNBIT_EXTRACTED, (user, lbitId, meta) => {
     } else {
       let title = lbit.title || meta.title
       let description = lbit.description || meta.description
-      let body = lbit.body
       let img_url = lbit.img_url || meta.img_url
       _.merge(lbit, meta)
       lbit.title = title
       lbit.description = description
-      lbit.body = body
       lbit.img_url = img_url
-
-      //console.log(lbit.cleanBody, lbit.friendlyTime)
       db.learnbits.save(lbit, function (err, newlbit) {
         if (!err && global.socket) {
           global.socket.emit('send:editlbit', { lbit: newlbit, user: user, sessionid: null })
