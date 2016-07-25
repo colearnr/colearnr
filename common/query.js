@@ -366,8 +366,9 @@ const query = {
   get_topics_by_name_id: function (user, parent_category, name, oid, callback) {
     logger.log('debug', parent_category, name, oid)
     let oidObj = null
+    oid = oid ? ''+oid : null
     if (oid && util.validOid(oid)) {
-      oidObj = db.ObjectId('' + oid)
+      oidObj = db.ObjectId(oid)
       return this.get_topic_and_parents(user, {_id: oidObj}, callback)
     }
     if (parent_category == null && name == null) {

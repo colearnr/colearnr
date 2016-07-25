@@ -438,7 +438,7 @@ let util = {
     if (typeof id === 'string' && id.length === 24) {
       return _this.checkForHexRegExp.test(id)
     }
-    return true
+    return false
   },
 
   query_to_json: function (queryStr) {
