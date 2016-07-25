@@ -871,7 +871,7 @@ const query = {
             lbit_topic_map[ v.lbit_id ] = [ {_id: v.topic_id} ]
           }
         })
-        db.learnbits.find({_id: {$in: lbit_ids}}, function (err, tmpLbits) {
+        db.learnbits.find({_id: {$in: lbit_ids}, hidden: {$ne: true}}, function (err, tmpLbits) {
           let albits = []
           tmpLbits.forEach(function (l) {
             l.topics = lbit_topic_map['' + l._id]
