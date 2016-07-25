@@ -11,12 +11,13 @@
     <% include ../includes/scripts-simple.html %>
     </head>
     <body class="Site">
+        <div class="Site-content">
         <% include lbit-header.html %>
         <% var user_perms = lbit.user_perms && lbit.user_perms[user._id] ? lbit.user_perms[user._id] : null %>
         <% var editAllowed = false %>
         <% if (user_perms && (_.indexOf(user_perms, 'edit') != -1)) { editAllowed = true } %>
         <% include lbit-nav.html %>
-        <div id="" class="readableContent Site-content">
+        <div id="" class="readableContent">
             <div id="" class="style-ebook">
                 <div id="articleContent" class="margin-narrow size-medium">
                     <% if (editAllowed) { %>
@@ -52,6 +53,7 @@
             </div>
         </footer>
         <% } %>
+      </div>
     </body>
     <script src="<%- locals.page_options.cdn_prefix %>/vendor/code-prettify/dist/prettify.js"></script>
     <% if (req.user && !req.user.guestMode) { %>
