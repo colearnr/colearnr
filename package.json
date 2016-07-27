@@ -19,7 +19,7 @@
     "aws-cloudfront-sign": "^2.1.2",
     "bcrypt": "^0.8.6",
     "body-parser": "^1.15.2",
-    "colearnr-extract-app": "^1.0.0-beta1",
+    "colearnr-extract-app": "^1.0.0-beta2",
     "colearnr-sdk": "^1.0.0-alpha2",
     "colearnr-theme-default": "^1.0.11",
     "compression": "^1.6.0",
