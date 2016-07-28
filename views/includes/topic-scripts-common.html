@@ -35,6 +35,17 @@
         $('#bodyEditIcon').css('display', 'none');
     });
 
+    $(document).on("click", ".lbit-order-display", function (e) {
+        var ele = $(e.target);
+        if (!ele) {
+            return;
+        }
+        var lbitId = ele.data('lbitid');
+        if (!lbitId) {
+            return;
+        }
+        $('#id-' + lbitId + '-thumbnail').trigger('click');
+    });
     function _handleEdit(that, e) {
         if (editorActive) {
             return;

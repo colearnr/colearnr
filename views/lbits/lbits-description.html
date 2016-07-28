@@ -15,6 +15,6 @@ lbitDescription = util.clean_html(lbitDescription);
         <% if (util.empty(lbit.description) && editAllowed) { %><span class="hidden-xs">Double click to add description ...</span><% } else { %><%- lbitDescription || '&nbsp;' %><% } %>
     </div>
 </div>
-<div class="lbit-order-display <% if (!sameTopic || !lbit.order) { %>hide<% } %>">
-    <span id="id-display-<%- lbit._id %>-order"><%- lbit.order || "" %></span>
+<div class="lbit-order-display <% if (!sameTopic || !lbit.order) { %>hide<% } %>" data-lbitId="<%- lbit._id %>">
+    <span id="id-display-<%- lbit._id %>-order" data-lbitId="<%- lbit._id %>"><%- lbit.order || "" %></span>
 </div>

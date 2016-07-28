@@ -115,7 +115,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
             }
         %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="http://schema.org/sameAs" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" data-start="<%- lbit.start %>" data-end="<%- lbit.end %>" href="<%- urlToUse %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %>https://img.youtube.com/vi/<%- body.embed || '' %>/0.jpg<% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -132,7 +132,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
             }
         %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="http://schema.org/sameAs" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" data-start="<%- lbit.start %>" data-end="<%- lbit.end %>" href="<%- urlToUse %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %>https://i.vimeocdn.com/video/<%- body.embed %>%>.jpg?mw=1000&mh=562&q=70<% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -140,7 +140,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% if (lbit.type == 'annotag') { %>
         <% noMatch = false %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="http://schema.org/sameAs"  data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="<%- lbit.url %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix + '/images/blank_video.png' %><% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -150,7 +150,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% var imageToUse = '/images/blank_video.png' %>
         <% if (lbit.type == 'flash') { imageToUse = '/images/animation.png' } %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="url" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="<%- lbit.url %>?iframe=true&topic_id=<%- topicToUse._id %>&<% if (lbit.type == 'flash') { %>width=100%&height=100%<% } else { %>width=70%&height=75%<% } %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix + imageToUse %><% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -158,7 +158,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% if (lbit.type == 'video' || lbit.type == 'rtmp-live' || lbit.type == 'hls-live') { %>
         <% noMatch = false %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="url" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" data-start="<%- lbit.start %>" data-end="<%- lbit.end %>" href="<%- lbit.url %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix + '/images/blank_video.png' %><% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -166,7 +166,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% if (lbit.type == 'audio') { %>
         <% noMatch = false %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="url"  data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="<%- lbit.url %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix + '/images/blank_audio.png' %><% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -174,7 +174,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% if (lbit.type == 'iframe-embed') { %>
         <% noMatch = false %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="url"  data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="#if-<%- ss_count %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix + '/images/blank_video.png' %><% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail"  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -183,7 +183,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% noMatch = false %>
         <% var body = util.parseJson(lbit.body) || {} %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="url"  data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="#ss-<%- ss_count %>" rel="prettyPhoto[inline]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix + '/images/blank_video.png' %><% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail"  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <div class="description">
                 <div itemprop="description" class="<%- editClass %>" id="id-<%- lbit._id %>-description">
@@ -198,7 +198,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% if (lbit.type == 'html') { %>
         <% noMatch = false %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><% if (lbitTitle != '#') { %><%- lbitTitle || "&nbsp;" %><% } %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><% if (lbitTitle != '#') { %><%- lbitTitle || "&nbsp;" %><% } %></p>
             <a class="image" itemprop="url" <% if (!lbit.frame_restricted) { %>href="/lbit/view/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" rel="prettyPhoto[<%- topicToUse.id %>]"<% } else { %>href="<%- lbit.url %>" target="_new"<% } %> title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix %>/images/web-placeholder.png
             <% } %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
@@ -207,7 +207,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% if (lbit.type == 'image') { %>
         <% noMatch = false %>
         <div class="picture">
-            <p itemprop="name"  class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name"  class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="url" id="id-<%- lbit._id %>-thumbnail" rel="prettyPhoto[<%- topicToUse.id %>]" href="<% if (lbit.optimised) { %>/lbit/view/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%<% } else { %><%- lbit.url %><% } %>" title="<%- lbit.title || "&nbsp;" %>" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- lbit.url %><% } %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -215,7 +215,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% if (lbit.type == 'books') { %>
         <% noMatch = false %>
         <div class="picture">
-            <p  itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p  itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="http://schema.org/sameAs"  data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="<%- lbit.url %>" target="_new" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<%- lbit.img_url[0] %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -226,7 +226,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% if (lbitTitle.indexOf('Notes') != -1) { imageToUse = 'notebook-lite.png'; } %>
         <% if (lbitTitle.indexOf('Problem set') != -1) { imageToUse = 'problem-solution.gif'; } %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" rel="prettyPhoto[<%- topicToUse.id %>]" itemprop="url" href="/lbit/view/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbitTitle || "&nbsp;" %>"><img class="img-responsive lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix %>/images/<%- imageToUse %><% } %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -236,7 +236,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% var imageToUse = "archive-icon.png" %>
         <% if (lbit.type == 'drawing') { imageToUse = 'drawing-icon.png'; } %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" rel="" itemprop="url" href="/lbit/download/<%- lbit._id %>" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>"><img class="img-responsive lazy"  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix %>/images/<%- imageToUse %><% } %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -245,7 +245,7 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% noMatch = false %>
         <% var imageToUse = "article_icon.png" %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" rel="prettyPhoto[<%- topicToUse.id %>]" itemprop="url" href="/lbit/view/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix %>/images/<%- imageToUse %><% } %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
@@ -267,14 +267,14 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         <% var imageToUse = "html-learnbit.png" %>
         <% if (lbit.type == 'poll') { imageToUse = 'poll-icon.png' } %>
         <div class="picture">
-            <p  itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><% if (lbitTitle != '#') { %><%- lbitTitle || "&nbsp;" %><% } %></p>
+            <p  itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><% if (lbitTitle != '#') { %><%- lbitTitle || "&nbsp;" %><% } %></p>
             <a class="image" itemprop="url" data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="/lbit/view/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix || '' %>/images/<%- imageToUse %><% } %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
 
         <% if (noMatch) { %>
         <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
+            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
             <a class="image" itemprop="url"  data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="/lbit/embed/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix + '/images/blank_video.png' %><% } %>" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
