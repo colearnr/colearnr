@@ -49,7 +49,10 @@ ol.linenums {
   color: #75715e;
   list-style: decimal inside !important;
 } /* IE indents via margin-left */
-
+ol.linenums .line {
+    line-height: 1em;
+    margin-left: 1em;
+}
 li.selected {
   border: #486D98 solid 1px;
 }
