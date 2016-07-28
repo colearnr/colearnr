@@ -3,7 +3,6 @@
 <script>
     videojs.options.flash.swf = "<%- page_options.cdn_prefix %>/javascripts/videojs/video-js.swf";
 </script>
-<script src="<%- page_options.cdn_prefix %>/javascripts/jquery.prettyPhoto.min.js?<%- page_options.version %>" defer></script>
 <script src="<%- page_options.cdn_prefix %>/javascripts/clickover.js?<%- page_options.version %>"></script>
 <script src="<%- page_options.cdn_prefix %>/javascripts/custom.js?<%- page_options.version %>"></script>
 <script src="<%- page_options.cdn_prefix %>/vendor/datetimepicker/javascripts/moment.min.js" type="text/javascript" defer></script>
@@ -137,17 +136,6 @@
     <% } %>
 
     function setup() {
-        var prettyPhotoSettings = {
-            theme: 'light_square',
-            social_tools: false,
-            deeplinking: true,
-            slideshow: false
-        }
-        $("a[rel^='prettyPhoto']").prettyPhoto(prettyPhotoSettings);
-        var isMobile = window.detectBrowser ? (window.detectBrowser().iOS || window.detectBrowser().android) : false;
-        if (isMobile) {
-            $("a[rel^='prettyPhoto']").unbind('click').attr('target', '_blank');
-        }
         $(".lazy").lazyload({
             threshold : 200
         });
@@ -190,7 +178,6 @@
                     depth: 1,
                     light: 20,
                     onReverseFinish: function() {
-                        $("a[rel^='prettyPhoto']").prettyPhoto(prettyPhotoSettings);
                         var description = item.find('.edit-class');
                         if (!isMobile) {
                             setupEdit(description);

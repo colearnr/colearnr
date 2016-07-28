@@ -103,40 +103,6 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
         </div>
     </div>
     <div class="flipcard" <% if (lbit.type == 'quote') { %>style="height: 95%;"<% } %>>
-        <% if (lbit.type == 'youtube') { %>
-        <% noMatch = false %>
-        <% var body = util.parseJson(lbit.body) || {} %>
-        <%
-            var urlToUse = lbit.url;
-            if (lbit.optimised_url) {
-                urlToUse = lbit.optimised_url;
-            } else if (body.embed) {
-                urlToUse = 'https://www.youtube.com/watch?v=' + body.embed;
-            }
-        %>
-        <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
-            <a class="image" itemprop="http://schema.org/sameAs" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" data-start="<%- lbit.start %>" data-end="<%- lbit.end %>" href="<%- urlToUse %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %>https://img.youtube.com/vi/<%- body.embed || '' %>/0.jpg<% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
-            <% include lbits-description.html %>
-        <% } %>
-
-        <% if (lbit.type == 'vimeo') { %>
-        <% noMatch = false %>
-        <% var body = util.parseJson(lbit.body) || {} %>
-        <%
-            var urlToUse = lbit.url;
-            if (lbit.optimised_url) {
-                urlToUse = lbit.optimised_url;
-            } else if (body.embed) {
-                urlToUse = 'https://vimeo.com/' + body.embed + '?title=0&byline=0&portrait=0&badge=0';
-            }
-        %>
-        <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
-            <a class="image" itemprop="http://schema.org/sameAs" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" data-start="<%- lbit.start %>" data-end="<%- lbit.end %>" href="<%- urlToUse %>" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %>https://i.vimeocdn.com/video/<%- body.embed %>%>.jpg?mw=1000&mh=562&q=70<% } %>" itemprop="image" id="id-<%- lbit._id %>-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
-            <% include lbits-description.html %>
-        <% } %>
-
         <% if (lbit.type == 'annotag') { %>
         <% noMatch = false %>
         <div class="picture">
@@ -193,15 +159,6 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
                     <iframe class="embed-responsive-item" itemprop="http://schema.org/sameAs" src="<% if (body.embed) { %>https://www.slideshare.net/slideshow/embed_code/<%- body.embed %>?rel=0<% } else { %><%- lbit.url %><% } %>" width="100%" height="100%" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" allowfullscreen webkitallowfullscreen mozallowfullscreen> </iframe>
                 </div>
             </div>
-        <% } %>
-
-        <% if (lbit.type == 'html') { %>
-        <% noMatch = false %>
-        <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><% if (lbitTitle != '#') { %><%- lbitTitle || "&nbsp;" %><% } %></p>
-            <a class="image" itemprop="url" <% if (!lbit.frame_restricted) { %>href="/lbit/view/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%" data-topic-id="<%- topicToUse._id %>" data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" rel="prettyPhoto[<%- topicToUse.id %>]"<% } else { %>href="<%- lbit.url %>" target="_new"<% } %> title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix %>/images/web-placeholder.png
-            <% } %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>
-            <% include lbits-description.html %>
         <% } %>
 
         <% if (lbit.type == 'image') { %>
@@ -262,20 +219,13 @@ if (lbit.likes && lbit.likes.indexOf(''+user._id) != -1) {
             </div>
         <% } %>
 
-        <% if (lbit.type == 'inline-html' || lbit.type == 'poll') { %>
+        <% if (noMatch) { %>
         <% noMatch = false %>
         <% var imageToUse = "html-learnbit.png" %>
         <% if (lbit.type == 'poll') { imageToUse = 'poll-icon.png' } %>
         <div class="picture">
             <p  itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><% if (lbitTitle != '#') { %><%- lbitTitle || "&nbsp;" %><% } %></p>
             <a class="image" itemprop="url" data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="/lbit/view/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix || '' %>/images/<%- imageToUse %><% } %>" alt="<%- lbit.title || "&nbsp;" %>"/></a>
-            <% include lbits-description.html %>
-        <% } %>
-
-        <% if (noMatch) { %>
-        <div class="picture">
-            <p itemprop="name" class="item_title <%- titleEditClass %>" data-lbitId="<%- lbit._id %>" id="id-<%- lbit._id %>-title"><%- lbitTitle || "&nbsp;" %></p>
-            <a class="image" itemprop="url"  data-topic-id="<%- topicToUse._id %>"  data-lbit-durl="<%- disurl %>" data-lbit-nurl="<%- notesurl %>" data-lbit-id="<%- lbit._id %>" data-comments_count="<% if (lbit.comments_count) { %><%- lbit.comments_count %><% } %>" href="/lbit/embed/<%- lbit._id %>?iframe=true&topic_id=<%- topicToUse._id %>&width=100%&height=100%" rel="prettyPhoto[<%- topicToUse.id %>]" title="<%- lbit.title || "&nbsp;" %>" data-title="<%- lbit.title || "&nbsp;" %>" data-description="<%- lbit.description || lbit.title %>"><img class="img-responsive lazy" itemprop="image" id="id-<%- lbit._id %>-thumbnail" data-original="<% if (lbit.img_url && lbit.img_url.length) { %><%- lbit.img_url[0] %><% } else { %><%- locals.page_options.cdn_prefix + '/images/blank_video.png' %><% } %>" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="<%- lbit.title || "&nbsp;" %>"/></a>
             <% include lbits-description.html %>
         <% } %>
         <% include lbits-detailed-info-compiled.html %>

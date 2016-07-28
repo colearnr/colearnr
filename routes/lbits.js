@@ -92,6 +92,7 @@ function _doCreate (sessionid, topic, oid, order, url, content, req, res, callba
     } else if (isUpdate && util.isExternalLink(lbit.type) && !wasHidden) {
       logger.warn('Url already exists in topic', oid, url, topic.path)
       res.status(500).send('This learnbit already exists in this topic!')
+      _pushLbit(req, topic.id, oid, [lbit], user, sessionid)
     } else {
       // Optimise only external learnbits here. Optimisation for files will be taken care of
       // in upload method
@@ -637,7 +638,7 @@ function save_edit_full (req, res) {
           let quote_author = req.body.quote_author || ''
           let bodyObj = {quote: update_map['body'], author: quote_author}
           update_map['body'] = util.stringify(bodyObj)
-          // console.log('Body', update_map['body'])
+        // console.log('Body', update_map['body'])
         }
         db.learnbits.update(
           {_id: db.ObjectId(oid)},
@@ -1096,6 +1097,7 @@ function optimise (req, res) {
           if (err) {
             logger.log('error', 'Error during optimisation of lbit', err, oid)
           } else {
+            CoreApp.EventEmitter.emit(Events.LEARNBIT_OPTIMISED, user, lb)
             if (global.socket) {
               global.socket.emit('send:editlbit', {lbit: lb, user: user, sessionid: sessionid})
             } else {
@@ -1332,7 +1334,7 @@ exports.stats = function (req, res) {
 }
 
 CoreApp.EventEmitter.on(Events.LEARNBIT_EXTRACTED, (user, lbitId, meta) => {
-  db.learnbits.findOne({_id: db.ObjectId(''+lbitId)}, function (err, lbit) {
+  db.learnbits.findOne({_id: db.ObjectId('' + lbitId)}, function (err, lbit) {
     if (err || !lbit) {
       logger.warn('Unable to find learnbit', lbitId, 'after extraction!')
     } else {
@@ -1343,6 +1345,8 @@ CoreApp.EventEmitter.on(Events.LEARNBIT_EXTRACTED, (user, lbitId, meta) => {
       lbit.title = title
       lbit.description = description
       lbit.img_url = img_url
+      lbit.last_updated = new Date()
+      lbit.last_extracted = new Date()
       db.learnbits.save(lbit, function (err, newlbit) {
         if (!err && global.socket) {
           global.socket.emit('send:editlbit', { lbit: newlbit, user: user, sessionid: null })

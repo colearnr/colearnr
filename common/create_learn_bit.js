@@ -155,6 +155,7 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
 
   const _db_update = function (exis_obj, ele, callback) {
     let update_map = {}
+
     if (exis_obj.topics && ele.topic_oid) {
       for (let i in exis_obj.topics) {
         if ('' + exis_obj.topics[i]._id === ele.topic_oid) {
@@ -179,10 +180,12 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
     if (!topicAdd && !exis_obj.order && ele.order || (ele.order && exis_obj.order && exis_obj.order !== ele.order)) {
       update_map['order'] = ele.order
     }
+
     // Unhide if the user is adding a deleted learnbit again
-    if (exis_obj.hidden) {
-      update_map['hidden'] == false
+    if (!exis_obj.topics || !exis_obj.topics.length || exis_obj.hidden) {
+      update_map['hidden'] = false
       wasDeleted = true
+      update_map['order'] = ele.order
     }
 
     // Update the existing object map with the new contents that can be passed on to the callback
