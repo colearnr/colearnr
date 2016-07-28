@@ -527,7 +527,7 @@ let util = {
     if (userAgent.indexOf('WAC-OFU') !== -1) {
       return 'view.officeapps.live.com'
     }
-    if (userAgent.indexOf('WAC-OFU') !== -1) {
+    if (userAgent.indexOf('viewerng') !== -1) {
       return 'drive.google.com'
     }
   },
