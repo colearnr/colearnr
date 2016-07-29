@@ -26,9 +26,10 @@
     <% include includes/css-common.html %>
     <link rel="stylesheet" type="text/css" href="<%- locals.page_options.cdn_prefix %>/stylesheets/jquery-ui/jquery-ui-flick.min.css">
 </head>
-<body <% if (!pageView) {%>style="background: #FFFFFF; margin: 10px 10px 10px 10px;"<% } %>>
+<body <% if (!pageView) {%>style="background: #FFFFFF; margin: 10px 10px 10px 10px;"<% } %> class="Site">
 <% if (pageView) { %>
 <% include includes/modals.html %>
+<div id="wrap" class="Site-content">
 <% if (!locals.noChildMode && !locals.embedMode) { %>
 <!--start: Header -->
 <header>
@@ -44,12 +45,15 @@
 <% } %>
 <% } %>
 <!-- start: Container -->
-<div id="main" class="container" style="padding-bottom: 10px;">
+<div id="main" class="" style="padding-bottom: 10px;">
 
     <% if (!locals.embedMode) { %>
     <!-- start: Page Title -->
-    <div id="page-title" class="row" style="margin-bottom: 0px;" data-intro="Create your topic structure using this interface. Double click on the new topic to change title and get started." data-position="bottom">
+    <div id="page-title" class="" style="margin-bottom: 0px;" data-intro="Create your topic structure using this interface. Double click on the new topic to change title and get started." data-position="bottom">
+    <div class="coverArt" style="height: 200px;">
+        <img src="">
         <h1><i class="fa fa-sitemap fa-rotate-270"></i>&nbsp; <span id="topic-map-name"><% if (locals.topicObj && !topicObj.empty) { %><%- topicObj.name %><% } else { %><%- 'Topic Mapper' %><% } %></span></h1>
+        </div>
     </div>
     <% } %>
 
@@ -108,7 +112,7 @@
 
 <% if (pageView) { %>
 <% } %>
-
+</div>
 <% include includes/scripts-common.html %>
 
 <script type="text/javascript" src="<%- locals.page_options.cdn_prefix %>/javascripts/mapjs/mapjs.min.js?<%- locals.page_options.version %>"></script>

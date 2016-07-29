@@ -412,14 +412,16 @@ function del_lbit (req, res) {
     if (err) {
       logger.error(err)
     }
-    if (lbit.url.indexOf(constants.CL_PROTOCOL) === 0) {
-      GridFS.remove(id, null, function (err) {
-        if (err) {
-          logger.warn('learnbit', id, 'not removed from Grid due to', err)
-        } else {
-          logger.debug(id, 'removed from grid successfully')
-        }
-      })
+    if (!lbit.topics || !lbit.topics.length || lbit.url.indexOf(constants.CL_PROTOCOL) === 0) {
+      if (lbit.url.indexOf(constants.CL_PROTOCOL) === 0) {
+        GridFS.remove(id, null, function (err) {
+          if (err) {
+            logger.warn('learnbit', id, 'not removed from Grid due to', err)
+          } else {
+            logger.debug(id, 'removed from grid successfully')
+          }
+        })
+      }
       db.learnbits.remove({_id: db.ObjectId(id)}, function (err) {
         if (err) {
           logger.warn('learnbit', id, 'not removed from topic due to', err)
@@ -1343,6 +1345,7 @@ CoreApp.EventEmitter.on(Events.LEARNBIT_EXTRACTED, (user, lbitId, meta) => {
       let title = lbit.title || meta.title
       let description = lbit.description || meta.description
       let img_url = lbit.img_url || meta.img_url
+      delete meta.type
       _.merge(lbit, meta)
       lbit.title = title
       lbit.description = description
