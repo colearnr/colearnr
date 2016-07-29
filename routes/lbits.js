@@ -826,9 +826,11 @@ function view (req, res) {
               res.render('lbits/embedded.ejs', { lbit: lbit, user: user, topicId: topicId, accessToken: accessToken })
             })
           } else if (lbit.type === 'poll') {
-            res.render('polls/poll-view.ejs', {lbit: lbit, user: user, topicId: topicId})
+            res.render('polls/poll-view.ejs', { lbit: lbit, user: user, topicId: topicId })
+          } else if (lbit.type === 'archive' || lbit.type === 'drawing') {
+            res.redirect('/lbit/download/' + lbit._id)
           } else {
-            res.redirect(lbit.url)
+            res.redirect('/lbit/embed/' + lbit._id)
           }
         }
       })

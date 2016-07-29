@@ -32,7 +32,7 @@
         <p class="embed-title"><%- lbit.title %></p>
         <% } %>
         <% var uid = Math.floor(Math.random()*101) %>
-        <% if (locals.type == 'video' || locals.type == 'flash-video') { %>
+        <% if (locals.type === 'video' || locals.type === 'flash-video') { %>
             <%
             var vid_type = 'mp4';
             switch (locals.extn) {
@@ -52,7 +52,9 @@
             </video>
             <script>
             videoJsObj = videojs("ownvideo-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto", 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>',
-            plugins: { autoResume: { namespace: 'namespace', 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>', 'start' : <%- lbit.start || options.start || null %>, 'end': <%- lbit.end || options.end || null %>, autoplay: false } } }, function(){
+            plugins: { autoResume: { namespace: 'namespace', 'lbit_id': '<%- lbit._id %>',
+               'topic_id': '<%- topic_id %>', 'start' : '<%- lbit.start || options.start || '' %>',
+               'end': '<%- lbit.end || options.end || '' %>', autoplay: false } } }, function(){
                 this.videoAnalytics({'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>'});
                 <% if (locals.info) { %>
                 this.overlay({
@@ -67,16 +69,20 @@
                 <% } %>
             });
             </script>
-        <% } else if (locals.type == 'rtmp-live') { %>
+        <% } else if (locals.type === 'rtmp-live') { %>
             <video x-webkit-airplay="allow" id="livevideo-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>" data-setup='{ "techOrder": ["flash"] }'><source src="<%- locals.url %>" type="rtmp/mp4" /></video>
             <script>
-            videoJsObj = videojs("livevideo-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto", 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>' }, function() {
+            videoJsObj = videojs("livevideo-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto",
+               'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>' }, function() {
             });
             </script>
-        <% } else if (locals.type == 'hls-live') { %>
+        <% } else if (locals.type === 'hls-live') { %>
             <video x-webkit-airplay="allow" id="hlslive-<%- uid %>" class="video-js vjs-default-skin" autoplay="autoplay" controls poster="" width="<%- width %>" height="<%- height %>"><source src="<%- locals.url %>" type="video/mp4" /></video>
             <script>
-            videoJsObj = videojs("hlslive-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto", 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>', plugins: { autoResume: { namespace: 'namespace', 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>', 'start' : null, 'end': null, autoplay: false } } }, function(){
+            videoJsObj = videojs("hlslive-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto",
+               'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>',
+               plugins: { autoResume: { namespace: 'namespace', 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>',
+                   'start' : null, 'end': null, autoplay: false } } }, function(){
                 this.videoAnalytics({'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>'});
                 <% if (locals.info) { %>
                 this.overlay({
@@ -91,7 +97,7 @@
                 <% } %>
             });
             </script>
-        <% } else if (locals.type == 'audio') { %>
+        <% } else if (locals.type === 'audio') { %>
             <audio id="ownaudio-<%- uid %>" class="audio-js" src="<%- locals.url %>" preload="auto"></audio>
             <script>
             if (window.audiojs) {
@@ -100,11 +106,11 @@
                 });
             }
             </script>
-        <% } else if (locals.type == 'youtube') { %>
+        <% } else if (locals.type === 'youtube') { %>
             <video x-webkit-airplay="allow" id="youtube-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>"><source src="<%- locals.url %>" type="video/youtube" />
                 <track kind="chapters" src="/lbit/tracks/chapters/<%- lbit._id %>" srclang="en" label="English" default>
             </video>
-        <% } else if (locals.type == 'vimeo') { %>
+        <% } else if (locals.type === 'vimeo') { %>
             <video x-webkit-airplay="allow" id="vimeo-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>"><source src="<%- locals.url %>" type="video/vimeo" />
                 <track kind="chapters" src="/lbit/tracks/chapters/<%- lbit._id %>" srclang="en" label="English" default>
             </video>
@@ -113,7 +119,7 @@
         <div class="embed-description"><p style="margin: 0 10px 0px 10px;"><%- lbit.description %></p></div>
         <% } %>
         </div></div></div>
-        <% if (locals.type == 'youtube' || locals.type == 'vimeo') { %>
+        <% if (locals.type === 'youtube' || locals.type === 'vimeo') { %>
         <script>
         var args = { "controls": true, "autoplay": false, "preload": "auto", "techOrder": ['<%- locals.type %>'],
             "src": '<%- url %>',
@@ -124,7 +130,7 @@
                 'end': '<%- lbit.end || options.end || '' %>',
                 autoplay: false } } };
 
-            <% if (locals.type == 'youtube') { %>
+            <% if (locals.type === 'youtube') { %>
             args['ytcontrols'] = false;
             args['quality'] = '480p';
             args['autoplay'] = false;

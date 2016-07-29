@@ -711,11 +711,7 @@ $(window).bind('hashchange', function(event) {
                 randomImage = Math.floor((Math.random() * (images.length)));
                 rimg = images[randomImage];
             }
-            <% if (!locals.isSearchPage) { %>
             $('.coverArt img').attr("src", rimg);
-            <% } else { %>
-            $('#wrapper').anystretch(rimg, {speed: 150});
-            <% } %>
         <% } %>
     }
     $('.coverArt img').error(function () {
@@ -974,17 +970,25 @@ $(document).ready(function() {
             items: 3,
             slideBy: 3
           },
-          960: {
+          880: {
             items: 4,
             slideBy: 4
           },
-          1450: {
+          1110: {
             items: 5,
             slideBy: 5
           },
-          1700: {
+          1350: {
             items: 6,
             slideBy: 6
+          },
+          1580: {
+            items: 7,
+            slideBy: 7
+          },
+          1920: {
+            items: 8,
+            slideBy: 8
           }
         },
         onInitialized: function(event) {

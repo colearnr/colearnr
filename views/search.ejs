@@ -28,9 +28,9 @@
     <link rel="shortcut icon" href="<%- page_options.cdn_prefix %>/images/favicon.ico" />
     <% include includes/css-common.html %>
 </head>
-<body>
+<body class="Site" >
 <% include includes/modals.html %>
-<div id="wrap">
+<div id="wrap" class="Site-content">
 
 <!--start: Header -->
 <header>
@@ -46,13 +46,15 @@
 <!-- start: Container -->
 <div id="main">
 
-    <div id="page-title" style="margin-bottom: 20px;">
+    <div id="page-title" class="titleWArt">
+        <div class="coverArt">
+        <img src="">
         <% if (locals.results && results && results.total) { %>
         <h1>Found <%- results.total %> <%- type %> for <%- locals.query %></h1>
         <% } else { %>
         <h1>Search result for <%- locals.query %></h1>
         <% } %>
-        <div class="search-bar row">
+        <div class="search-bar">
         <div class="col-md-offset-2 col-sm-offset-2 col-xs-offset-1 col-md-8 col-sm-8 col-xs-10">
             <ul id="search-types" class="nav nav-tabs">
               <li role="presentation" class="<%- type == 'learnbits' ? 'active' : '' %>"><a data-search="learnbits" href="#">Learnbits</a></li>
@@ -71,10 +73,11 @@
             </form>
         </div>
         </div>
+        </div>
     </div>
     <div class='notifications top-right'></div>
 
-    <div id="wrapper" class="row" style="margin-left: 0px; margin-right: 0px;">
+    <div id="wrapper" class="wcoverArt" style="margin-left: 0px; margin-right: 0px;">
         <div id="structure" class="breadcrumb_wrapper">
             <div class="container" style="">
                 <ul class="breadcrumb col-xs-9 pull-left">

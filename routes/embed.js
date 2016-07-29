@@ -13,7 +13,7 @@ const _ = require('lodash')
 
 function doRender (res, lbit, topic, user, url, embedSize, info, extOptions) {
   // logger.debug('Before embed', topic, url, embedSize)
-  let urlType = (lbit ? lbit.type : util.getUrlType(url, null))
+  let urlType = util.getUrlType(url, null)
   let options = _getUrlOptions(url)
   if (!util.empty(extOptions)) {
     _.merge(options, extOptions)
