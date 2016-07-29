@@ -245,8 +245,8 @@ function create_learn_bit (user, main_topic, bare_element, callback) {
             }
             let urlToUse = _url(bare_element.url, url_data.url)
             let body_val = _body(urlToUse, bare_element, url_data)
-            let lbit_type = bare_element.type || util.getUrlType(urlToUse, body_val)
-            // log.log('debug', 'lbit to create', bare_element, order, lbit_type)
+            let lbit_type = util.getUrlType(urlToUse, body_val)
+            log.log('debug', 'lbit to create', bare_element, order, lbit_type)
             let lb = {
               title: _val(bare_element.title, url_data.title),
               description: _val(bare_element.description, url_data.description),
