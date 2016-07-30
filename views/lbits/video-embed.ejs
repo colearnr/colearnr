@@ -15,15 +15,15 @@
             var height = '480';
             var topic_id = (locals.topic && locals.topic._id) ? topic._id : '';
             if (locals.embedSize) {
-                if (embedSize.toLowerCase() == 'small') {
+                if (embedSize.toLowerCase() === 'small') {
                     width = '360';
                     height = '240';
-                } else if (embedSize.toLowerCase() == 'medium') {
-                    width = '480';
-                    height = '360';
-                } else if (embedSize.toLowerCase() == 'full') {
-                    width = '800';
-                    height = '640';
+                } else if (embedSize.toLowerCase() === 'medium') {
+                    width = '640';
+                    height = '480';
+                } else if (embedSize.toLowerCase() === 'full') {
+                    width = '1080';
+                    height = '720';
                 }
             }
         %>
@@ -47,7 +47,7 @@
                     break;
             }
             %>
-            <video x-webkit-airplay="allow" id="ownvideo-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>" data-setup='{"nativeControlsForTouch": true}'><source src="<%- locals.url %>" type="video/<%- vid_type %>" />
+            <video x-webkit-airplay="allow" id="ownvideo-<%- uid %>" class="<%- embedSize %> video-js vjs-default-skin" controls poster="" data-setup='{"nativeControlsForTouch": true}'><source src="<%- locals.url %>" type="video/<%- vid_type %>" />
                 <track kind="chapters" src="/lbit/tracks/chapters/<%- lbit._id %>" srclang="en" label="English" default>
             </video>
             <script>
@@ -70,14 +70,14 @@
             });
             </script>
         <% } else if (locals.type === 'rtmp-live') { %>
-            <video x-webkit-airplay="allow" id="livevideo-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>" data-setup='{ "techOrder": ["flash"] }'><source src="<%- locals.url %>" type="rtmp/mp4" /></video>
+            <video x-webkit-airplay="allow" id="livevideo-<%- uid %>" class="<%- embedSize %> video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>" data-setup='{ "techOrder": ["flash"] }'><source src="<%- locals.url %>" type="rtmp/mp4" /></video>
             <script>
             videoJsObj = videojs("livevideo-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto",
                'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>' }, function() {
             });
             </script>
         <% } else if (locals.type === 'hls-live') { %>
-            <video x-webkit-airplay="allow" id="hlslive-<%- uid %>" class="video-js vjs-default-skin" autoplay="autoplay" controls poster="" width="<%- width %>" height="<%- height %>"><source src="<%- locals.url %>" type="video/mp4" /></video>
+            <video x-webkit-airplay="allow" id="hlslive-<%- uid %>" class="<%- embedSize %> video-js vjs-default-skin" autoplay="autoplay" controls poster=""><source src="<%- locals.url %>" type="video/mp4" /></video>
             <script>
             videoJsObj = videojs("hlslive-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto",
                'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>',
@@ -107,11 +107,11 @@
             }
             </script>
         <% } else if (locals.type === 'youtube') { %>
-            <video x-webkit-airplay="allow" id="youtube-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>"><source src="<%- locals.url %>" type="video/youtube" />
+            <video x-webkit-airplay="allow" id="youtube-<%- uid %>" class="<%- embedSize %> video-js vjs-default-skin" controls poster=""><source src="<%- locals.url %>" type="video/youtube" />
                 <track kind="chapters" src="/lbit/tracks/chapters/<%- lbit._id %>" srclang="en" label="English" default>
             </video>
         <% } else if (locals.type === 'vimeo') { %>
-            <video x-webkit-airplay="allow" id="vimeo-<%- uid %>" class="video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>"><source src="<%- locals.url %>" type="video/vimeo" />
+            <video x-webkit-airplay="allow" id="vimeo-<%- uid %>" class="<%- embedSize %> video-js vjs-default-skin" controls poster=""><source src="<%- locals.url %>" type="video/vimeo" />
                 <track kind="chapters" src="/lbit/tracks/chapters/<%- lbit._id %>" srclang="en" label="English" default>
             </video>
         <% } %>
@@ -140,8 +140,6 @@
             <% } %>
             args['start'] = '<%- lbit.start || options.start || '' %>';
             args['end'] = '<%- lbit.end || options.end || '' %>';
-            args['width'] = '<%- width %>';
-            args['height'] = '<%- height %>';
             args['lbit_id'] = '<%- lbit._id %>';
             args['topic_id'] = '<%- topic_id %>';
 
@@ -170,5 +168,29 @@
             });
         </script>
         <% } %>
+        <script>
+            var $video_width = '<%- embedSize === 'full' ? '100%': width %>';
+            var $video_height = '<%- embedSize === 'full' ? '100%': height %>';
+            $('.media-wrapper').width($video_width);
+            $('.media-wrapper').height($video_height);
+            $('.media-container').width($video_width);
+            $('.media-container').height($video_height);
+            $('.media-shadow').width($video_width);
+            $('.media-shadow').height($video_height);
+            //  calculate video ratio 16:9 at a given width from 100%
+            var $thevideo = $('.video-js');
+
+            setTimeout(function () {
+                $thevideo.width($video_width);
+                $thevideo.height($video_height);
+            }, 100);
+
+            $(window).resize(function () {
+                setTimeout(function(){
+                    $thevideo.width($video_width);
+                    $thevideo.height($video_height);
+                }, 100);
+            });
+        </script>
     </body>
 </html>

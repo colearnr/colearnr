@@ -808,18 +808,6 @@ function view (req, res) {
             } else {
               res.redirect(lbit.url)
             }
-          } else if (lbit.type === 'pdf') {
-            query.get_pdf_last_position(user, lbit._id, topicId, function (err, lastPosition) {
-              if (err) {
-                logger.error(err)
-              }
-              AccessTokens.create('' + lbit._id, { added_by: user._id, valid_for_users: [user._id], ttl: 30 * 60, domain: constants.ALLOWED_EMBED_DOMAINS }, function (err, accessToken) {
-                if (err) {
-                  logger.error(err)
-                }
-                res.render('lbits/embedded.ejs', {lbit: lbit, user: user, topicId: topicId, lastPosition: lastPosition, accessToken: accessToken})
-              })
-            })
           } else if (lbit.type === 'iframe-embed' || lbit.optimised || lbit.type === 'office') {
             AccessTokens.create('' + lbit._id, { added_by: user._id, valid_for_users: [user._id], ttl: 30 * 60, domain: constants.ALLOWED_EMBED_DOMAINS }, function (err, accessToken) {
               if (err) {
@@ -832,7 +820,7 @@ function view (req, res) {
           } else if (lbit.type === 'archive' || lbit.type === 'drawing') {
             res.redirect('/lbit/download/' + lbit._id)
           } else {
-            res.redirect('/lbit/embed/' + lbit._id)
+            res.redirect('/lbit/embed/' + lbit._id + '?apps=true&embedSize=full&topicId=' + topicId)
           }
         }
       })
