@@ -850,7 +850,7 @@ function download (req, res) {
         if (util.isSupportedVideoSource(lbit.url, lbit.type)) {
           let video = youtubedl(lbit.url,
             ['--max-filesize', constants.MAX_DOWNLOAD_SIZE, '--format', 'mp4'],
-            { cwd: '/tmp' })
+            { cwd: os.tmpdir() })
           video.on('info', function (info) {
             logger.debug('Download started for', lbit.url)
             logger.debug('filename: ' + info._filename)

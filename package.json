@@ -99,7 +99,7 @@
     "opn": "^4.0.1",
     "rus-diff": "1.1.0",
     "should": "^10.0.0",
-    "standard": "^7.1.1",
+    "standard": "^7.1.2",
     "supertest": "^1.1.0",
     "vows": "^0.8.1"
   },
