@@ -9,7 +9,7 @@
     </script>
     <link rel="stylesheet" type="text/css" href="/stylesheets/videojs/video-embed.css?<%- locals.page_options.version %>" />
     </head>
-    <body>
+    <body style="<%- embedSize.toLowerCase() === 'full' ? 'margin: 0' : '' %>">
         <%
             var width = '640';
             var height = '480';
@@ -26,6 +26,7 @@
                     height = '720';
                 }
             }
+            var autoplay = embedSize.toLowerCase() === 'full';
         %>
         <div class="media-wrapper"><div class="media-container"><div class="media-shadow">
         <% if (locals.lbit && locals.lbit.title && info) { %>
@@ -51,10 +52,10 @@
                 <track kind="chapters" src="/lbit/tracks/chapters/<%- lbit._id %>" srclang="en" label="English" default>
             </video>
             <script>
-            videoJsObj = videojs("ownvideo-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto", 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>',
+            videoJsObj = videojs("ownvideo-<%- uid %>", { "controls": true, "autoplay": <%- autoplay %>, "preload": "auto", 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>',
             plugins: { autoResume: { namespace: 'namespace', 'lbit_id': '<%- lbit._id %>',
                'topic_id': '<%- topic_id %>', 'start' : '<%- lbit.start || options.start || '' %>',
-               'end': '<%- lbit.end || options.end || '' %>', autoplay: false } } }, function(){
+               'end': '<%- lbit.end || options.end || '' %>', autoplay: <%- autoplay %> } } }, function(){
                 this.videoAnalytics({'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>'});
                 <% if (locals.info) { %>
                 this.overlay({
@@ -72,17 +73,17 @@
         <% } else if (locals.type === 'rtmp-live') { %>
             <video x-webkit-airplay="allow" id="livevideo-<%- uid %>" class="<%- embedSize %> video-js vjs-default-skin" controls poster="" width="<%- width %>" height="<%- height %>" data-setup='{ "techOrder": ["flash"] }'><source src="<%- locals.url %>" type="rtmp/mp4" /></video>
             <script>
-            videoJsObj = videojs("livevideo-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto",
+            videoJsObj = videojs("livevideo-<%- uid %>", { "controls": true, "autoplay": <%- autoplay %>, "preload": "auto",
                'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>' }, function() {
             });
             </script>
         <% } else if (locals.type === 'hls-live') { %>
             <video x-webkit-airplay="allow" id="hlslive-<%- uid %>" class="<%- embedSize %> video-js vjs-default-skin" autoplay="autoplay" controls poster=""><source src="<%- locals.url %>" type="video/mp4" /></video>
             <script>
-            videoJsObj = videojs("hlslive-<%- uid %>", { "controls": true, "autoplay": false, "preload": "auto",
+            videoJsObj = videojs("hlslive-<%- uid %>", { "controls": true, "autoplay": <%- autoplay %>, "preload": "auto",
                'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>',
                plugins: { autoResume: { namespace: 'namespace', 'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>',
-                   'start' : null, 'end': null, autoplay: false } } }, function(){
+                   'start' : null, 'end': null, autoplay: <%- autoplay %> } } }, function(){
                 this.videoAnalytics({'lbit_id': '<%- lbit._id %>', 'topic_id': '<%- topic_id %>'});
                 <% if (locals.info) { %>
                 this.overlay({
@@ -121,19 +122,19 @@
         </div></div></div>
         <% if (locals.type === 'youtube' || locals.type === 'vimeo') { %>
         <script>
-        var args = { "controls": true, "autoplay": false, "preload": "auto", "techOrder": ['<%- locals.type %>'],
+        var args = { "controls": true, "autoplay": <%- autoplay %>, "preload": "auto", "techOrder": ['<%- locals.type %>'],
             "src": '<%- url %>',
             plugins: { autoResume: {
                 namespace: 'namespace', 'lbit_id': '<%- lbit._id %>',
                 'topic_id': '<%- topic_id %>',
                 'start' : '<%- lbit.start || options.start || '' %>',
                 'end': '<%- lbit.end || options.end || '' %>',
-                autoplay: false } } };
+                autoplay: <%- autoplay %> } } };
 
             <% if (locals.type === 'youtube') { %>
             args['ytcontrols'] = false;
             args['quality'] = '480p';
-            args['autoplay'] = false;
+            args['autoplay'] = <%- autoplay %>;
             args['playsInline'] = true;
             args['forceSSL'] = true;
             args['forceHTML5'] = true;
