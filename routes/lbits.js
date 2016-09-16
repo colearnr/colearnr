@@ -1334,6 +1334,7 @@ CoreApp.EventEmitter.on(Events.LEARNBIT_EXTRACTED, (user, lbitId, meta) => {
       let description = lbit.description || meta.description
       let img_url = lbit.img_url || meta.img_url
       delete meta.type
+      delete meta._id
       _.merge(lbit, meta)
       lbit.title = title
       lbit.description = description

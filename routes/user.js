@@ -473,12 +473,12 @@ function quicksearch (req, response, isChatSearch) {
     data.forEach(function (auser) {
       if (auser && auser._source && auser._source._id) {
         let email = (auser._source.emails.length ? auser._source.emails[0] : '')
-        let name_email = auser._source.displayName + (email ? (' <' + email + '>') : '')
+        let name_email = (auser._source.displayName || 'New user') + (email ? (' <' + email + '>') : '')
         userList.push({
           _id: auser._source._id,
           id: isChatSearch ? (auser._source.chat_id || email) : (auser._source._id),
-          name: auser._source.displayName,
-          fullname: auser._source.displayName,
+          name: auser._source.displayName || 'New user',
+          fullname: auser._source.displayName || 'New user',
           label: name_email,
           value: email,
           profileImage: auser._source.profileImage,
