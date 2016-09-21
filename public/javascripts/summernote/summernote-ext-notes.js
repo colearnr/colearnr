@@ -73,7 +73,9 @@
           {clazz: 'share', icon: 'share-alt', label: 'Share'},
           {clazz: 'trophy', icon: 'trophy', label: 'Trophy'},
           {clazz: 'doubt', icon: 'hand-o-up', label: 'Doubt'},
-          {clazz: 'users', icon: 'users', label: 'Friends'}
+          {clazz: 'users', icon: 'users', label: 'Friends'},
+          {clazz: 'emojiOneChar', icon: 'users', label: 'Emoticon'}
+
         ];
         /*
         var UL_TAG = '<ul class="list-unstyled col-md-4 col-xs-4 col-sm-4">';
