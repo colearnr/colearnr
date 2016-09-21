@@ -1973,7 +1973,7 @@
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'hr']],
+        ['insert', ['link', 'picture',  'emojiOneChar', 'specialChar','hr']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
