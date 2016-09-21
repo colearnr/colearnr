@@ -10,6 +10,7 @@
 <script src="<%- page_options.cdn_prefix %>/javascripts/jquery.validate.min.js"></script>
 <script src="<%- page_options.cdn_prefix %>/vendor/bootstrap-notify/js/bootstrap-notify.js" defer></script>
 <script src="<%- page_options.cdn_prefix %>/vendor/jquery.lazyload/jquery.lazyload.min.js"></script>
+<script src="<%- page_options.cdn_prefix %>/vendor/emojione/lib/js/emojione.min.js"></script>
 <script>
 var user = {'_id': '<%- locals.user ? locals.user._id : "guest" %>', 'guestMode' : <%- !locals.user || !locals.user._id %>};
 <% if (!locals.embedMode) { %>
