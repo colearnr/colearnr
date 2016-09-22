@@ -118,7 +118,6 @@
                     editor.insertNode($editable, $node);
                 }
             }
-            }
         }
     });
 }));
