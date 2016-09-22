@@ -32,12 +32,12 @@
                 for (i = 0; i < emojis.length; i++) {
                     list += '<img src="' + emojis[i] + '" data-event="emojiList" data-value="' + emojis[i] + '" />';
                 }
-                var dropdown = '<div class="dropdown-menu emoji-list">' + list + '</div>';
+                var dropdownNewEmoji = '<div class="dropdown-menu emoji-list">' + list + '</div>';
 
-                return tmpl.iconButton(options.iconPrefix + 'smile-o', {
+                return tmpl.iconButton('fa fa-smile-o', {
                     title: 'Insert Emojis',
                     hide: true,
-                    dropdown : dropdown
+                    dropdown : dropdownNewEmoji
                 });
             }
         },
