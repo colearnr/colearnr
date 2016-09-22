@@ -7,12 +7,12 @@
 /* Styles for the clickable images */
 .emoji-list * {
     display: inline-block;
-    margin: 1px;
+    margin: 5px;
     cursor: pointer;
 }
 
 /* Add more space around images so they're easier to select on small devices. */
-@media (max-width:600px) {
+@media (max-width:300px) {
     .emoji-list * {
         margin: 3px;
     }

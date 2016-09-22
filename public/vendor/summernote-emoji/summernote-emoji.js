@@ -10,7 +10,7 @@
 }(function ($) {
     // template
     var tmpl = $.summernote.renderer.getTemplate();
-
+    var editor = $.summernote.eventHandler.getEditor();
     /**
      * @class plugin.emoji
      *
@@ -47,7 +47,7 @@
          * @property {Function} events.emojiList run function when button that has a 'emojiList' event name  fires click
          */
         events: { // events
-            emojiList: function (event, editor, layoutInfo, value) {
+            emojiList: function (layoutInfo, value) {
                 // Get current editable node
                 var $editable = layoutInfo.editable();
 
