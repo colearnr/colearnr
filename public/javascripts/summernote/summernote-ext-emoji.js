@@ -99,6 +99,7 @@
             emoji: function (options) {
                 if(document.emojiSource === undefined)
 					document.emojiSource = '';
+                options.
                 addListener();
                 return tmpl.iconButton('fa fa-smile-o', {
                     title: 'Emoji',
@@ -109,9 +110,14 @@
         },
 
         events: {
-            selectEmoji: function (layoutInfo) {
+            selectEmoji: function (layoutInfo,value) {
                 var $editable = layoutInfo.editable();
-                editor.insertText($editable, value);
+                //editor.insertText($editable, value);
+                var $node = $('<img src="' + document.emojiSource + value +'.png" style="width: 20px; height: 20px;"/>')[0];
+                if ($node) {
+                    editor.insertNode($editable, $node);
+                }
+            }
             }
         }
     });

@@ -1548,7 +1548,7 @@
      */
     events: {
       //emojiOneDialog: function (event, editor, layoutInfo, value) {
-      emojiOneDialog: function (layoutInfo) {
+      emojiOneDialog: function (layoutInfo, value) {
         // Get current editable node
         var $editable = layoutInfo.editable(),
             $dialog = layoutInfo.dialog(),
