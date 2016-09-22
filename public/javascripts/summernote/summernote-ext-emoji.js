@@ -53,7 +53,7 @@
         });
     };
 
-    var dropdown = function () {
+    var dropdownEmoji = function () {
         return '<div class="dropdown-menu dropdown-keep-open" id="emoji-dropdown" style="width: 200px; padding: 10px;">' +
             '<div class="row">' +
             '<div class="col-md-12">' +
@@ -103,13 +103,13 @@
                 return tmpl.iconButton('fa fa-smile-o', {
                     title: 'Emoji',
                     hide: true,
-                    dropdown: dropdown()
+                    dropdown: dropdownEmoji()
                 });
             }
         },
 
         events: {
-            selectEmoji: function (event, editor, layoutInfo, value) {
+            selectEmoji: function (layoutInfo) {
                 var $editable = layoutInfo.editable();
                 editor.insertText($editable, value);
             }

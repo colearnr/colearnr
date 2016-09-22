@@ -11,6 +11,11 @@
 <script src="<%- page_options.cdn_prefix %>/vendor/bootstrap-notify/js/bootstrap-notify.js" defer></script>
 <script src="<%- page_options.cdn_prefix %>/vendor/jquery.lazyload/jquery.lazyload.min.js"></script>
 <script src="<%- page_options.cdn_prefix %>/vendor/emojione/lib/js/emojione.min.js"></script>
+
+<script>
+    document.emojiSource  = '<%- page_options.cdn_prefix %>/vendor/summernote-ext-emoji/pngs/';
+</script>
+
 <script>
 var user = {'_id': '<%- locals.user ? locals.user._id : "guest" %>', 'guestMode' : <%- !locals.user || !locals.user._id %>};
 <% if (!locals.embedMode) { %>
@@ -33,10 +38,6 @@ window.addEventListener('load', function() {
 <% if (config.cookieDomain && config.cookieDomain !== 'localhost' && config.cookieDomain.indexOf('dev') === -1) { %>
 <script>
 document.domain = '<%- config.cookieDomain.substring(1) %>';
-</script>
-
-<script>
-document.emojiSource  = '<%- page_options.cdn_prefix %>/vendor/summernote-ext-emoji/pngs/';
 </script>
 
 <% } %>
