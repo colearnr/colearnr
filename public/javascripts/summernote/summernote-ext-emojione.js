@@ -10,7 +10,7 @@
 }(function ($) {
   // template
   var tmpl = $.summernote.renderer.getTemplate();
-
+  var editor = $.summernote.eventHandler.getEditor();
   // core functions: range, dom
   var range = $.summernote.core.range;
   var dom = $.summernote.core.dom;
@@ -1506,7 +1506,8 @@
      */
     buttons: {
       emojiOneChar: function (lang, options) {
-        return tmpl.iconButton(options.iconPrefix + 'smile-o ', {
+       // return tmpl.iconButton(options.iconPrefix + 'smile-o ', {
+        return tmpl.iconButton('fa fa-smile-o', {
           event: 'emojiOneDialog',
           title: lang.emojiOneChar.emojiOneChar,
           hide: true
@@ -1546,7 +1547,8 @@
      * @property {Function} events.showEmojiOneCharDialog
      */
     events: {
-      emojiOneDialog: function (event, editor, layoutInfo, value) {
+      //emojiOneDialog: function (event, editor, layoutInfo, value) {
+      emojiOneDialog: function (layoutInfo) {
         // Get current editable node
         var $editable = layoutInfo.editable(),
             $dialog = layoutInfo.dialog(),

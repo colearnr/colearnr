@@ -34,5 +34,10 @@ window.addEventListener('load', function() {
 <script>
 document.domain = '<%- config.cookieDomain.substring(1) %>';
 </script>
+
+<script>
+document.emojiSource  = '<%- page_options.cdn_prefix %>/vendor/summernote-ext-emoji/pngs/';
+</script>
+
 <% } %>
 
